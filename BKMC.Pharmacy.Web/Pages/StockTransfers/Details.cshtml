@@ -1,0 +1,171 @@
+﻿@page
+@model BKMC.Pharmacy.Web.Pages.StockTransfers.DetailsModel
+@using BKMC.Pharmacy.Web.Models.Stock
+
+@{
+    ViewData["Title"] = "Transfer Details";
+
+    // ✅ Sab kuch upar calculate karein
+    var fromLoc = Model.Transfer?.FromLocation.ToString() ?? "Unknown";
+    var toLoc = Model.Transfer?.ToLocation.ToString() ?? "Unknown";
+    var totalItems = Model.Transfer?.Items?.Count ?? 0;
+    var createdDate = Model.Transfer?.CreatedAt.ToLocalTime().ToString("dd MMM yyyy, h:mm tt") ?? "-";
+}
+
+<div class="container-fluid py-3">
+
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h2 class="fw-bold mb-1">
+                <i class="bi bi-arrow-left-right me-2"></i>
+                Transfer Details
+            </h2>
+            <p class="text-muted mb-0">
+                View complete information about this stock transfer.
+            </p>
+        </div>
+        <a asp-page="/StockTransfers/Index" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>
+            Back to Transfers
+        </a>
+    </div>
+
+    @if (Model.Transfer != null)
+    {
+        <!-- Summary Card -->
+        <div class="card shadow-sm border-0 mb-3">
+            <div class="card-header">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-receipt"></i>
+                    <span class="fw-bold">@Model.Transfer.ReferenceNumber</span>
+                    <span class="badge badge-completed">
+                        <i class="bi bi-check-circle"></i> Completed
+                    </span>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div class="row g-4">
+
+                    <!-- Date -->
+                    <div class="col-md-3">
+                        <label class="info-label">Date &amp; Time</label>
+                        <div class="info-value">
+                            <i class="bi bi-calendar3 me-1 text-muted"></i>
+                            @createdDate
+                        </div>
+                    </div>
+
+                    <!-- ✅ From Location -->
+                    <div class="col-md-3">
+                        <label class="info-label">From Location</label>
+                        <div class="info-value">
+                            <span class="badge location-badge">
+                                @if (fromLoc == "Warehouse")
+                                {
+                                    <i class="bi bi-building me-1"></i>
+                                }
+                                else
+                                {
+                                    <i class="bi bi-shop me-1"></i>
+                                }
+                                @fromLoc
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- ✅ To Location -->
+                    <div class="col-md-3">
+                        <label class="info-label">To Location</label>
+                        <div class="info-value">
+                            <span class="badge location-badge">
+                                @if (toLoc == "Warehouse")
+                                {
+                                    <i class="bi bi-building me-1"></i>
+                                }
+                                else
+                                {
+                                    <i class="bi bi-shop me-1"></i>
+                                }
+                                @toLoc
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- ✅ Total Items -->
+                    <div class="col-md-3">
+                        <label class="info-label">Total Items</label>
+                        <div class="info-value">
+                            <span class="badge items-badge">
+                                @totalItems item(s)
+                            </span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Items Table -->
+        <div class="card shadow-sm border-0">
+            <div class="card-header">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-box-seam"></i>
+                    <span class="fw-bold">Items Transferred</span>
+                    <span class="badge items-badge">@totalItems item(s)</span>
+                </div>
+            </div>
+
+            <div class="card-body p-0">
+                @if (Model.Transfer.Items != null && Model.Transfer.Items.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Medicine</th>
+                                    <th>Batch Number</th>
+                                    <th class="text-end">Quantity</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{ int index = 1; }
+                                @foreach (var item in Model.Transfer.Items)
+                                {
+                                    <tr>
+                                        <td>@index</td>
+                                        <td><strong>@item.MedicineName</strong></td>
+                                        <td>
+                                            <span class="batch-tag">@item.BatchNumber</span>
+                                        </td>
+                                        <td class="text-end">
+                                            <strong>@item.Quantity.ToString("0.##")</strong>
+                                        </td>
+                                    </tr>
+                                    index++;
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-5">
+                        <i class="bi bi-inbox display-4 text-muted"></i>
+                        <h5 class="mt-3">No items found</h5>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-warning">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            Transfer not found.
+        </div>
+    }
+
+</div>

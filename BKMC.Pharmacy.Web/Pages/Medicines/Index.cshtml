@@ -1,0 +1,257 @@
+﻿@page
+@model BKMC.Pharmacy.Web.Pages.Medicines.IndexModel
+
+@{
+    ViewData["Title"] = "Medicines Master";
+
+    var totalCount = Model.Medicines.Count;
+    var activeCount = Model.Medicines.Count(m => m.IsActive);
+    var inactiveCount = totalCount - activeCount;
+}
+
+<div class="container-fluid py-3">
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div>
+            <div class="page-header__breadcrumb">
+                Master Data · <span>Medicines</span>
+            </div>
+            <h1 class="page-header__title">Medicines Master</h1>
+            <p class="page-header__subtitle">
+                All medicine definitions from the database
+            </p>
+        </div>
+
+        <a asp-page="/Medicines/Create" class="btn-add">
+            <i class="bi bi-plus-lg"></i> Add Medicine
+        </a>
+    </div>
+
+    <!-- Error Alert -->
+    @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            @Model.ErrorMessage
+        </div>
+    }
+
+    <!-- Filter Bar -->
+    <form method="get">
+        <div class="filter-bar">
+
+            <!-- Filter Tabs -->
+            <div class="filter-tabs">
+                <a asp-page="/Medicines/Index"
+                   class="filter-tab @(Model.IsActive == null ? "active" : "")">
+                    All <span class="filter-tab__count">@totalCount</span>
+                </a>
+
+                <a asp-page="/Medicines/Index"
+                   asp-route-IsActive="true"
+                   class="filter-tab @(Model.IsActive == true ? "active" : "")">
+                    Active <span class="filter-tab__count">@activeCount</span>
+                </a>
+
+                <a asp-page="/Medicines/Index"
+                   asp-route-IsActive="false"
+                   class="filter-tab @(Model.IsActive == false ? "active" : "")">
+                    Inactive <span class="filter-tab__count">@inactiveCount</span>
+                </a>
+            </div>
+
+            <!-- Search -->
+            <div class="filter-search">
+                <i class="bi bi-search"></i>
+                <input type="text"
+                       name="Search"
+                       value="@Model.Search"
+                       placeholder="Search by generic, brand or code" />
+            </div>
+
+        </div>
+    </form>
+
+    <!-- Medicines Table -->
+    <div class="med-table-wrapper">
+        @if (Model.Medicines.Count == 0)
+        {
+            <div class="text-center py-5">
+                <i class="bi bi-capsule" style="font-size: 2.5rem; color: #d1d5db;"></i>
+                <h5 class="mt-3" style="color: #6b7280; font-size: 0.9rem;">No medicines found</h5>
+                <p style="color: #9ca3af; font-size: 0.78rem; margin: 0;">
+                    Try changing your search or filter.
+                </p>
+            </div>
+        }
+        else
+        {
+            <table class="med-table">
+                <thead>
+                    <tr>
+                        <th>Medicine</th>
+                        <th>Generic Name</th>
+                        <th>Strength</th>
+                        <th>Unit</th>
+                        <th>Status</th>
+                        <th style="text-align: right;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var medicine in Model.Medicines)
+                    {
+                        <tr>
+                            <td>
+                                <span class="med-name">@medicine.Name</span>
+                                <span class="med-sub">@medicine.Strength</span>
+                            </td>
+
+                            <td>
+                                @(string.IsNullOrWhiteSpace(medicine.GenericName)
+                                    ? "-"
+                                    : medicine.GenericName)
+                            </td>
+
+                            <td>
+                                @(string.IsNullOrWhiteSpace(medicine.Strength)
+                                    ? "-"
+                                    : medicine.Strength)
+                            </td>
+
+                            <td>
+                                @(string.IsNullOrWhiteSpace(medicine.Form)
+                                    ? "-"
+                                    : medicine.Form)
+                            </td>
+
+                            <td>
+                                @if (medicine.IsActive)
+                                {
+                                    <span class="status-pill status-pill--active">Active</span>
+                                }
+                                else
+                                {
+                                    <span class="status-pill status-pill--inactive">Inactive</span>
+                                }
+                            </td>
+
+                            <td>
+                                <div class="table-actions">
+                                    <a asp-page="/Medicines/Edit"
+                                       asp-route-id="@medicine.Id"
+                                       class="icon-btn"
+                                       title="Edit">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+
+                                    @if (medicine.IsActive)
+                                    {
+                                        <form method="post"
+                                              asp-page-handler="Deactivate"
+                                              asp-route-id="@medicine.Id"
+                                              style="display:inline;">
+                                            <button type="submit"
+                                                    class="icon-btn danger"
+                                                    title="Deactivate"
+                                                    onclick="return confirm('Deactivate this medicine?');">
+                                                <i class="bi bi-slash-circle"></i>
+                                            </button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <form method="post"
+                                              asp-page-handler="Activate"
+                                              asp-route-id="@medicine.Id"
+                                              style="display:inline;">
+                                            <button type="submit"
+                                                    class="icon-btn"
+                                                    title="Activate">
+                                                <i class="bi bi-check-circle"></i>
+                                            </button>
+                                        </form>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // 1. Search input aur table body ko dhoondein
+        const searchInput = document.querySelector('input[placeholder*="Search by generic"]');
+        const tableBody = document.querySelector('table tbody');
+        
+        // 2. Filter tabs (All, Active, Inactive) ko dhoondein
+        const filterTabs = document.querySelectorAll('.filter-tab, .nav-pills .nav-link, button[data-filter]');
+
+        if (!searchInput || !tableBody) return;
+
+        // 3. Search function
+        function filterTable() {
+            const query = searchInput.value.toLowerCase().trim();
+            const rows = tableBody.querySelectorAll('tr');
+            let visibleCount = 0;
+
+            rows.forEach(row => {
+                // Row ke saare text ko get karein (medicine name, generic name, strength, etc.)
+                const rowText = row.textContent.toLowerCase();
+
+                // Agar search query row ke text mein mojood hai toh show karein
+                if (rowText.includes(query)) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            // Agar koi result na mile toh "No results" message dikhayein
+            let noResultRow = document.getElementById('noResultRow');
+            if (visibleCount === 0) {
+                if (!noResultRow) {
+                    noResultRow = document.createElement('tr');
+                    noResultRow.id = 'noResultRow';
+                    noResultRow.innerHTML = `<td colspan="6" class="text-center text-muted py-4">
+                        <i class="bi bi-search me-2"></i> No medicines found matching "<strong>${query}</strong>"
+                    </td>`;
+                    tableBody.appendChild(noResultRow);
+                } else {
+                    noResultRow.style.display = '';
+                    noResultRow.querySelector('td').innerHTML = 
+                        `<i class="bi bi-search me-2"></i> No medicines found matching "<strong>${query}</strong>"`;
+                }
+            } else if (noResultRow) {
+                noResultRow.style.display = 'none';
+            }
+        }
+
+        // 4. Input par type karte waqt filter karein
+        searchInput.addEventListener('input', filterTable);
+
+        // 5. Keyboard shortcut: 'Escape' se search clear
+        searchInput.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                searchInput.value = '';
+                filterTable();
+            }
+        });
+
+        // 6. Filter tabs (All, Active, Inactive) ke liye bhi kaam karein
+        filterTabs.forEach(tab => {
+            tab.addEventListener('click', function () {
+                // Search ko clear karein jab tab change ho
+                searchInput.value = '';
+                tableBody.querySelectorAll('tr').forEach(row => row.style.display = '');
+                const noResultRow = document.getElementById('noResultRow');
+                if (noResultRow) noResultRow.style.display = 'none';
+            });
+        });
+    });
+</script>

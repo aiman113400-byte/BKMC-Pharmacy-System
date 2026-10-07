@@ -1,0 +1,666 @@
+﻿@page
+@model IndexModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+
+    // (Card, Variant, Subtitle) — YEH BILKUL WAHI HAI JO AAPKI FILE MEIN THA
+    var cards = new[]
+    {
+        (Model.Dashboard.TotalMedicines,   "primary", "Total medicines in catalog"),
+        // (Model.Dashboard.ActiveMedicines,  "success", "Active for dispensing"),
+        (Model.Dashboard.TotalStock,       "info",    "Total physical units on hand"),
+        (Model.Dashboard.LowStock,         "warning", "Items at or below reorder level"),
+        (Model.Dashboard.OutOfStock,       "danger",  "Items with zero stock"),
+        (Model.Dashboard.ExpiringSoon,     "warning", "Expiring within 90 days"),
+        // (Model.Dashboard.TodayReceiving,   "success", "Received today"),
+        // (Model.Dashboard.TodayDispensing,  "info",    "Dispensed today"),
+        // (Model.Dashboard.TodayBilling,     "primary", "Bills generated today"),
+        // (Model.Dashboard.PendingReturns,   "danger",  "Returns awaiting action"),
+    };
+}
+
+<!-- ===================== PAGE HEADER ===================== -->
+<div class="page-header">
+    <div>
+        <h1 class="page-header__title">Dashboard</h1>
+        <p class="page-header__subtitle">Overview of pharmacy inventory &amp; daily activity</p>
+    </div>
+    <div class="page-header__meta">
+        <i class="bi bi-calendar3 me-2"></i>
+        @DateTime.Now.ToString("dddd, dd MMM yyyy")
+    </div>
+</div>
+
+<!-- ===================== API UNAVAILABLE ===================== -->
+@if (!Model.Dashboard.ApiAvailable)
+{
+    <div class="card border-0 shadow-sm rounded-4 mb-4">
+        <div class="card-body d-flex align-items-center gap-3">
+            <div class="alert-icon alert-icon--warning">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+            </div>
+            <div>
+                <h6 class="mb-1 fw-semibold">API unavailable</h6>
+                <p class="mb-0 text-muted small">@Model.Dashboard.ApiMessage</p>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <!-- ===================== KPI GRID ===================== -->
+    <section class="kpi-grid">
+        @foreach (var (card, variant, subtitle) in cards)
+        {
+            <article class="kpi-card kpi-card--@variant">
+                <div class="kpi-card__top">
+                    <span class="kpi-card__label">@card.Label</span>
+                    <span class="kpi-card__icon">
+                        <i class="bi @card.Icon"></i>
+                    </span>
+                </div>
+                <div class="kpi-card__value">@card.Value</div>
+                <div class="kpi-card__subtitle">@subtitle</div>
+            </article>
+        }
+    </section>
+
+    <!-- ===================== INVENTORY OVERVIEW GRAPH (NEW) ===================== -->
+    <div class="chart-card mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <h5 class="chart-title mb-1">Inventory Overview</h5>
+                <p class="chart-subtitle mb-0">Stock levels over the last 6 months</p>
+            </div>
+            @* <span class="badge bg-light text-dark border px-3 py-2" style="border-radius: 0.5rem; font-weight: 500;">
+                <i class="bi bi-graph-up-arrow me-1"></i> Trending
+            </span> *@
+        </div>
+        <div style="height: 320px; width: 100%;">
+            <canvas id="inventoryChart"></canvas>
+        </div>
+    </div>
+}
+
+<style>
+    /* ============================================================ */
+    /*  GLOBAL TEAL BACKGROUND                                       */
+    /* ============================================================ */
+    body {
+        background-color: #f4fbfa !important;
+    }
+
+    /* ---------- PAGE HEADER ---------- */
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        gap: 16px;
+        margin-bottom: 18px;
+        flex-wrap: wrap;
+    }
+
+    .page-header__title {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: #111827;
+        margin: 0 0 3px;
+    }
+
+    .page-header__subtitle {
+        margin: 0;
+        color: #6b7280;
+        font-size: 0.8rem;
+    }
+
+    .page-header__meta {
+        background: #fff;
+        border: 1px solid #e6e9ef;
+        padding: 6px 12px;
+        border-radius: 999px;
+        font-size: 0.78rem;
+        font-weight: 500;
+        color: #374151;
+        box-shadow: 0 1px 3px rgba(15, 23, 42, .04);
+    }
+
+    /* ============================================================ */
+    /*  KPI GRID — 5 CARDS EK LINE MEIN                              */
+    /* ============================================================ */
+    .kpi-grid {
+        display: grid !important;
+        grid-template-columns: repeat(5, 1fr) !important;
+        gap: 10px !important;
+    }
+
+    /* ============================================================ */
+    /*  KPI CARD — SMALL SIZE                                        */
+    /* ============================================================ */
+    .kpi-card {
+        position: relative;
+        background: #ffffff;
+        border: 1px solid #e9edf3;
+        border-radius: 10px;
+        padding: 10px 10px 10px 14px;
+        box-shadow: 0 1px 3px rgba(15, 23, 42, .04);
+        transition: transform .15s ease, box-shadow .15s ease;
+        overflow: hidden;
+        min-height: 90px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .kpi-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 18px rgba(15, 23, 42, .08);
+    }
+
+    .kpi-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 4px;
+        background: var(--kpi-color, #0f766e);
+    }
+
+    .kpi-card__top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 6px;
+        margin-bottom: 6px;
+    }
+
+    .kpi-card__label {
+        font-size: 0.58rem !important;
+        font-weight: 700;
+        letter-spacing: .06em;
+        text-transform: uppercase;
+        color: #64748b;
+        line-height: 1.25;
+        padding-top: 3px;
+    }
+
+    .kpi-card__icon {
+        width: 24px !important;
+        height: 24px !important;
+        flex-shrink: 0;
+        border-radius: 6px;
+        display: grid;
+        place-items: center;
+        font-size: 0.72rem !important;
+        background: var(--kpi-color-soft, rgba(15, 118, 110, .1));
+        color: var(--kpi-color, #0f766e);
+    }
+
+    .kpi-card__value {
+        font-size: 1.15rem !important;
+        font-weight: 800;
+        color: #0f172a;
+        line-height: 1.1;
+        letter-spacing: -.02em;
+        margin-bottom: 2px;
+    }
+
+    .kpi-card__subtitle {
+        font-size: 0.62rem !important;
+        color: #94a3b8;
+        font-weight: 500;
+        line-height: 1.2;
+    }
+
+    /* ---------- COLOR VARIANTS ---------- */
+    .kpi-card--primary { --kpi-color: #0f766e; --kpi-color-soft: rgba(15, 118, 110, .1); }
+    .kpi-card--success { --kpi-color: #10b981; --kpi-color-soft: rgba(16, 185, 129, .12); }
+    .kpi-card--warning { --kpi-color: #f59e0b; --kpi-color-soft: rgba(245, 158, 11, .14); }
+    .kpi-card--danger  { --kpi-color: #ef4444; --kpi-color-soft: rgba(239, 68, 68, .12); }
+    .kpi-card--info    { --kpi-color: #0ea5e9; --kpi-color-soft: rgba(14, 165, 233, .12); }
+
+    /* ============================================================ */
+    /*  CHART CARD (NEW)                                             */
+    /* ============================================================ */
+    .chart-card {
+        background: #ffffff;
+        border: 1px solid #e9edf3;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 1px 3px rgba(15, 23, 42, .04);
+    }
+
+    .chart-title {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: #0f172a;
+    }
+
+    .chart-subtitle {
+        font-size: 0.78rem;
+        color: #94a3b8;
+    }
+
+    /* ============================================================ */
+    /*  RESPONSIVE                                                    */
+    /* ============================================================ */
+    @@media (max-width: 1400px) {
+        .kpi-grid { grid-template-columns: repeat(5, 1fr) !important; }
+    }
+
+    @@media (max-width: 1100px) {
+        .kpi-grid { grid-template-columns: repeat(3, 1fr) !important; }
+    }
+
+    @@media (max-width: 768px) {
+        .kpi-grid { grid-template-columns: repeat(2, 1fr) !important; }
+    }
+
+    @@media (max-width: 480px) {
+        .kpi-grid { grid-template-columns: 1fr !important; }
+    }
+</style>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const canvas = document.getElementById('inventoryChart');
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+
+            // Professional Teal + Amber palette (matching your theme)
+            const tealColor = '#0f766e';
+            const tealSoft = 'rgba(15, 118, 110, 0.12)';
+            const amberColor = '#f59e0b';
+            const amberSoft = 'rgba(245, 158, 11, 0.10)';
+            const redColor = '#ef4444';
+            const redSoft = 'rgba(239, 68, 68, 0.08)';
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
+                    datasets: [
+                        {
+                            label: 'Total Stock',
+                            data: [120, 145, 138, 165, 172, 182],
+                            borderColor: tealColor,
+                            backgroundColor: tealSoft,
+                            borderWidth: 2.5,
+                            tension: 0.4,
+                            fill: true,
+                            pointBackgroundColor: '#ffffff',
+                            pointBorderColor: tealColor,
+                            pointBorderWidth: 2,
+                            pointRadius: 4,
+                            pointHoverRadius: 6
+                        },
+                        {
+                            label: 'Low Stock',
+                            data: [12, 9, 11, 7, 4, 2],
+                            borderColor: amberColor,
+                            backgroundColor: amberSoft,
+                            borderWidth: 2.5,
+                            tension: 0.4,
+                            fill: true,
+                            pointBackgroundColor: '#ffffff',
+                            pointBorderColor: amberColor,
+                            pointBorderWidth: 2,
+                            pointRadius: 4,
+                            pointHoverRadius: 6
+                        },
+                        {
+                            label: 'Out of Stock',
+                            data: [5, 4, 6, 3, 2, 1],
+                            borderColor: redColor,
+                            backgroundColor: redSoft,
+                            borderWidth: 2.5,
+                            tension: 0.4,
+                            fill: true,
+                            pointBackgroundColor: '#ffffff',
+                            pointBorderColor: redColor,
+                            pointBorderWidth: 2,
+                            pointRadius: 4,
+                            pointHoverRadius: 6
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            align: 'end',
+                            labels: {
+                                usePointStyle: true,
+                                pointStyle: 'circle',
+                                boxWidth: 8,
+                                boxHeight: 8,
+                                padding: 16,
+                                font: {
+                                    family: 'system-ui, -apple-system, sans-serif',
+                                    size: 12,
+                                    weight: '500'
+                                },
+                                color: '#475569'
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: '#1e293b',
+                            padding: 12,
+                            cornerRadius: 8,
+                            titleFont: { size: 13, weight: '600' },
+                            bodyFont: { size: 12 },
+                            displayColors: true,
+                            boxPadding: 6
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: '#f1f5f9',
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: '#94a3b8',
+                                font: { size: 11 },
+                                padding: 8
+                            }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: {
+                                color: '#94a3b8',
+                                font: { size: 11 },
+                                padding: 8
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+}
+
+
+
+
+@* 
+
+
+
+
+
+@page
+@model IndexModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+    <style>
+    /* Dashboard specific styles */
+    .dashboard-title {
+        font-size: 1.5rem; /* Chota aur professional size */
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 0.25rem;
+    }
+    .dashboard-subtitle {
+        font-size: 0.875rem;
+        color: #64748b;
+    }
+    .metric-card {
+        border: 1px solid #e2e8f0;
+        border-radius: 0.75rem;
+        background: #ffffff;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .metric-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+    }
+    .chart-card {
+        border: 1px solid #e2e8f0;
+        border-radius: 0.75rem;
+        background: #ffffff;
+        padding: 1.5rem;
+    }
+</style>
+
+    // (Card, Variant, Subtitle)
+    var cards = new[]
+    {
+        (Model.Dashboard.TotalMedicines,   "primary", "Total medicines in catalog"),
+        // (Model.Dashboard.ActiveMedicines,  "success", "Active for dispensing"),
+        (Model.Dashboard.TotalStock,       "info",    "Total physical units on hand"),
+        (Model.Dashboard.LowStock,         "warning", "Items at or below reorder level"),
+        (Model.Dashboard.OutOfStock,       "danger",  "Items with zero stock"),
+        (Model.Dashboard.ExpiringSoon,     "warning", "Expiring within 90 days"),
+        // (Model.Dashboard.TodayReceiving,   "success", "Received today"),
+        // (Model.Dashboard.TodayDispensing,  "info",    "Dispensed today"),
+        // (Model.Dashboard.TodayBilling,     "primary", "Bills generated today"),
+        // (Model.Dashboard.PendingReturns,   "danger",  "Returns awaiting action"),
+    };
+}
+
+<!-- ===================== PAGE HEADER ===================== -->
+<div class="page-header">
+    <div>
+        <h1 class="page-header__title">Dashboard</h1>
+        <p class="page-header__subtitle">Overview of pharmacy inventory &amp; daily activity</p>
+    </div>
+    <div class="page-header__meta">
+        <i class="bi bi-calendar3 me-2"></i>
+        @DateTime.Now.ToString("dddd, dd MMM yyyy")
+    </div>
+</div>
+
+<!-- ===================== API UNAVAILABLE ===================== -->
+@if (!Model.Dashboard.ApiAvailable)
+{
+    <div class="card border-0 shadow-sm rounded-4 mb-4">
+        <div class="card-body d-flex align-items-center gap-3">
+            <div class="alert-icon alert-icon--warning">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+            </div>
+            <div>
+                <h6 class="mb-1 fw-semibold">API unavailable</h6>
+                <p class="mb-0 text-muted small">@Model.Dashboard.ApiMessage</p>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <!-- ===================== KPI GRID ===================== -->
+    <section class="kpi-grid">
+        @foreach (var (card, variant, subtitle) in cards)
+        {
+            <article class="kpi-card kpi-card--@variant">
+                <div class="kpi-card__top">
+                    <span class="kpi-card__label">@card.Label</span>
+                    <span class="kpi-card__icon">
+                        <i class="bi @card.Icon"></i>
+                    </span>
+                </div>
+
+                <div class="kpi-card__value">@card.Value</div>
+
+                <div class="kpi-card__subtitle">@subtitle</div>
+            </article>
+        }
+    </section>
+}
+
+<style>
+    /* ---------- PAGE HEADER ---------- */
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        gap: 16px;
+        margin-bottom: 18px;
+        flex-wrap: wrap;
+    }
+
+    .page-header__title {
+        font-size: 1.4rem;           /* ✅ Chhota title */
+        font-weight: 700;
+        color: #111827;
+        margin: 0 0 3px;
+    }
+
+    .page-header__subtitle {
+        margin: 0;
+        color: #6b7280;
+        font-size: 0.8rem;
+    }
+
+    .page-header__meta {
+        background: #fff;
+        border: 1px solid #e6e9ef;
+        padding: 6px 12px;
+        border-radius: 999px;
+        font-size: 0.78rem;
+        font-weight: 500;
+        color: #374151;
+        box-shadow: 0 1px 3px rgba(15, 23, 42, .04);
+    }
+
+
+    /* ============================================================ */
+    /*  KPI GRID — 5 CARDS EK LINE MEIN                              */
+    /* ============================================================ */
+    .kpi-grid {
+        display: grid !important;
+        grid-template-columns: repeat(5, 1fr) !important;  /* ✅ 5 cards per row */
+        gap: 10px !important;                               /* ✅ Compact gap */
+    }
+
+    /* ============================================================ */
+    /*  KPI CARD — SMALL SIZE                                        */
+    /* ============================================================ */
+    .kpi-card {
+        position: relative;
+        background: #ffffff;
+        border: 1px solid #e9edf3;
+        border-radius: 10px;
+        padding: 10px 10px 10px 14px;                       /* ✅ Compact padding */
+        box-shadow: 0 1px 3px rgba(15, 23, 42, .04);
+        transition: transform .15s ease, box-shadow .15s ease;
+        overflow: hidden;
+        min-height: 90px;                                   /* ✅ Chhota height */
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+        .kpi-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(15, 23, 42, .08);
+        }
+
+        /* Left accent bar */
+        .kpi-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--kpi-color, #0f766e);
+        }
+
+    /* Card Top Row */
+    .kpi-card__top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 6px;
+        margin-bottom: 6px;
+    }
+
+    .kpi-card__label {
+        font-size: 0.58rem !important;                      /* ✅ Bahut chhota label */
+        font-weight: 700;
+        letter-spacing: .06em;
+        text-transform: uppercase;
+        color: #64748b;
+        line-height: 1.25;
+        padding-top: 3px;
+    }
+
+    /* Icon Box */
+    .kpi-card__icon {
+        width: 24px !important;                             /* ✅ Chhota icon */
+        height: 24px !important;
+        flex-shrink: 0;
+        border-radius: 6px;
+        display: grid;
+        place-items: center;
+        font-size: 0.72rem !important;
+        background: var(--kpi-color-soft, rgba(15, 118, 110, .1));
+        color: var(--kpi-color, #0f766e);
+    }
+
+    /* Value (Number) */
+    .kpi-card__value {
+        font-size: 1.15rem !important;                      /* ✅ Chhota number */
+        font-weight: 800;
+        color: #0f172a;
+        line-height: 1.1;
+        letter-spacing: -.02em;
+        margin-bottom: 2px;
+    }
+
+    /* Subtitle */
+    .kpi-card__subtitle {
+        font-size: 0.62rem !important;                      /* ✅ Chhota subtitle */
+        color: #94a3b8;
+        font-weight: 500;
+        line-height: 1.2;
+    }
+
+    /* ---------- COLOR VARIANTS ---------- */
+    .kpi-card--primary { --kpi-color: #0f766e; --kpi-color-soft: rgba(15, 118, 110, .1); }
+    .kpi-card--success { --kpi-color: #10b981; --kpi-color-soft: rgba(16, 185, 129, .12); }
+    .kpi-card--warning { --kpi-color: #f59e0b; --kpi-color-soft: rgba(245, 158, 11, .14); }
+    .kpi-card--danger  { --kpi-color: #ef4444; --kpi-color-soft: rgba(239, 68, 68, .12); }
+    .kpi-card--info    { --kpi-color: #0ea5e9; --kpi-color-soft: rgba(14, 165, 233, .12); }
+
+    /* ============================================================ */
+    /*  RESPONSIVE                                                    */
+    /* ============================================================ */
+    @@media (max-width: 1400px) {
+        .kpi-grid { grid-template-columns: repeat(5, 1fr) !important; }
+    }
+
+    @@media (max-width: 1100px) {
+        .kpi-grid { grid-template-columns: repeat(3, 1fr) !important; }
+    }
+
+    @@media (max-width: 768px) {
+        .kpi-grid { grid-template-columns: repeat(2, 1fr) !important; }
+    }
+
+    @@media (max-width: 480px) {
+        .kpi-grid { grid-template-columns: 1fr !important; }
+
+     
+
+    </style>
+
+    }
+
+   
+
+
+ *@

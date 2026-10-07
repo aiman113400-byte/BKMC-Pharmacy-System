@@ -1,0 +1,133 @@
+﻿@page
+@model BKMC.Pharmacy.Web.Pages.Stock.DetailsModel
+@using BKMC.Pharmacy.Web.Models.Stock
+
+@{
+    ViewData["Title"] = "Stock Details";
+}
+
+<div class="container-fluid py-3">
+
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h2 class="fw-bold mb-1">
+                <i class="bi bi-box-seam me-2"></i>
+                Stock Details
+            </h2>
+            <p class="text-muted mb-0">
+                View detailed information about this stock record.
+            </p>
+        </div>
+
+        <a asp-page="/Stock/Index" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>
+            Back to Stock
+        </a>
+    </div>
+
+    <!-- Error -->
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            @Model.ErrorMessage
+        </div>
+    }
+
+    @if (Model.Stock != null)
+    {
+        <!-- Stock Info Card -->
+        <div class="card shadow-sm border-0">
+            <div class="card-header">
+                <h5 class="mb-0 fw-semibold">
+                    <i class="bi bi-info-circle me-2"></i>
+                    Stock Information
+                </h5>
+            </div>
+
+            <div class="card-body">
+                <div class="row g-4">
+
+                    <!-- Stock ID -->
+                    <div class="col-md-6">
+                        <label class="info-label">Stock ID</label>
+                        <div class="info-value">@Model.Stock.Id</div>
+                    </div>
+
+                    <!-- Medicine -->
+                    <div class="col-md-6">
+                        <label class="info-label">Medicine</label>
+                        <div class="info-value fw-bold">@Model.Stock.MedicineName</div>
+                    </div>
+
+                    <!-- Medicine ID -->
+                    <div class="col-md-6">
+                        <label class="info-label">Medicine ID</label>
+                        <div class="info-value">@Model.Stock.MedicineId</div>
+                    </div>
+
+                    <!-- Batch Number -->
+                    <div class="col-md-6">
+                        <label class="info-label">Batch Number</label>
+                        <div class="info-value">
+                            <span class="batch-tag">@Model.Stock.BatchNumber</span>
+                        </div>
+                    </div>
+
+                    <!-- Batch ID -->
+                    <div class="col-md-6">
+                        <label class="info-label">Batch ID</label>
+                        <div class="info-value">@Model.Stock.BatchId</div>
+                    </div>
+
+                    <!-- Location -->
+                    <div class="col-md-6">
+                        <label class="info-label">Location</label>
+                        <div class="info-value">
+                            @if (Model.Stock.Location == StockLocation.Warehouse)
+                            {
+                                <span class="badge location-badge">
+                                    <i class="bi bi-building me-1"></i>
+                                    Warehouse
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge location-badge">
+                                    <i class="bi bi-shop me-1"></i>
+                                    Pharmacy
+                                </span>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Available Quantity -->
+                    <div class="col-md-6">
+                        <label class="info-label">Available Quantity</label>
+                        <div class="info-value">
+                            <span class="qty-highlight">@Model.Stock.Quantity.ToString("0.00")</span>
+                        </div>
+                    </div>
+
+                    <!-- Last Updated — ✅ FIXED -->
+                    <div class="col-md-6">
+                        <label class="info-label">Last Updated</label>
+                        <div class="info-value">
+                            @Model.Stock.UpdatedAt.ToLocalTime().ToString("dd MMM yyyy, h:mm tt")
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    }
+    else if (string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-warning">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            Stock record not found.
+        </div>
+    }
+
+</div>

@@ -1,0 +1,221 @@
+﻿@page
+@model BKMC.Pharmacy.Web.Pages.Bills.IndexModel
+
+@{
+    ViewData["Title"] = "Bills";
+}
+
+<style>
+    /* Theme Colors */
+    .bg-teal { background-color: #0f766e !important; }
+    .btn-teal { background-color: #0f766e; color: white; border: none; }
+    .btn-teal:hover { background-color: #0d5c56; color: white; }
+    .text-teal { color: #0f766e !important; }
+    
+    /* Table Header Styling */
+    .table-custom-header th {
+        background-color: #f0fdfa; 
+        color: #475569;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-weight: 600;
+        border-bottom: 1px solid #e2e8f0;
+        padding: 1rem 1.25rem;
+    }
+    
+    /* Table Row Styling */
+    .table-custom tbody tr {
+        border-bottom: 1px solid #f1f5f9;
+        transition: background-color 0.2s;
+    }
+    .table-custom tbody tr:hover {
+        background-color: #f8fafc;
+    }
+    .table-custom td {
+        padding: 1rem 1.25rem;
+        vertical-align: middle;
+        color: #334155;
+        font-size: 0.875rem;
+    }
+</style>
+
+<div class="container-fluid py-4">
+
+    <!-- 1. Header Card -->
+    <div class="card shadow-sm border-0 mb-4" style="border-radius: 0.75rem;">
+        <div class="card-body p-4 d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3">
+            <div>
+                <h2 class="mb-1 fw-bold text-dark">Bills</h2>
+                <p class="text-muted mb-0 small">Patient billing records</p>
+            </div>
+            
+            <a asp-page="./Create" class="btn btn-teal d-inline-flex align-items-center gap-2 px-4 py-2" style="border-radius: 0.5rem; font-weight: 500;">
+                <i class="bi bi-plus-lg"></i>
+                New Bill
+            </a>
+        </div>
+    </div>
+
+    <!-- 2. Table Card -->
+    <div class="card shadow-sm border-0" style="border-radius: 0.75rem; overflow: hidden;">
+        <div class="card-body p-0">
+            
+            @if (Model.Bills.Count == 0)
+            {
+                <div class="text-center py-5">
+                    <h5 class="text-muted">No bills found</h5>
+                    <p class="text-muted small mb-0">No billing records are available.</p>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-custom mb-0 w-100">
+                        <thead class="table-custom-header">
+                            <tr>
+                                <th>Bill Number</th>
+                                <th>Patient ID</th>
+                                <th>Bill Date</th>
+                                <th class="text-end">Total Amount</th>
+                                <th class="text-end">Paid Amount</th>
+                                <th class="text-end">Balance Amount</th>
+                                <th class="text-center">Items</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var bill in Model.Bills)
+                            {
+                                <tr>
+                                    <td>
+                                        <span class="fw-semibold text-dark">@bill.BillNumber</span>
+                                    </td>
+                                    <td class="text-muted">@bill.PatientId</td>
+                                    <td>@bill.BillDate.ToString("dd MMM yyyy")</td>
+                                    
+                                    <!-- Amounts aligned to the right -->
+                                    <td class="text-end">@bill.TotalAmount.ToString("N2")</td>
+                                    <td class="text-end text-success">@bill.PaidAmount.ToString("N2")</td>
+                                    <td class="text-end fw-medium @(bill.BalanceAmount > 0 ? "text-danger" : "text-muted")">
+                                        @bill.BalanceAmount.ToString("N2")
+                                    </td>
+                                    
+                                    <td class="text-center">
+                                        <span class="badge bg-light text-dark border">@bill.Items.Count</span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+
+        </div>
+    </div>
+
+</div>
+
+
+@* @page
+@model BKMC.Pharmacy.Web.Pages.Bills.IndexModel
+
+@{
+    ViewData["Title"] = "Bills";
+}
+
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-1">Bills</h2>
+            <p class="text-muted mb-0">
+                Patient billing records
+            </p>
+        </div>
+
+        <a asp-page="./Create"
+           class="btn btn-primary">
+            <i class="bi bi-plus-lg"></i>
+            New Bill
+        </a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            @if (Model.Bills.Count == 0)
+            {
+                <div class="text-center py-5">
+                    <h5>No bills found</h5>
+                    <p class="text-muted mb-0">
+                        No billing records are available.
+                    </p>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+
+                    <table class="table table-hover align-middle">
+
+                        <thead>
+                            <tr>
+                                <th>Bill Number</th>
+                                <th>Patient ID</th>
+                                <th>Bill Date</th>
+                                <th>Total Amount</th>
+                                <th>Paid Amount</th>
+                                <th>Balance Amount</th>
+                                <th>Items</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            @foreach (var bill in Model.Bills)
+                            {
+                                <tr>
+                                    <td>
+                                        <strong>
+                                            @bill.BillNumber
+                                        </strong>
+                                    </td>
+
+                                    <td>
+                                        @bill.PatientId
+                                    </td>
+
+                                    <td>
+                                        @bill.BillDate.ToString("dd MMM yyyy")
+                                    </td>
+
+                                    <td>
+                                        @bill.TotalAmount.ToString("N2")
+                                    </td>
+
+                                    <td>
+                                        @bill.PaidAmount.ToString("N2")
+                                    </td>
+
+                                    <td>
+                                        @bill.BalanceAmount.ToString("N2")
+                                    </td>
+
+                                    <td>
+                                        @bill.Items.Count
+                                    </td>
+                                </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+            }
+
+        </div>
+    </div>
+
+</div> *@

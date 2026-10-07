@@ -1,0 +1,223 @@
+﻿@page
+@model BKMC.Pharmacy.Web.Pages.Dispensings.IndexModel 
+@{ ViewData["Title"] = "Dispensing";
+ }
+
+
+<style>
+    /* Professional Theme Colors */
+    .bg-teal { background-color: #0f766e !important; }
+    .text-teal { color: #0f766e !important; }
+    .btn-teal { background-color: #0f766e; color: white; border: none; }
+    .btn-teal:hover { background-color: #0d5c56; color: white; }
+    
+    /* Card Styling */
+    .card-custom {
+        border: 1px solid #e2e8f0;
+        border-radius: 0.75rem;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+        background-color: #ffffff;
+    }
+    
+    /* Table Header Styling */
+    .table-custom th {
+        background-color: #f0fdfa; 
+        color: #475569;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-weight: 600;
+        border-bottom: 1px solid #e2e8f0;
+        padding: 1rem 1.25rem;
+    }
+    
+    /* Table Row Styling */
+    .table-custom tbody tr {
+        border-bottom: 1px solid #f1f5f9;
+        transition: background-color 0.2s;
+    }
+    .table-custom tbody tr:hover {
+        background-color: #f8fafc;
+    }
+    .table-custom td {
+        padding: 1rem 1.25rem;
+        vertical-align: middle;
+        color: #334155;
+        font-size: 0.875rem;
+    }
+</style>
+
+<div class="container-fluid py-4">
+
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-1 fw-bold text-dark">Dispensing</h2>
+            <p class="text-muted mb-0 small">Patient medicine dispensing records</p>
+        </div>
+
+        <a asp-page="./Create" class="btn btn-teal d-inline-flex align-items-center gap-2 px-4 py-2" style="border-radius: 0.5rem; font-weight: 500;">
+            <i class="bi bi-plus-lg"></i>
+            New Dispensing
+        </a>
+    </div>
+
+    <!-- Table Card -->
+    <div class="card-custom">
+        <div class="card-body p-0">
+            
+            @if (Model.Dispensings.Count == 0)
+            {
+                <div class="text-center py-5">
+                    <h5 class="text-muted">No dispensing records found</h5>
+                    <p class="text-muted small mb-0">No medicine dispensing records are available.</p>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-custom mb-0 w-100">
+                        <thead>
+                            <tr>
+                                <th>MR Number</th>
+                                <th>Patient</th>
+                                <th>Dispensing Date</th>
+                                <th>Prescription Number</th>
+                                <th class="text-center">Items</th>
+                                <th>Remarks</th>
+                                
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var dispensing in Model.Dispensings)
+                            {
+                                <tr>
+                                    <td>
+                                        <span class="fw-semibold text-dark">@dispensing.MRNumber</span>
+                                    </td>
+                                    <td>@dispensing.PatientName</td>
+                                    <td>
+                                        <!-- Professional Date Format -->
+                                        @dispensing.DispensingDate.ToString("dd MMM yyyy, hh:mm tt")
+                                    </td>
+                                    <td>
+                                        <span class="text-teal fw-medium">@dispensing.PrescriptionNumber</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <!-- Items Badge -->
+                                        <span class="badge bg-light text-dark border px-2 py-1">@dispensing.Items.Count</span>
+                                    </td>
+                                    <td class="text-muted">
+                                        @(string.IsNullOrWhiteSpace(dispensing.Remarks) ? "-" : dispensing.Remarks)
+                                    </td>
+                                   
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+
+        </div>
+    </div>
+
+</div>
+
+
+
+@* @page
+@model BKMC.Pharmacy.Web.Pages.Dispensings.IndexModel
+
+@{
+    ViewData["Title"] = "Dispensing";
+}
+
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-1">Dispensing</h2>
+            <p class="text-muted mb-0">
+                Patient medicine dispensing records
+            </p>
+        </div>
+
+        <a asp-page="./Create"
+           class="btn btn-primary">
+            <i class="bi bi-plus-lg"></i>
+            New Dispensing
+        </a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            @if (Model.Dispensings.Count == 0)
+            {
+                <div class="text-center py-5">
+                    <h5>No dispensing records found</h5>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+
+                    <table class="table table-hover align-middle">
+
+                        <thead>
+                            <tr>
+                                <th>MR Number</th>
+                                <th>Patient</th>
+                                <th>Dispensing Date</th>
+                                <th>Prescription Number</th>
+                                <th>Items</th>
+                                <th>Remarks</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            @foreach (var dispensing in Model.Dispensings)
+                            {
+                                <tr>
+
+                                    <td>
+                                        @dispensing.MRNumber
+                                    </td>
+
+                                    <td>
+                                        @dispensing.PatientName
+                                    </td>
+
+                                    <td>
+                                        @dispensing.DispensingDate
+                                    </td>
+
+                                    <td>
+                                        @(dispensing.PrescriptionNumber ?? "-")
+                                    </td>
+
+                                    <td>
+                                        @dispensing.Items.Count
+                                    </td>
+
+                                    <td>
+                                        @(dispensing.Remarks ?? "-")
+                                    </td>
+
+                                </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+            }
+
+        </div>
+    </div>
+
+</div> *@

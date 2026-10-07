@@ -1,0 +1,3221 @@
+/* ============================================================
+   SITE.CSS — Global + Medicine Master Styles
+   ============================================================ */
+
+/* ---------- BASE ---------- */
+html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 15px;
+    }
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f9fafb;
+    color: #111827;
+}
+
+a {
+    color: #0f766e;
+    text-decoration: none;
+}
+
+    a:hover {
+        text-decoration: none;
+    }
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 4px;
+}
+
+
+/* ============================================================
+   PAGE HEADER (Breadcrumb + Title + Action)
+   ============================================================ */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.page-header__breadcrumb {
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: #9ca3af;
+    margin-bottom: 4px;
+}
+
+    .page-header__breadcrumb span {
+        color: #0f766e;
+    }
+
+.page-header__title {
+    font-size: 1.35rem !important;
+    font-weight: 700 !important;
+    color: #111827 !important;
+    margin: 0 0 3px 0;
+    letter-spacing: -0.01em;
+}
+
+.page-header__subtitle {
+    font-size: 0.78rem;
+    color: #6b7280;
+    margin: 0;
+}
+
+/* Add Button */
+.btn-add {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: #0f766e;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all .15s ease;
+    white-space: nowrap;
+}
+
+    .btn-add:hover {
+        background: #0d5c63;
+        color: #ffffff;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 10px rgba(15, 118, 110, .25);
+    }
+
+
+/* ============================================================
+   FILTER BAR — Exactly Demo Style
+   ============================================================ */
+
+.filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+}
+
+/* Tabs Container */
+.filter-tabs {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 3px;
+    background: #e6f7f5 !important; /* ✅ Grey background */
+    border-radius: 8px;
+    border: 1px solid #a7f3d0 !important;
+}
+
+/* Individual Tab */
+.filter-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border: none;
+    background: transparent;
+    color: #6b7280;
+    font-size: 0.72rem;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all .15s ease;
+    white-space: nowrap;
+    line-height: 1.4;
+}
+
+    .filter-tab:hover {
+        color: #374151;
+    }
+
+    /* ✅ Active tab — White background + Teal text */
+    .filter-tab.active {
+        background: #ffffff;
+        color: #0f766e;
+        font-weight: 700;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, .08);
+    }
+
+/* ✅ Count Badge — Grey circle (like demo) */
+.filter-tab__count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 6px;
+    background: #dcfce7; /* ✅ Grey by default */
+    color: #6b7280;
+    border-radius: 999px;
+    font-size: 0.6rem;
+    font-weight: 700;
+    min-width: 16px;
+    height: 16px;
+    line-height: 1;
+    text-align: center;
+}
+
+/* ✅ Active tab ka count badge — Teal */
+.filter-tab.active .filter-tab__count {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+/* Search Input */
+.filter-search {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    min-width: 220px;
+    max-width: 420px;
+}
+
+    .filter-search i {
+        color: #9ca3af;
+        font-size: 0.85rem;
+    }
+
+    .filter-search input {
+        border: none;
+        background: transparent;
+        outline: none;
+        font-size: 0.78rem;
+        flex: 1;
+        color: #374151;
+        padding: 0;
+    }
+
+        .filter-search input::placeholder {
+            color: #9ca3af;
+        }
+
+
+/* ============================================================
+   MEDICINES TABLE
+   ============================================================ */
+/*.med-table-wrapper {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.med-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.78rem;
+}
+
+    .med-table thead th {
+        background: #f9fafb;
+        color: #6b7280;
+        font-size: 0.62rem;
+        font-weight: 700;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+        padding: 10px 16px;
+        text-align: left;
+        border-bottom: 1px solid #e5e7eb;
+        white-space: nowrap;
+    }
+
+    .med-table tbody td {
+        padding: 12px 16px;
+        border-bottom: 1px solid #f3f4f6;
+        color: #374151;
+        vertical-align: middle;
+        font-size: 0.78rem;
+    }
+
+    .med-table tbody tr:hover {
+        background: #f0fdfa;
+    }
+
+    .med-table tbody tr:last-child td {
+        border-bottom: none;
+    }*/
+
+    /* Medicine Name Cell */
+    /*.med-table .med-name {
+        font-weight: 600;
+        color: #111827;
+        display: block;
+    }
+
+    .med-table .med-sub {
+        font-size: 0.68rem;
+        color: #9ca3af;
+    }*/
+
+/* Status Pills */
+/*.status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: .02em;
+}
+
+    .status-pill::before {
+        content: '●';
+        font-size: 0.5rem;
+    }
+
+.status-pill--active {
+    background: #ccfbf1;
+    color: #0f766e;
+}
+
+.status-pill--inactive {
+    background: #fee2e2;
+    color: #dc2626;
+}*/
+
+/* Action Buttons */
+/*.table-actions {
+    display: flex;
+    gap: 6px;
+    justify-content: flex-end;
+}
+
+.icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border: 1px solid #e5e7eb;
+    background: #ffffff;
+    color: #6b7280;
+    border-radius: 6px;
+    font-size: 0.78rem;
+    text-decoration: none;
+    transition: all .15s ease;
+    cursor: pointer;
+}
+
+    .icon-btn:hover {
+        background: #f0fdfa;
+        color: #0f766e;
+        border-color: #0f766e;
+    }
+
+    .icon-btn.danger:hover {
+        background: #fef2f2;
+        color: #dc2626;
+        border-color: #dc2626;
+    }*/
+/* ============================================================
+   MEDICINES TABLE — COMPACT VERSION
+   ============================================================ */
+/* ============================================================
+   MEDICINES TABLE — Compact & Professional
+   ============================================================ */
+
+.med-table-wrapper {
+    background: #ffffff !important;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.med-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.78rem;
+}
+
+    /* ---------- HEADER ---------- */
+    .med-table thead th {
+        background: #e6f7f5 !important; /* ✅ Grey header (demo jaisa) */
+        color: #065f46 !important;
+        font-size: 0.6rem;
+        font-weight: 700;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+        padding: 11px 16px; /* ✅ Compact */
+        text-align: left;
+        border-bottom: 1px solid #a7f3d0 !important;
+        white-space: nowrap;
+        vertical-align: middle;
+    }
+
+    /* ---------- BODY ---------- */
+    .med-table tbody td {
+        padding: 10px 16px; /* ✅ Compact padding */
+        border-bottom: 1px solid #f3f4f6;
+        color: #374151;
+        vertical-align: middle;
+        font-size: 0.78rem;
+        line-height: 1.35;
+    }
+
+    .med-table tbody tr {
+        height: 48px; /* ✅ Fixed compact height */
+    }
+
+        .med-table tbody tr:hover {
+            background: #fafbfc;
+        }
+
+        .med-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+/* ---------- MEDICINE NAME CELL ---------- */
+.med-name {
+    display: block;
+    font-weight: 600;
+    color: #111827;
+    font-size: 0.8rem;
+    line-height: 1.25;
+    margin-bottom: 1px;
+}
+
+.med-sub {
+    display: block;
+    font-size: 0.66rem;
+    color: #9ca3af;
+    line-height: 1.25;
+}
+
+/* ---------- STATUS PILL (Compact) ---------- */
+.status-pill {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    padding: 4px 12px !important;
+    border-radius: 999px !important;
+    font-size: 0.68rem !important;
+    font-weight: 700 !important;
+    letter-spacing: .02em !important;
+    white-space: nowrap !important;
+    line-height: 1.2 !important;
+}
+
+    /* Dot (Common) */
+    .status-pill::before {
+        content: '' !important;
+        width: 6px !important;
+        height: 6px !important;
+        border-radius: 50% !important;
+        display: inline-block !important;
+        flex-shrink: 0 !important;
+    }
+
+    /* ---------- ACTIVE — Green ---------- */
+    .status-pill--active,
+    .status-pill.active {
+        background-color: #d1fae5 !important;
+        color: #065f46 !important;
+    }
+
+        .status-pill--active::before,
+        .status-pill.active::before {
+            background-color: #10b981 !important;
+        }
+
+    /* ---------- INACTIVE — RED ---------- */
+    .status-pill--inactive,
+    .status-pill.inactive {
+        background-color: #fee2e2 !important;
+        color: #991b1b !important;
+    }
+
+/* ============================================================
+   ACTION BUTTONS
+   ============================================================ */
+
+.table-actions {
+    display: flex;
+    gap: 6px;
+    justify-content: flex-end;
+}
+
+.icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border: 1px solid #e5e7eb;
+    background: #ffffff;
+    color: #6b7280;
+    border-radius: 6px;
+    font-size: 0.78rem;
+    text-decoration: none;
+    transition: all .15s ease;
+    cursor: pointer;
+}
+
+    .icon-btn:hover {
+        background: #f0fdfa;
+        color: #0f766e;
+        border-color: #0f766e;
+    }
+
+    .icon-btn.danger:hover {
+        background: #fef2f2;
+        color: #dc2626;
+        border-color: #dc2626;
+    }
+
+/* ============================================================
+   ALERTS
+   ============================================================ */
+.alert {
+    border-radius: 10px !important;
+    font-size: 0.82rem;
+    padding: 10px 14px !important;
+    border: 1px solid transparent;
+}
+
+.alert-danger {
+    background: #fef2f2 !important;
+    border-left: 4px solid #dc2626 !important;
+    color: #991b1b !important;
+}
+
+.alert-success {
+    background: #f0fdf4 !important;
+    border-left: 4px solid #16a34a !important;
+    color: #166534 !important;
+}
+
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px) {
+    .filter-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filter-tabs {
+        overflow-x: auto;
+    }
+
+    .filter-search {
+        max-width: 100%;
+    }
+
+    .med-table thead th,
+    .med-table tbody td {
+        padding: 10px 12px;
+    }
+}
+
+
+/* ============================================================
+   CREATE / EDIT MEDICINE — Compact + Green Header
+   ============================================================ */
+
+/* ---------- PAGE TITLE ---------- */
+.container-fluid h2.fw-bold {
+    font-size: 1.25rem !important;
+    font-weight: 700 !important;
+    color: #111827 !important;
+    margin-bottom: 3px !important;
+    letter-spacing: -0.01em !important;
+}
+
+.container-fluid .text-muted {
+    font-size: 0.75rem !important;
+    color: #6b7280 !important;
+}
+
+/* ---------- CARD ---------- */
+.card {
+    border: 1px solid #e5e7eb !important;
+    border-radius: 10px !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .03) !important;
+    overflow: hidden !important;
+}
+
+/* ✅ CARD HEADER — GREEN (Like Table Header) */
+.card-header {
+    background-color: #e6f7f5 !important; /* ✅ Light green */
+    border-bottom: 1px solid #a7f3d0 !important;
+    padding: 10px 16px !important;
+}
+
+    .card-header h5,
+    .card-header h6,
+    .card-header .fw-semibold {
+        font-size: 0.85rem !important;
+        font-weight: 700 !important;
+        color: #065f46 !important;             /* ✅ Dark green text */
+        margin: 0 !important;
+        letter-spacing: .01em !important;
+    }
+
+/* ✅ CARD BODY — Compact Padding */
+.card-body {
+    padding: 14px 16px !important;
+}
+
+/* ---------- FORM LABELS ---------- */
+.form-label,
+label.form-label {
+    font-size: 0.7rem !important;
+    font-weight: 600 !important;
+    color: #374151 !important;
+    letter-spacing: .01em !important;
+    margin-bottom: 4px !important;
+    display: block !important;
+    line-height: 1.2 !important;
+}
+
+/* Required star (*) */
+.text-danger {
+    color: #dc2626 !important;
+    font-size: 0.7rem !important;
+}
+
+/* ---------- FORM INPUTS — Compact ---------- */
+.form-control,
+.form-select,
+input[type="text"],
+input[type="number"],
+textarea {
+    width: 100% !important;
+    padding: 7px 11px !important;             /* ✅ Chhota padding */
+    font-size: 0.78rem !important;
+    color: #111827 !important;
+    background-color: #ffffff !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 7px !important;
+    outline: none !important;
+    transition: border .15s ease, box-shadow .15s ease !important;
+}
+
+    .form-control:focus,
+    .form-select:focus,
+    input:focus,
+    textarea:focus {
+        border-color: #0f766e !important;
+        box-shadow: 0 0 0 3px rgba(15, 118, 110, .1) !important;
+    }
+
+    .form-control::placeholder,
+    input::placeholder,
+    textarea::placeholder {
+        color: #9ca3af !important;
+        font-size: 0.76rem !important;
+    }
+
+/* Validation message */
+.text-danger.small,
+span.text-danger,
+.field-validation-error {
+    font-size: 0.68rem !important;
+    color: #dc2626 !important;
+    display: block !important;
+    margin-top: 3px !important;
+}
+
+/* ---------- ROW SPACING (Compact) ---------- */
+.row.g-4,
+.row.g-3 {
+    --bs-gutter-y: 0.85rem !important;         /* ✅ Chhota vertical gap */
+    --bs-gutter-x: 1rem !important;
+}
+
+/* ---------- BUTTONS ---------- */
+
+/* Primary Submit Button — TEAL */
+.btn.btn-primary,
+button.btn-primary {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    padding: 7px 16px !important;
+    background-color: #0f766e !important;
+    border-color: #0f766e !important;
+    color: #ffffff !important;
+    font-size: 0.78rem !important;
+    font-weight: 600 !important;
+    border-radius: 7px !important;
+    text-decoration: none !important;
+    transition: all .15s ease !important;
+    box-shadow: 0 2px 5px rgba(15, 118, 110, .2) !important;
+}
+
+    .btn.btn-primary:hover,
+    button.btn-primary:hover {
+        background-color: #0d5c63 !important;
+        border-color: #0d5c63 !important;
+        transform: translateY(-1px) !important;
+        box-shadow: 0 4px 9px rgba(15, 118, 110, .3) !important;
+    }
+
+/* Cancel Button */
+.btn.btn-secondary,
+a.btn.btn-secondary {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    padding: 7px 14px !important;
+    background-color: #ffffff !important;
+    color: #374151 !important;
+    border: 1px solid #e5e7eb !important;
+    font-size: 0.78rem !important;
+    font-weight: 500 !important;
+    border-radius: 7px !important;
+    text-decoration: none !important;
+}
+
+    .btn.btn-secondary:hover,
+    a.btn.btn-secondary:hover {
+        background-color: #f9fafb !important;
+        color: #111827 !important;
+        border-color: #d1d5db !important;
+    }
+
+/* ---------- BUTTONS CONTAINER ---------- */
+.d-flex.justify-content-end {
+    gap: 8px !important;
+    margin-top: 14px !important;
+    padding-top: 14px !important;
+    border-top: 1px solid #f3f4f6 !important;
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 768px) {
+    .container-fluid h2.fw-bold {
+        font-size: 1.1rem !important;
+    }
+
+    .card-body {
+        padding: 12px 14px !important;
+    }
+}
+
+/* ============================================================
+   MEDICINE RECEIVING PAGE — Compact & Professional
+   ============================================================ */
+
+/* ---------- PAGE TITLE ---------- */
+.container-fluid h2.fw-bold {
+    font-size: 1.25rem !important;
+    font-weight: 700 !important;
+    color: #111827 !important;
+    margin-bottom: 3px !important;
+    letter-spacing: -0.01em !important;
+}
+
+.container-fluid .text-muted {
+    font-size: 0.75rem !important;
+    color: #6b7280 !important;
+}
+
+/* ============================================================
+   RECEIVING RECORDS CARD — Premium Compact Design
+   ============================================================ */
+
+/* ---------- CARD WRAPPER ---------- */
+.card {
+    border: 1px solid #e5e7eb !important;
+    border-radius: 12px !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .04) !important;
+    overflow: hidden !important;
+    background: #ffffff !important;
+}
+
+/* ---------- CARD HEADER — Light Teal ---------- */
+.card-header {
+    background-color: #e6f7f5 !important; /* ✅ Halka teal */
+    border-bottom: 1px solid #b2dfdb !important;
+    padding: 10px 16px !important;
+}
+
+    .card-header h5,
+    .card-header h6,
+    .card-header .fw-semibold {
+        font-size: 0.82rem !important;
+        font-weight: 700 !important;
+        color: #0f766e !important; /* ✅ Dark teal */
+        margin: 0 !important;
+        letter-spacing: .01em !important;
+    }
+
+    /* ---------- RECORDS BADGE (Compact Premium) ---------- */
+    .card-header .badge,
+    .card-header .badge.bg-primary {
+        background-color: #ffffff !important; /* ✅ White */
+        color: #0f766e !important; /* ✅ Teal text */
+        font-size: 0.65rem !important;
+        font-weight: 700 !important;
+        padding: 4px 10px !important;
+        border-radius: 999px !important;
+        border: 1px solid #b2dfdb !important; /* ✅ Halka border */
+        box-shadow: 0 1px 2px rgba(15, 118, 110, .06) !important;
+    }
+
+/* ---------- TABLE ---------- */
+.table {
+    width: 100% !important;
+    font-size: 0.74rem !important;
+    color: #374151 !important;
+    margin: 0 !important;
+    border-collapse: collapse !important;
+}
+
+    /* ---------- TABLE HEADER — Very Light ---------- */
+    .table thead th,
+    .table > thead > tr > th,
+    .table thead.table-light th {
+        background-color: #f0fdfa !important; /* ✅ Bahut halka teal */
+        color: #0f766e !important; /* ✅ Teal text */
+        font-size: 0.6rem !important;
+        font-weight: 700 !important;
+        letter-spacing: .08em !important;
+        text-transform: uppercase !important;
+        padding: 10px 14px !important;
+        text-align: left !important;
+        border-bottom: 1px solid #e5e7eb !important;
+        white-space: nowrap !important;
+        vertical-align: middle !important;
+    }
+
+    /* ---------- TABLE BODY — Compact ---------- */
+    .table tbody td {
+        padding: 10px 14px !important; /* ✅ Chhota padding */
+        border-bottom: 1px solid #f3f4f6 !important;
+        color: #374151 !important;
+        vertical-align: middle !important;
+        font-size: 0.74rem !important;
+        line-height: 1.3 !important;
+    }
+
+    .table tbody tr {
+        height: 48px !important; /* ✅ Fixed compact height */
+        transition: background .15s ease !important;
+    }
+
+        .table tbody tr:hover {
+            background-color: #f0fdfa !important; /* ✅ Halka teal hover */
+        }
+
+        .table tbody tr:last-child td {
+            border-bottom: none !important;
+        }
+
+    /* ---------- INVOICE NUMBER ---------- */
+    .table tbody td .fw-semibold,
+    .table tbody td strong {
+        font-weight: 700 !important;
+        color: #111827 !important;
+        font-size: 0.76rem !important;
+    }
+
+    /* ---------- ITEMS BADGE (Compact Pill) ---------- */
+    .table tbody .badge,
+    .table tbody .badge.bg-secondary {
+        background-color: #ccfbf1 !important; /* ✅ Light teal */
+        color: #0f766e !important; /* ✅ Dark teal text */
+        font-size: 0.65rem !important;
+        font-weight: 700 !important;
+        padding: 3px 9px !important;
+        border-radius: 999px !important;
+        border: none !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        min-width: 22px !important;
+        height: 20px !important;
+        line-height: 1 !important;
+    }
+
+    /* ---------- VIEW BUTTON (Compact) ---------- */
+    .table .btn.btn-sm,
+    .table a.btn.btn-sm,
+    .table .btn-outline-primary {
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 5px !important;
+        padding: 5px 11px !important;
+        border-radius: 6px !important;
+        font-size: 0.72rem !important;
+        font-weight: 600 !important;
+        color: #0f766e !important;
+        background-color: #ffffff !important;
+        border: 1px solid #e5e7eb !important;
+        text-decoration: none !important;
+        transition: all .15s ease !important;
+        white-space: nowrap !important;
+    }
+
+        .table .btn.btn-sm i,
+        .table .btn-outline-primary i {
+            font-size: 0.72rem !important;
+        }
+
+        .table .btn.btn-sm:hover,
+        .table .btn-outline-primary:hover {
+            background-color: #0f766e !important;
+            color: #ffffff !important;
+            border-color: #0f766e !important;
+        }
+
+    /* ---------- DATE COLUMNS (Consistent) ---------- */
+    .table tbody td {
+        font-size: 0.74rem !important;
+        color: #4b5563 !important;
+    }
+
+/* ---------- SPACING (Outer) ---------- */
+.container-fluid {
+    padding-top: 16px !important;
+    padding-bottom: 16px !important;
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 768px) {
+    .card-header {
+        padding: 9px 12px !important;
+    }
+
+    .table thead th,
+    .table tbody td {
+        padding: 8px 10px !important;
+        font-size: 0.7rem !important;
+    }
+
+    .table .btn.btn-sm {
+        padding: 4px 8px !important;
+        font-size: 0.68rem !important;
+    }
+}
+
+/* ============================================================
+   NEW MEDICINE RECEIVING — Remove Error Icons + Compact
+   ============================================================ */
+
+/* ---------- HIDE EMPTY VALIDATION ICONS ---------- */
+/* Jab validation message khaali ho, uska icon bhi na dikhe */
+
+.text-danger:empty,
+.field-validation-error:empty,
+span.text-danger:empty,
+.validation-message:empty {
+    display: none !important;
+}
+
+/* Agar validation span khaali hai to poori tarah chhupa dein */
+span[data-valmsg-for]:empty,
+.validation-summary-valid,
+.field-validation-valid {
+    display: none !important;
+    background: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+}
+
+/* ---------- REMOVE RED ICON BEFORE ERROR ---------- */
+/* Pichli CSS mein ::before icon laga tha — usay hatayein */
+
+.text-danger::before,
+.field-validation-error::before,
+span.text-danger::before {
+    content: none !important; /* ✅ Icon hata dein */
+    display: none !important;
+}
+
+/* ---------- Agar sirf warning icon box dikh raha hai ---------- */
+/* Yeh rule un empty error containers ko hide karega */
+
+.card-body .text-danger,
+.card-body .field-validation-error {
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* ---------- COMPACT CARD ---------- */
+.card {
+    margin-bottom: 12px !important; /* ✅ Pehle 16px tha */
+}
+
+.card-header {
+    padding: 10px 16px !important; /* ✅ Compact */
+}
+
+.card-body {
+    padding: 14px 16px !important; /* ✅ Compact (pehle 18px 20px) */
+}
+
+/* ---------- COMPACT FORM LABELS ---------- */
+.form-label,
+label.form-label {
+    font-size: 0.7rem !important;
+    margin-bottom: 4px !important;
+}
+
+/* ---------- COMPACT INPUTS ---------- */
+.form-control,
+.form-select,
+input[type="text"],
+input[type="number"],
+input[type="date"],
+select {
+    padding: 7px 11px !important; /* ✅ Compact */
+    font-size: 0.78rem !important;
+}
+
+/* ---------- COMPACT ROW SPACING ---------- */
+.row.g-3,
+.row.g-4 {
+    --bs-gutter-y: 0.7rem !important; /* ✅ Chhota gap */
+    --bs-gutter-x: 0.9rem !important;
+}
+
+/* ---------- COMPACT INNER ITEM CARD ---------- */
+.card .card,
+.card-body .border,
+.receiving-item {
+    padding: 12px 14px !important; /* ✅ Compact (pehle 16px 18px) */
+    margin-bottom: 8px !important;
+}
+
+/* ---------- COMPACT ADD MEDICINE BUTTON ---------- */
+.btn.btn-outline-primary {
+    padding: 6px 12px !important;
+    font-size: 0.74rem !important;
+}
+
+/* ---------- COMPACT DELETE BUTTON ---------- */
+.btn.btn-outline-danger {
+    width: 34px !important; /* ✅ Chhota */
+    height: 34px !important;
+    font-size: 0.78rem !important;
+}
+
+/* ---------- OUTER SPACING ---------- */
+.container-fluid {
+    padding-top: 14px !important;
+    padding-bottom: 14px !important;
+}
+
+/* ============================================================
+   BATCH MANAGEMENT — Compact Card Design
+   ============================================================ */
+
+/* ---------- SEARCH CARD (Compact) ---------- */
+.card {
+    border: 1px solid #e5e7eb !important;
+    border-radius: 10px !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .03) !important;
+    overflow: hidden !important;
+    margin-bottom: 14px !important;
+}
+
+/* Search Card Body */
+.card-body {
+    padding: 14px 16px !important; /* ✅ Compact (pehle 18px 20px) */
+}
+
+/* ---------- SEARCH LABEL + INPUT ---------- */
+.form-label,
+label.form-label {
+    font-size: 0.72rem !important;
+    font-weight: 600 !important;
+    color: #374151 !important;
+    margin-bottom: 5px !important;
+}
+
+.form-control,
+.form-select,
+input[type="text"] {
+    padding: 8px 12px !important; /* ✅ Compact */
+    font-size: 0.78rem !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 7px !important;
+}
+
+    .form-control:focus,
+    input:focus {
+        border-color: #0f766e !important;
+        box-shadow: 0 0 0 3px rgba(15, 118, 110, .1) !important;
+    }
+
+    .form-control::placeholder {
+        font-size: 0.76rem !important;
+        color: #9ca3af !important;
+    }
+
+/* Search Button */
+.btn.btn-primary {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    padding: 8px 18px !important; /* ✅ Compact */
+    font-size: 0.78rem !important;
+    background-color: #0f766e !important;
+    border-color: #0f766e !important;
+    border-radius: 7px !important;
+    color: #ffffff !important;
+}
+
+/* ---------- BATCH LIST CARD HEADER ---------- */
+.card-header {
+    background: linear-gradient(135deg, #e6f7f5 0%, #d1fae5 100%) !important;
+    border-bottom: 1px solid #b2dfdb !important;
+    padding: 10px 16px !important; /* ✅ Compact (pehle 12px 18px) */
+}
+
+    .card-header h5,
+    .card-header .fw-semibold {
+        font-size: 0.85rem !important; /* ✅ Chhota title */
+        font-weight: 700 !important;
+        color: #0f766e !important;
+        margin: 0 !important;
+    }
+
+    /* Records Badge */
+    .card-header .badge {
+        background: #ffffff !important;
+        color: #0f766e !important;
+        border: 1px solid #b2dfdb !important;
+        font-size: 0.65rem !important;
+        font-weight: 700 !important;
+        padding: 3px 10px !important;
+        border-radius: 999px !important;
+    }
+
+/* ---------- TABLE ---------- */
+.table {
+    width: 100% !important;
+    font-size: 0.76rem !important;
+    margin: 0 !important;
+    border-collapse: collapse !important;
+}
+
+    /* Table Header — Light Teal */
+    .table thead th,
+    .table > thead > tr > th,
+    .table thead.table-light th {
+        background-color: #f0fdfa !important; /* ✅ Bahut halka teal */
+        color: #0f766e !important; /* ✅ Teal text */
+        font-size: 0.6rem !important;
+        font-weight: 700 !important;
+        letter-spacing: .08em !important;
+        text-transform: uppercase !important;
+        padding: 10px 14px !important; /* ✅ Compact */
+        text-align: left !important;
+        border-bottom: 1px solid #e5e7eb !important;
+        white-space: nowrap !important;
+        vertical-align: middle !important;
+    }
+
+    /* Table Body — Compact */
+    .table tbody td {
+        padding: 10px 14px !important; /* ✅ Compact (pehle 12px 16px) */
+        border-bottom: 1px solid #f3f4f6 !important;
+        color: #374151 !important;
+        vertical-align: middle !important;
+        font-size: 0.76rem !important;
+        line-height: 1.3 !important;
+    }
+
+    .table tbody tr {
+        height: 46px !important; /* ✅ Fixed compact height */
+        transition: background .15s ease !important;
+    }
+
+        .table tbody tr:hover {
+            background-color: #f0fdfa !important; /* ✅ Halka teal hover */
+        }
+
+        .table tbody tr:last-child td {
+            border-bottom: none !important;
+        }
+
+    /* ---------- MEDICINE NAME (Bold) ---------- */
+    .table tbody td .fw-semibold,
+    .table tbody td strong {
+        font-weight: 700 !important;
+        color: #111827 !important;
+        font-size: 0.76rem !important;
+    }
+
+    /* ---------- BATCH NUMBER ---------- */
+    .table tbody td:nth-child(3) {
+        font-family: 'Courier New', monospace !important;
+        font-size: 0.74rem !important;
+        font-weight: 600 !important;
+        color: #0f766e !important;
+    }
+
+/* ---------- STATUS PILLS (Compact) ---------- */
+.badge.bg-success,
+.badge.bg-warning,
+.badge.bg-danger,
+.status-pill {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+    padding: 3px 10px !important; /* ✅ Compact pill */
+    border-radius: 999px !important;
+    font-size: 0.65rem !important;
+    font-weight: 700 !important;
+    letter-spacing: .01em !important;
+    white-space: nowrap !important;
+    border: none !important;
+}
+
+/* Active — Green */
+.badge.bg-success {
+    background-color: #d1fae5 !important;
+    color: #065f46 !important;
+}
+
+/* Expiring Soon — Orange/Yellow */
+.badge.bg-warning,
+.badge.bg-warning.text-dark {
+    background-color: #fef3c7 !important;
+    color: #92400e !important;
+}
+
+/* Expired — Red */
+.badge.bg-danger {
+    background-color: #fee2e2 !important;
+    color: #991b1b !important;
+}
+
+/* ---------- PAGE TITLE ---------- */
+.container-fluid h2.fw-bold {
+    font-size: 1.25rem !important;
+    font-weight: 700 !important;
+    color: #111827 !important;
+    margin-bottom: 3px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+}
+
+.container-fluid .text-muted {
+    font-size: 0.75rem !important;
+    color: #6b7280 !important;
+}
+
+/* ---------- OUTER SPACING ---------- */
+.container-fluid {
+    padding-top: 16px !important;
+    padding-bottom: 16px !important;
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 768px) {
+    .container-fluid h2.fw-bold {
+        font-size: 1.1rem !important;
+    }
+
+    .card-header {
+        padding: 9px 12px !important;
+    }
+
+    .card-body {
+        padding: 12px 14px !important;
+    }
+
+    .table thead th,
+    .table tbody td {
+        padding: 8px 10px !important;
+        font-size: 0.72rem !important;
+    }
+}
+
+/* ============================================================
+   BATCH TABLE — Red Expiring Badge + Clear Row Lines
+   ============================================================ */
+
+/* ---------- EXPIRING SOON — FORCE RED ---------- */
+.badge.bg-warning,
+.badge.bg-warning.text-dark,
+.badge.expiring-soon,
+.status-pill--warning,
+td .badge.bg-warning {
+    background-color: #fee2e2 !important; /* ✅ Light RED background */
+    color: #991b1b !important; /* ✅ Dark RED text */
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+    padding: 3px 10px !important;
+    border-radius: 999px !important;
+    font-size: 0.65rem !important;
+    font-weight: 700 !important;
+    letter-spacing: .01em !important;
+    white-space: nowrap !important;
+    border: none !important;
+    line-height: 1.2 !important;
+}
+
+    /* Expiring Soon ka icon — Red */
+    .badge.bg-warning i,
+    .badge.bg-warning.text-dark i {
+        color: #dc2626 !important;
+        font-size: 0.68rem !important;
+    }
+
+    /* Expiring Soon ka dot — Red */
+    .badge.bg-warning::before {
+        content: '' !important;
+        width: 5px !important;
+        height: 5px !important;
+        border-radius: 50% !important;
+        background-color: #dc2626 !important;
+        display: inline-block !important;
+        flex-shrink: 0 !important;
+    }
+
+/* ---------- TABLE ROWS — Clear Lines ---------- */
+
+/* Har row ke neeche clear border */
+.table tbody td {
+    border-bottom: 1px solid #e5e7eb !important; /* ✅ Clear grey line */
+    padding: 12px 14px !important;
+    vertical-align: middle !important;
+    background-color: #ffffff !important;
+}
+
+/* Last row mein border nahi */
+.table tbody tr:last-child td {
+    border-bottom: none !important;
+}
+
+/* Row hover — Halka teal */
+.table tbody tr:hover td {
+    background-color: #f0fdfa !important;
+}
+
+/* ---------- TABLE HEADER — Clear Bottom Border ---------- */
+.table thead th,
+.table thead.table-light th {
+    background-color: #f0fdfa !important;
+    color: #0f766e !important;
+    font-size: 0.62rem !important;
+    font-weight: 700 !important;
+    letter-spacing: .08em !important;
+    text-transform: uppercase !important;
+    padding: 11px 14px !important;
+    text-align: left !important;
+    border-bottom: 2px solid #b2dfdb !important; /* ✅ Thick teal line */
+    white-space: nowrap !important;
+    vertical-align: middle !important;
+}
+
+/* ---------- ACTIVE BADGE — Green (unchanged) ---------- */
+.badge.bg-success {
+    background-color: #d1fae5 !important;
+    color: #065f46 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+    padding: 3px 10px !important;
+    border-radius: 999px !important;
+    font-size: 0.65rem !important;
+    font-weight: 700 !important;
+    border: none !important;
+}
+
+    .badge.bg-success::before {
+        content: '' !important;
+        width: 5px !important;
+        height: 5px !important;
+        border-radius: 50% !important;
+        background-color: #10b981 !important;
+        display: inline-block !important;
+    }
+
+/* ---------- EXPIRED — Solid Red ---------- */
+.badge.bg-danger {
+    background-color: #dc2626 !important;
+    color: #ffffff !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+    padding: 3px 10px !important;
+    border-radius: 999px !important;
+    font-size: 0.65rem !important;
+    font-weight: 700 !important;
+    border: none !important;
+}
+
+/* ============================================================
+   TABLE ROW HOVER — Grey-Teal Background
+   ============================================================ */
+
+/* ✅ Row Hover — Soft Grey-Teal (Screenshot Jaisa) */
+.table tbody tr:hover,
+.table tbody tr:hover td {
+    background-color: #e8f0ee !important; /* ✅ Soft grey-teal */
+    transition: background-color .15s ease !important;
+}
+
+/* Har row ke neeche clear line */
+.table tbody td {
+    border-bottom: 1px solid #e5e7eb !important;
+}
+
+/* Last row mein border nahi */
+.table tbody tr:last-child td {
+    border-bottom: none !important;
+}
+
+/* ============================================================
+   UNIVERSAL TABLE HEADER — Soft Grey-Teal (#e8f0ee)
+   Applies to ALL pages
+   ============================================================ */
+
+/* ✅ ALL TABLE HEADERS — Grey-Teal Background */
+.table thead th,
+.table > thead > tr > th,
+table thead th,
+.med-table thead th,
+.transfer-table thead th,
+.batch-table thead th,
+.stock-table thead th,
+table thead.table-light th,
+.table thead.table-light th {
+    background-color: #e8f0ee !important; /* ✅ Soft grey-teal */
+    color: #0f766e !important; /* ✅ Dark teal text */
+    font-size: 0.62rem !important;
+    font-weight: 700 !important;
+    letter-spacing: .08em !important;
+    text-transform: uppercase !important;
+    padding: 11px 14px !important;
+    text-align: left !important;
+    border-bottom: 2px solid #b2dfdb !important; /* ✅ Thick teal line */
+    white-space: nowrap !important;
+    vertical-align: middle !important;
+}
+
+/* ---------- TABLE ROWS — Clear Lines ---------- */
+.table tbody td {
+    padding: 12px 14px !important;
+    border-bottom: 1px solid #e5e7eb !important;
+    vertical-align: middle !important;
+    background-color: #ffffff;
+}
+
+/* Last row mein border nahi */
+.table tbody tr:last-child td {
+    border-bottom: none !important;
+}
+
+/* ---------- ROW HOVER — Same Grey-Teal ---------- */
+.table tbody tr:hover,
+.table tbody tr:hover td {
+    background-color: #e8f0ee !important; /* ✅ Same grey-teal */
+    transition: background-color .15s ease !important;
+}
+
+/* ============================================================
+   HIDE — Batch List Header (Optional)
+   ============================================================ */
+
+/* Sirf Batch page ka header hide karein */
+.card-header:has(h5:contains("Batch List")),
+.card-header h5:contains("Batch List") {
+    display: none !important;
+}
+
+/* Alternative — Yeh zyada reliable hai */
+.batch-list-header,
+.card-header.batch-header {
+    display: none !important;
+}
+
+/* ============================================================
+   STOCK MANAGEMENT — Compact Card Design
+   ============================================================ */
+
+/* ---------- PAGE TITLE ---------- */
+.container-fluid h2.fw-bold {
+    font-size: 1.3rem !important;
+    font-weight: 700 !important;
+    color: #111827 !important;
+    margin-bottom: 3px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+}
+
+.container-fluid .text-muted {
+    font-size: 0.75rem !important;
+    color: #6b7280 !important;
+}
+
+/* ---------- SEARCH CARD (Compact) ---------- */
+.card {
+    border: 1px solid #e5e7eb !important;
+    border-radius: 10px !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .03) !important;
+    overflow: hidden !important;
+    margin-bottom: 12px !important;
+    background: #ffffff !important;
+}
+
+.card-body {
+    padding: 14px 16px !important; /* ✅ Compact (pehle 18px 20px) */
+}
+
+    .card-body.p-0 {
+        padding: 0 !important;
+    }
+
+/* ---------- FORM LABELS ---------- */
+.form-label,
+label.form-label {
+    font-size: 0.7rem !important;
+    font-weight: 600 !important;
+    color: #374151 !important;
+    margin-bottom: 4px !important;
+    display: block !important;
+}
+
+/* ---------- FORM INPUTS (Compact) ---------- */
+.form-control,
+.form-select,
+input[type="text"],
+select {
+    padding: 7px 11px !important;
+    font-size: 0.78rem !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 7px !important;
+    color: #111827 !important;
+    outline: none !important;
+    transition: all .15s ease !important;
+}
+
+    .form-control:focus,
+    .form-select:focus,
+    input:focus,
+    select:focus {
+        border-color: #0f766e !important;
+        box-shadow: 0 0 0 3px rgba(15, 118, 110, .1) !important;
+    }
+
+    .form-control::placeholder {
+        font-size: 0.76rem !important;
+        color: #9ca3af !important;
+    }
+
+/* ---------- SEARCH / CLEAR BUTTONS ---------- */
+.btn.btn-primary {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+    padding: 7px 16px !important;
+    background-color: #0f766e !important;
+    border-color: #0f766e !important;
+    color: #ffffff !important;
+    font-size: 0.78rem !important;
+    font-weight: 600 !important;
+    border-radius: 7px !important;
+    text-decoration: none !important;
+    transition: all .15s ease !important;
+    white-space: nowrap !important;
+}
+
+    .btn.btn-primary:hover {
+        background-color: #0d5c63 !important;
+        border-color: #0d5c63 !important;
+    }
+
+.btn.btn-outline-secondary {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+    padding: 7px 16px !important;
+    background-color: #ffffff !important;
+    color: #374151 !important;
+    border: 1px solid #e5e7eb !important;
+    font-size: 0.78rem !important;
+    font-weight: 500 !important;
+    border-radius: 7px !important;
+    text-decoration: none !important;
+    transition: all .15s ease !important;
+    white-space: nowrap !important;
+}
+
+    .btn.btn-outline-secondary:hover {
+        background-color: #f9fafb !important;
+        color: #111827 !important;
+        border-color: #d1d5db !important;
+    }
+
+/* ---------- CARD HEADER — Grey-Teal ---------- */
+.card-header {
+    background-color: #e8f0ee !important; /* ✅ Grey-teal */
+    border-bottom: 2px solid #b2dfdb !important;
+    padding: 11px 16px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+}
+
+    .card-header h5,
+    .card-header .fw-semibold {
+        font-size: 0.85rem !important;
+        font-weight: 700 !important;
+        color: #0f766e !important;
+        margin: 0 !important;
+    }
+
+    /* Record Count Badge */
+    .card-header .badge {
+        background-color: #ffffff !important;
+        color: #0f766e !important;
+        border: 1px solid #b2dfdb !important;
+        font-size: 0.65rem !important;
+        font-weight: 700 !important;
+        padding: 3px 10px !important;
+        border-radius: 999px !important;
+    }
+
+/* ---------- TABLE HEADER — Grey-Teal (Same as other pages) ---------- */
+.table thead th,
+.table > thead > tr > th,
+.table thead.table-light th {
+    background-color: #e8f0ee !important;
+    color: #0f766e !important;
+    font-size: 0.62rem !important;
+    font-weight: 700 !important;
+    letter-spacing: .08em !important;
+    text-transform: uppercase !important;
+    padding: 11px 14px !important;
+    text-align: left !important;
+    border-bottom: 2px solid #b2dfdb !important;
+    white-space: nowrap !important;
+    vertical-align: middle !important;
+}
+
+/* ---------- TABLE BODY — Compact ---------- */
+.table tbody td {
+    padding: 11px 14px !important; /* ✅ Compact (pehle 14px 16px) */
+    border-bottom: 1px solid #e5e7eb !important;
+    color: #374151 !important;
+    vertical-align: middle !important;
+    font-size: 0.78rem !important;
+    line-height: 1.35 !important;
+}
+
+.table tbody tr {
+    height: 48px !important; /* ✅ Fixed compact height */
+    transition: background-color .15s ease !important;
+}
+
+    .table tbody tr:hover,
+    .table tbody tr:hover td {
+        background-color: #e8f0ee !important; /* ✅ Same grey-teal hover */
+    }
+
+    .table tbody tr:last-child td {
+        border-bottom: none !important;
+    }
+
+/* ---------- MEDICINE NAME (Bold) ---------- */
+.table tbody td strong,
+.table tbody td .fw-semibold {
+    color: #111827 !important;
+    font-weight: 700 !important;
+    font-size: 0.78rem !important;
+}
+
+/* ---------- BATCH BADGE (Light Teal) ---------- */
+.table tbody .badge,
+.table tbody .badge.bg-secondary {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 3px 10px !important;
+    background-color: #ccfbf1 !important; /* ✅ Light teal */
+    color: #0f766e !important; /* ✅ Dark teal */
+    border-radius: 6px !important;
+    font-size: 0.65rem !important;
+    font-weight: 700 !important;
+    font-family: 'Courier New', monospace !important;
+    border: none !important;
+    letter-spacing: .02em !important;
+}
+
+    /* ---------- LOCATION BADGE ---------- */
+    .table tbody .badge.bg-info,
+    .table tbody .badge.location-badge {
+        background-color: #ccfbf1 !important;
+        color: #0f766e !important;
+        border-radius: 999px !important;
+        padding: 4px 10px !important;
+        font-size: 0.65rem !important;
+        font-weight: 700 !important;
+        font-family: 'Segoe UI', sans-serif !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 4px !important;
+    }
+
+/* ---------- VIEW BUTTON ---------- */
+.table .btn.btn-sm,
+.table .btn-outline-primary {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+    padding: 5px 11px !important;
+    border-radius: 6px !important;
+    font-size: 0.72rem !important;
+    font-weight: 600 !important;
+    color: #0f766e !important;
+    background-color: #ffffff !important;
+    border: 1px solid #e5e7eb !important;
+    text-decoration: none !important;
+    transition: all .15s ease !important;
+    white-space: nowrap !important;
+}
+
+    .table .btn.btn-sm:hover,
+    .table .btn-outline-primary:hover {
+        background-color: #0f766e !important;
+        color: #ffffff !important;
+        border-color: #0f766e !important;
+    }
+
+/* ---------- OUTER SPACING ---------- */
+.container-fluid {
+    padding-top: 16px !important;
+    padding-bottom: 16px !important;
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 768px) {
+    .container-fluid h2.fw-bold {
+        font-size: 1.1rem !important;
+    }
+
+    .card-body {
+        padding: 12px 14px !important;
+    }
+
+    .table thead th,
+    .table tbody td {
+        padding: 9px 10px !important;
+        font-size: 0.72rem !important;
+    }
+
+    .table .btn.btn-sm {
+        padding: 4px 8px !important;
+        font-size: 0.68rem !important;
+    }
+}
+
+/* ============================================================
+   STOCK DETAILS PAGE — Compact & Professional
+   ============================================================ */
+
+/* ---------- PAGE TITLE ---------- */
+.container-fluid h2.fw-bold {
+    font-size: 1.3rem !important;
+    font-weight: 700 !important;
+    color: #111827 !important;
+    margin-bottom: 3px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+}
+
+.container-fluid .text-muted {
+    font-size: 0.75rem !important;
+    color: #6b7280 !important;
+}
+
+/* ---------- BACK BUTTON ---------- */
+.btn.btn-outline-secondary {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    padding: 7px 14px !important;
+    font-size: 0.78rem !important;
+    font-weight: 500 !important;
+    color: #374151 !important;
+    background-color: #ffffff !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 8px !important;
+    text-decoration: none !important;
+    transition: all .15s ease !important;
+}
+
+    .btn.btn-outline-secondary:hover {
+        background-color: #f9fafb !important;
+        color: #111827 !important;
+        border-color: #d1d5db !important;
+    }
+
+/* ---------- CARD ---------- */
+.card {
+    border: 1px solid #e5e7eb !important;
+    border-radius: 10px !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .03) !important;
+    overflow: hidden !important;
+    margin-bottom: 12px !important;
+}
+
+/* ---------- CARD HEADER — Grey-Teal ---------- */
+.card-header {
+    background-color: #e8f0ee !important; /* ✅ Grey-teal */
+    border-bottom: 2px solid #b2dfdb !important;
+    padding: 11px 16px !important;
+}
+
+    .card-header h5,
+    .card-header .fw-semibold {
+        font-size: 0.85rem !important;
+        font-weight: 700 !important;
+        color: #0f766e !important;
+        margin: 0 !important;
+    }
+
+/* ---------- CARD BODY ---------- */
+.card-body {
+    padding: 18px 20px !important;
+}
+
+/* ---------- INFO LABELS & VALUES ---------- */
+.info-label {
+    display: block;
+    font-size: 0.68rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: .06em !important;
+    color: #6b7280 !important;
+    margin-bottom: 4px !important;
+}
+
+.info-value {
+    font-size: 0.85rem !important;
+    color: #111827 !important;
+    font-weight: 500 !important;
+}
+
+    .info-value.fw-bold {
+        font-weight: 700 !important;
+        font-size: 0.9rem !important;
+    }
+
+/* ---------- BATCH TAG ---------- */
+.batch-tag {
+    display: inline-block;
+    padding: 4px 11px !important;
+    background-color: #ccfbf1 !important; /* ✅ Light teal */
+    color: #0f766e !important; /* ✅ Dark teal */
+    border-radius: 6px !important;
+    font-size: 0.72rem !important;
+    font-weight: 700 !important;
+    font-family: 'Courier New', monospace !important;
+    letter-spacing: .02em !important;
+}
+
+/* ---------- LOCATION BADGE (Teal — not blue) ---------- */
+.badge.location-badge,
+.badge.bg-primary {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    padding: 4px 11px !important;
+    background-color: #ccfbf1 !important; /* ✅ Light teal */
+    color: #0f766e !important; /* ✅ Dark teal */
+    border-radius: 999px !important;
+    font-size: 0.7rem !important;
+    font-weight: 700 !important;
+    border: none !important;
+}
+
+/* ---------- QUANTITY HIGHLIGHT ---------- */
+.qty-highlight {
+    display: inline-block;
+    padding: 5px 14px !important;
+    background-color: #f0fdfa !important; /* ✅ Very light teal */
+    color: #0f766e !important; /* ✅ Teal text */
+    border-radius: 8px !important;
+    font-size: 1.4rem !important;
+    font-weight: 800 !important;
+    line-height: 1 !important;
+    letter-spacing: -.02em !important;
+}
+
+/* ---------- ROW GAP (Compact) ---------- */
+.row.g-4,
+.row.g-3 {
+    --bs-gutter-y: 1rem !important;
+    --bs-gutter-x: 1.2rem !important;
+}
+
+/* ---------- OUTER SPACING ---------- */
+.container-fluid {
+    padding-top: 16px !important;
+    padding-bottom: 16px !important;
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 768px) {
+    .container-fluid h2.fw-bold {
+        font-size: 1.1rem !important;
+    }
+
+    .card-body {
+        padding: 14px 16px !important;
+    }
+
+    .qty-highlight {
+        font-size: 1.2rem !important;
+    }
+}
+
+/* ============================================================
+   TRANSFER DETAILS PAGE — Compact & Professional
+   ============================================================ */
+
+/* ---------- PAGE TITLE ---------- */
+.container-fluid h2.fw-bold {
+    font-size: 1.25rem !important;
+    font-weight: 700 !important;
+    color: #111827 !important;
+    margin-bottom: 3px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+}
+
+.container-fluid .text-muted {
+    font-size: 0.72rem !important;
+    color: #6b7280 !important;
+}
+
+/* ---------- BACK BUTTON ---------- */
+.btn.btn-outline-secondary {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    padding: 6px 14px !important;
+    font-size: 0.75rem !important;
+    font-weight: 500 !important;
+    color: #374151 !important;
+    background-color: #ffffff !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 7px !important;
+    text-decoration: none !important;
+    transition: all .15s ease !important;
+}
+
+    .btn.btn-outline-secondary:hover {
+        background-color: #f9fafb !important;
+        color: #111827 !important;
+        border-color: #d1d5db !important;
+    }
+
+/* ---------- CARDS (Compact) ---------- */
+.card {
+    border: 1px solid #e5e7eb !important;
+    border-radius: 10px !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .03) !important;
+    overflow: hidden !important;
+    margin-bottom: 10px !important; /* ✅ Chhota gap */
+}
+
+/* ---------- CARD HEADER (Compact) ---------- */
+.card-header {
+    background-color: #e8f0ee !important; /* ✅ Grey-teal */
+    border-bottom: 2px solid #b2dfdb !important;
+    padding: 9px 14px !important; /* ✅ Compact */
+}
+
+    .card-header h5,
+    .card-header .fw-bold,
+    .card-header .fw-semibold {
+        font-size: 0.82rem !important; /* ✅ Chhota */
+        font-weight: 700 !important;
+        color: #0f766e !important;
+        margin: 0 !important;
+    }
+
+    /* Header Icons */
+    .card-header i {
+        font-size: 0.9rem !important;
+    }
+
+/* ---------- CARD BODY (Compact) ---------- */
+.card-body {
+    padding: 12px 16px !important; /* ✅ Compact (pehle 18px 20px) */
+}
+
+    .card-body.p-0 {
+        padding: 0 !important;
+    }
+
+/* ---------- INFO LABELS (Compact) ---------- */
+.info-label {
+    display: block;
+    font-size: 0.6rem !important; /* ✅ Bahut chhota */
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: .08em !important;
+    color: #6b7280 !important;
+    margin-bottom: 3px !important;
+}
+
+/* ---------- INFO VALUES (Compact) ---------- */
+.info-value {
+    font-size: 0.78rem !important; /* ✅ Chhota */
+    color: #111827 !important;
+    font-weight: 600 !important;
+    line-height: 1.3 !important;
+}
+
+/* ---------- BADGES (Compact) ---------- */
+
+/* Location Badge */
+.badge.location-badge {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    padding: 3px 10px !important;
+    background-color: #ccfbf1 !important;
+    color: #0f766e !important;
+    border-radius: 999px !important;
+    font-size: 0.68rem !important;
+    font-weight: 700 !important;
+    border: none !important;
+    white-space: nowrap !important;
+}
+
+/* Items Badge */
+.badge.items-badge {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    padding: 3px 10px !important;
+    background-color: #f3f4f6 !important;
+    color: #374151 !important;
+    border-radius: 999px !important;
+    font-size: 0.68rem !important;
+    font-weight: 700 !important;
+    border: none !important;
+    white-space: nowrap !important;
+}
+
+/* Completed Badge */
+.badge-completed {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    padding: 2px 9px !important;
+    background-color: #ffffff !important;
+    color: #0f766e !important;
+    border: 1px solid #b2dfdb !important;
+    border-radius: 999px !important;
+    font-size: 0.62rem !important;
+    font-weight: 700 !important;
+    margin-left: 6px !important;
+}
+
+/* Reference Number (Bold) */
+.card-header .fw-bold {
+    font-size: 0.85rem !important;
+    font-family: 'Courier New', monospace !important;
+    letter-spacing: .02em !important;
+}
+
+/* ---------- TABLE (Compact) ---------- */
+.table {
+    width: 100% !important;
+    font-size: 0.75rem !important;
+    margin: 0 !important;
+    border-collapse: collapse !important;
+}
+
+    /* Table Header */
+    .table thead th,
+    .table > thead > tr > th,
+    .table thead.table-light th {
+        background-color: #e8f0ee !important; /* ✅ Grey-teal */
+        color: #0f766e !important;
+        font-size: 0.6rem !important; /* ✅ Chhota */
+        font-weight: 700 !important;
+        letter-spacing: .08em !important;
+        text-transform: uppercase !important;
+        padding: 9px 14px !important; /* ✅ Compact */
+        text-align: left !important;
+        border-bottom: 2px solid #b2dfdb !important;
+        white-space: nowrap !important;
+        vertical-align: middle !important;
+    }
+
+    /* Table Body */
+    .table tbody td {
+        padding: 10px 14px !important; /* ✅ Compact */
+        border-bottom: 1px solid #e5e7eb !important;
+        color: #374151 !important;
+        vertical-align: middle !important;
+        font-size: 0.75rem !important;
+        line-height: 1.3 !important;
+    }
+
+    .table tbody tr {
+        height: 44px !important; /* ✅ Fixed height */
+        transition: background-color .15s ease !important;
+    }
+
+        .table tbody tr:hover,
+        .table tbody tr:hover td {
+            background-color: #e8f0ee !important; /* ✅ Grey-teal hover */
+        }
+
+        .table tbody tr:last-child td {
+            border-bottom: none !important;
+        }
+
+    /* Medicine Name (Bold) */
+    .table tbody td strong,
+    .table tbody td .fw-bold {
+        color: #111827 !important;
+        font-weight: 700 !important;
+        font-size: 0.75rem !important;
+    }
+
+    /* Quantity (Right aligned, bold) */
+    .table tbody td.text-end strong {
+        font-size: 0.78rem !important;
+        color: #111827 !important;
+    }
+
+/* ---------- BATCH TAG (Compact) ---------- */
+.batch-tag {
+    display: inline-block;
+    padding: 3px 9px !important; /* ✅ Compact */
+    background-color: #ccfbf1 !important;
+    color: #0f766e !important;
+    border-radius: 5px !important;
+    font-size: 0.68rem !important;
+    font-weight: 700 !important;
+    font-family: 'Courier New', monospace !important;
+    letter-spacing: .02em !important;
+}
+
+/* ---------- ROW GAP (Compact) ---------- */
+.row.g-3,
+.row.g-4 {
+    --bs-gutter-y: 0.7rem !important;
+    --bs-gutter-x: 1rem !important;
+}
+
+/* ---------- OUTER SPACING (Compact) ---------- */
+.container-fluid {
+    padding-top: 14px !important;
+    padding-bottom: 14px !important;
+}
+
+/* ---------- PAGE HEADER SPACING ---------- */
+.d-flex.justify-content-between {
+    margin-bottom: 12px !important;
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 768px) {
+    .container-fluid h2.fw-bold {
+        font-size: 1.1rem !important;
+    }
+
+    .card-body {
+        padding: 10px 12px !important;
+    }
+
+    .info-label {
+        font-size: 0.58rem !important;
+    }
+
+    .info-value {
+        font-size: 0.72rem !important;
+    }
+}
+
+/* ============================================================
+   STOCK TRANSFERS — Master-Detail Layout
+   ============================================================ */
+
+/* ---------- PAGE HEADER ---------- */
+.page-breadcrumb {
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: #9ca3af;
+    margin-bottom: 4px;
+}
+
+/* ---------- ACTION BAR ---------- */
+.btn.btn-outline-dark {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background-color: #ffffff;
+    color: #111827;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all .15s ease;
+}
+
+    .btn.btn-outline-dark:hover {
+        background-color: #f9fafb;
+        border-color: #111827;
+    }
+
+/* ============================================================
+   LEFT: TRANSFERS LIST CARD
+   ============================================================ */
+
+.transfers-list-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .03);
+}
+
+.transfers-list-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 18px;
+    border-bottom: 1px solid #f0f0f0;
+    background-color: #ffffff;
+}
+
+.transfers-list-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #111827;
+}
+
+.transfers-list-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    height: 24px;
+    padding: 0 8px;
+    background: #f3f4f6;
+    color: #6b7280;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+}
+
+/* ---------- TRANSFER ITEM ---------- */
+.transfer-item {
+    display: block;
+    padding: 14px 18px;
+    border-bottom: 1px solid #f3f4f6;
+    text-decoration: none !important;
+    color: inherit;
+    transition: background-color .15s ease;
+    cursor: pointer;
+}
+
+    .transfer-item:last-child {
+        border-bottom: none;
+    }
+
+    .transfer-item:hover {
+        background-color: #f0fdfa;
+    }
+
+    .transfer-item.active {
+        background-color: #e8f0ee; /* ✅ Selected highlight */
+        border-left: 3px solid #0f766e;
+        padding-left: 15px;
+    }
+
+.transfer-item__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 6px;
+}
+
+.transfer-item__ref {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #111827;
+    font-family: 'Courier New', monospace;
+}
+
+.transfer-item__route {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 4px;
+}
+
+    .transfer-item__route i {
+        font-size: 0.7rem;
+        color: #9ca3af;
+    }
+
+.transfer-item__meta {
+    font-size: 0.68rem;
+    color: #9ca3af;
+}
+
+/* ---------- STATUS PILLS ---------- */
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+    .status-pill .dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        display: inline-block;
+    }
+
+/* Requested — Grey */
+.status-requested {
+    background: #f3f4f6;
+    color: #6b7280;
+}
+
+    .status-requested .dot {
+        background: #6b7280;
+    }
+
+/* In Transit — Light Blue */
+.status-in-transit {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+    .status-in-transit .dot {
+        background: #1e40af;
+    }
+
+/* Received — Green */
+.status-received {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+    .status-received .dot {
+        background: #10b981;
+    }
+
+/* ============================================================
+   RIGHT: TRANSFER DETAIL CARD
+   ============================================================ */
+
+.transfer-detail-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .03);
+}
+
+.transfer-detail-header {
+    padding: 16px 20px;
+    background-color: #f9fafb;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.transfer-detail-ref {
+    font-size: 1rem;
+    font-weight: 800;
+    color: #111827;
+    font-family: 'Courier New', monospace;
+    letter-spacing: .02em;
+}
+
+.transfer-detail-route {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #111827;
+}
+
+    .transfer-detail-route i {
+        color: #0f766e;
+        font-size: 0.8rem;
+    }
+
+/* ============================================================
+   TIMELINE
+   ============================================================ */
+
+.transfer-timeline {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 30px 24px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+/* Track (horizontal line) */
+.timeline-track {
+    position: absolute;
+    top: 30px;
+    left: 60px;
+    right: 60px;
+    height: 2px;
+    background: #d1fae5;
+    z-index: 0;
+}
+
+.timeline-step {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    max-width: 33%;
+    flex: 1;
+}
+
+.timeline-dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #0f766e;
+    border: 3px solid #ffffff;
+    box-shadow: 0 0 0 2px #0f766e;
+    margin-bottom: 10px;
+}
+
+.timeline-step.pending .timeline-dot {
+    background: #ffffff;
+    border: 3px solid #ffffff;
+    box-shadow: 0 0 0 2px #0f766e;
+}
+
+.timeline-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 4px;
+}
+
+.timeline-meta {
+    font-size: 0.68rem;
+    color: #9ca3af;
+    line-height: 1.35;
+}
+
+/* ============================================================
+   ITEMS TABLE
+   ============================================================ */
+
+.transfer-items-table {
+    padding: 0;
+}
+
+    .transfer-items-table table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.78rem;
+    }
+
+    .transfer-items-table thead th {
+        background-color: #f9fafb;
+        color: #6b7280;
+        font-size: 0.62rem;
+        font-weight: 700;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+        padding: 10px 16px;
+        text-align: left;
+        border-bottom: 1px solid #e5e7eb;
+        white-space: nowrap;
+    }
+
+    .transfer-items-table tbody td {
+        padding: 14px 16px;
+        border-bottom: 1px solid #f3f4f6;
+        vertical-align: middle;
+        color: #374151;
+    }
+
+    .transfer-items-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+.item-name {
+    font-weight: 700;
+    color: #111827;
+    font-size: 0.78rem;
+}
+
+.item-meta {
+    font-size: 0.68rem;
+    color: #9ca3af;
+    font-family: 'Courier New', monospace;
+}
+
+.qty-dispatched {
+    font-weight: 700;
+    color: #111827;
+}
+
+.qty-input {
+    width: 80px;
+    padding: 5px 10px;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    text-align: right;
+    color: #111827;
+    outline: none;
+}
+
+    .qty-input:focus {
+        border-color: #0f766e;
+        box-shadow: 0 0 0 3px rgba(15, 118, 110, .1);
+    }
+
+/* ============================================================
+   ACTIONS
+   ============================================================ */
+
+.transfer-detail-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 14px 20px;
+    background-color: #f9fafb;
+    border-top: 1px solid #f0f0f0;
+}
+
+/* ============================================================
+   EMPTY STATE
+   ============================================================ */
+
+.empty-detail {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 400px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    color: #9ca3af;
+}
+
+    .empty-detail i {
+        font-size: 3rem;
+        margin-bottom: 10px;
+        color: #d1d5db;
+    }
+
+    .empty-detail p {
+        margin: 0;
+        font-size: 0.85rem;
+    }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 992px) {
+    .transfer-timeline {
+        padding: 16px 16px 20px;
+    }
+
+    .timeline-track {
+        left: 40px;
+        right: 40px;
+    }
+
+    .timeline-meta {
+        font-size: 0.6rem;
+    }
+}
+
+/* ============================================================
+   STOCK TRANSFERS — Master-Detail Layout (Real Data)
+   ============================================================ */
+
+/* ---------- PAGE HEADER ---------- */
+.page-breadcrumb {
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: #9ca3af;
+    margin-bottom: 4px;
+}
+
+/* ---------- ACTION BAR ---------- */
+.btn.btn-outline-dark {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background-color: #ffffff;
+    color: #111827;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all .15s ease;
+}
+
+    .btn.btn-outline-dark:hover {
+        background-color: #f9fafb;
+        border-color: #0f766e;
+        color: #0f766e;
+    }
+
+/* ============================================================
+   LEFT: TRANSFERS LIST
+   ============================================================ */
+
+.transfers-list-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .03);
+    max-height: 700px;
+    overflow-y: auto;
+}
+
+.transfers-list-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 18px;
+    border-bottom: 1px solid #f0f0f0;
+    background-color: #ffffff;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+
+.transfers-list-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #111827;
+}
+
+.transfers-list-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 8px;
+    background: #f3f4f6;
+    color: #6b7280;
+    border-radius: 999px;
+    font-size: 0.68rem;
+    font-weight: 700;
+}
+
+/* ---------- TRANSFER ITEM ---------- */
+.transfer-item {
+    display: block;
+    padding: 12px 16px;
+    border-bottom: 1px solid #f3f4f6;
+    text-decoration: none !important;
+    color: inherit;
+    transition: background-color .15s ease;
+    cursor: pointer;
+}
+
+    .transfer-item:last-child {
+        border-bottom: none;
+    }
+
+    .transfer-item:hover {
+        background-color: #f0fdfa;
+    }
+
+    .transfer-item.active {
+        background-color: #e8f0ee;
+        border-left: 3px solid #0f766e;
+        padding-left: 13px;
+    }
+
+.transfer-item__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.transfer-item__ref {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #111827;
+    font-family: 'Courier New', monospace;
+}
+
+.transfer-item__date {
+    font-size: 0.65rem;
+    color: #9ca3af;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.transfer-item__route {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 4px;
+}
+
+    .transfer-item__route i {
+        font-size: 0.68rem;
+        color: #0f766e;
+    }
+
+    .transfer-item__route .route-from,
+    .transfer-item__route .route-to {
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+    }
+
+.transfer-item__meta {
+    font-size: 0.68rem;
+    color: #9ca3af;
+    line-height: 1.3;
+}
+
+/* ============================================================
+   RIGHT: TRANSFER DETAIL
+   ============================================================ */
+
+.transfer-detail-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .03);
+}
+
+.transfer-detail-header {
+    padding: 16px 20px;
+    background-color: #e8f0ee;
+    border-bottom: 2px solid #b2dfdb;
+}
+
+.transfer-detail-ref {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #0f766e;
+    font-family: 'Courier New', monospace;
+    letter-spacing: .02em;
+}
+
+.transfer-detail-route {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #111827;
+    margin-top: 4px;
+}
+
+    .transfer-detail-route i {
+        color: #0f766e;
+        font-size: 0.78rem;
+    }
+
+    .transfer-detail-route span {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+/* ---------- DETAILS GRID ---------- */
+.transfer-details-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px 24px;
+    padding: 16px 20px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.detail-label {
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: #9ca3af;
+}
+
+.detail-value {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #111827;
+}
+
+/* ---------- REMARKS ---------- */
+.transfer-remarks {
+    padding: 12px 20px;
+    border-bottom: 1px solid #f0f0f0;
+    background: #f9fafb;
+}
+
+    .transfer-remarks .detail-label {
+        display: block;
+        margin-bottom: 4px;
+    }
+
+    .transfer-remarks p {
+        margin: 0;
+        font-size: 0.78rem;
+        color: #4b5563;
+        line-height: 1.4;
+    }
+
+/* ============================================================
+   ITEMS TABLE
+   ============================================================ */
+
+.transfer-items-table {
+    padding: 0;
+    overflow-x: auto;
+}
+
+    .transfer-items-table table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.78rem;
+    }
+
+    .transfer-items-table thead th {
+        background-color: #e8f0ee;
+        color: #0f766e;
+        font-size: 0.6rem;
+        font-weight: 700;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+        padding: 10px 16px;
+        text-align: left;
+        border-bottom: 2px solid #b2dfdb;
+        white-space: nowrap;
+    }
+
+    .transfer-items-table tbody td {
+        padding: 12px 16px;
+        border-bottom: 1px solid #f3f4f6;
+        vertical-align: middle;
+        color: #374151;
+        font-size: 0.78rem;
+    }
+
+    .transfer-items-table tbody tr:hover {
+        background-color: #f0fdfa;
+    }
+
+    .transfer-items-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+.item-name {
+    font-weight: 700;
+    color: #111827;
+    font-size: 0.78rem;
+}
+
+.batch-tag {
+    display: inline-block;
+    padding: 3px 9px;
+    background-color: #ccfbf1;
+    color: #0f766e;
+    border-radius: 5px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    font-family: 'Courier New', monospace;
+}
+
+.qty-dispatched {
+    font-weight: 700;
+    color: #111827;
+    font-size: 0.82rem;
+}
+
+/* ============================================================
+   EMPTY STATE
+   ============================================================ */
+
+.empty-detail {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 400px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    color: #9ca3af;
+}
+
+    .empty-detail i {
+        font-size: 3rem;
+        margin-bottom: 10px;
+        color: #d1d5db;
+    }
+
+    .empty-detail p {
+        margin: 0;
+        font-size: 0.85rem;
+    }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 992px) {
+    .transfers-list-card {
+        max-height: 400px;
+    }
+
+    .transfer-details-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ============================================================
+   STOCK ADJUSTMENT — Compact Card Design
+   ============================================================ */
+
+/* ---------- PAGE WRAPPER (Compact) ---------- */
+.container.py-4 {
+    padding-top: 16px !important;
+    padding-bottom: 16px !important;
+    max-width: 720px !important; /* ✅ Aur narrow */
+}
+
+/* ---------- PAGE TITLE ---------- */
+.container h2 {
+    font-size: 1.25rem !important; /* ✅ Aur chhota */
+    font-weight: 700 !important;
+    color: #111827 !important;
+    margin-bottom: 3px !important;
+    letter-spacing: -0.01em !important;
+}
+
+.container > .mb-4 > .text-muted,
+.container > div > .text-muted {
+    font-size: 0.75rem !important;
+    color: #6b7280 !important;
+}
+
+/* ============================================================
+   CARD WRAPPER — Form Ko Card Banayein
+   ============================================================ */
+
+/* Form ko card jaisa banayein */
+.container.py-4 > form {
+    background-color: #ffffff !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 10px !important;
+    padding: 18px 20px !important; /* ✅ Compact */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .03) !important;
+}
+
+/* ---------- FORM LABELS (Compact) ---------- */
+.form-label,
+label.form-label {
+    font-size: 0.68rem !important; /* ✅ Aur chhota */
+    font-weight: 600 !important;
+    color: #374151 !important;
+    margin-bottom: 4px !important;
+    display: block !important;
+    letter-spacing: .02em !important;
+}
+
+/* ---------- FORM INPUTS (Compact) ---------- */
+.form-control,
+.form-select,
+input[type="text"],
+input[type="number"],
+input[type="datetime-local"],
+select,
+textarea {
+    width: 100% !important;
+    padding: 7px 11px !important; /* ✅ Aur compact */
+    font-size: 0.76rem !important;
+    color: #111827 !important;
+    background-color: #ffffff !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 7px !important;
+    outline: none !important;
+    transition: all .15s ease !important;
+    line-height: 1.35 !important;
+}
+
+    .form-control:focus,
+    .form-select:focus,
+    input:focus,
+    select:focus,
+    textarea:focus {
+        border-color: #0f766e !important;
+        box-shadow: 0 0 0 3px rgba(15, 118, 110, .1) !important;
+    }
+
+    .form-control::placeholder,
+    input::placeholder {
+        font-size: 0.74rem !important;
+        color: #9ca3af !important;
+    }
+
+/* Readonly inputs */
+input[readonly] {
+    background-color: #f9fafb !important;
+    color: #6b7280 !important;
+    cursor: not-allowed !important;
+}
+
+/* ---------- TEXTAREA (Compact) ---------- */
+textarea.form-control {
+    min-height: 60px !important;
+    resize: vertical !important;
+    padding: 7px 11px !important;
+}
+
+/* ---------- FORM GROUP SPACING (Compact) ---------- */
+.mb-3 {
+    margin-bottom: 0.7rem !important; /* ✅ Aur chhota gap */
+}
+
+.mb-4 {
+    margin-bottom: 0.8rem !important;
+}
+
+/* ---------- BUTTONS (Compact) ---------- */
+.btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+    padding: 7px 14px !important; /* ✅ Aur compact */
+    font-size: 0.76rem !important;
+    font-weight: 600 !important;
+    border-radius: 7px !important;
+    text-decoration: none !important;
+    transition: all .15s ease !important;
+}
+
+    /* Primary — Adjust Stock */
+    .btn.btn-primary {
+        background-color: #0f766e !important;
+        border-color: #0f766e !important;
+        color: #ffffff !important;
+        box-shadow: 0 2px 5px rgba(15, 118, 110, .2) !important;
+    }
+
+        .btn.btn-primary:hover {
+            background-color: #0d5c63 !important;
+            border-color: #0d5c63 !important;
+            transform: translateY(-1px) !important;
+        }
+
+    /* Secondary — Cancel */
+    .btn.btn-secondary {
+        background-color: #ffffff !important;
+        color: #374151 !important;
+        border: 1px solid #e5e7eb !important;
+    }
+
+        .btn.btn-secondary:hover {
+            background-color: #f9fafb !important;
+            color: #111827 !important;
+            border-color: #d1d5db !important;
+        }
+
+/* Buttons container */
+.d-flex.gap-2 {
+    gap: 8px !important;
+    margin-top: 12px !important;
+    padding-top: 12px !important;
+    border-top: 1px solid #f3f4f6 !important;
+}
+
+/* ---------- VALIDATION ERRORS ---------- */
+.text-danger,
+.field-validation-error {
+    font-size: 0.68rem !important;
+    color: #dc2626 !important;
+    display: block !important;
+    margin-top: 3px !important;
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 768px) {
+    .container h2 {
+        font-size: 1.1rem !important;
+    }
+
+    .container.py-4 > form {
+        padding: 14px 16px !important;
+    }
+
+    textarea.form-control {
+        min-height: 55px !important;
+    }
+}
+/* Global Teal Background */
+body {
+    background-color: #f4fbfa !important; /* Soft professional teal */
+}
+
+/* Main content area ka background */
+main, .main-content {
+    background-color: #f4fbfa !important;
+}
+/* ================= SIDEBAR BACKGROUND ================= */
+.sidebar,
+.main-sidebar,
+aside,
+.nav-sidebar,
+#sidebar {
+    background-color: #0d5c56 !important;
+}
+
+    /* ================= NAV LINKS (Saaf aur Clear Text) ================= */
+    .sidebar .nav-link,
+    .main-sidebar .nav-link,
+    aside .nav-link,
+    .nav-sidebar .nav-link,
+    #sidebar .nav-link,
+    .sidebar .nav-item a,
+    .main-sidebar .nav-item a {
+        color: #ffffff !important; /* Pure white */
+        font-weight: 500 !important; /* Thoda bold */
+        text-shadow: 0 1px 1px rgba(0, 0, 0, 0.15); /* Halka sa shadow, text alag nazar aaye */
+        letter-spacing: 0.2px;
+    }
+
+        /* ================= ICONS (Saaf aur Clear) ================= */
+        .sidebar .nav-link i,
+        .main-sidebar .nav-link i,
+        aside .nav-link i,
+        .nav-sidebar .nav-link i,
+        #sidebar .nav-link i {
+            color: #ffffff !important;
+            font-size: 1rem !important;
+        }
+
+        /* ================= HOVER / ACTIVE STATE ================= */
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active,
+        .main-sidebar .nav-link:hover,
+        .main-sidebar .nav-link.active,
+        aside .nav-link:hover,
+        aside .nav-link.active {
+            background-color: #083d38 !important;
+            color: #ffffff !important;
+            font-weight: 600 !important; /* Active par aur bold */
+        }
+
+    /* ================= SECTION HEADERS (OVERVIEW, DISPENSING, INVENTORY) ================= */
+    .sidebar .nav-header,
+    .nav-sidebar .nav-header,
+    .sidebar .sidebar-heading,
+    .main-sidebar .sidebar-heading {
+        color: #fbbf24 !important; /* Bright amber/gold */
+        font-weight: 700 !important;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        opacity: 1 !important; /* Faded na ho */
+    }
+
+    /* ================= BRAND / LOGO TEXT ================= */
+    .sidebar .brand-text,
+    .sidebar .logo-text,
+    .sidebar h5,
+    .sidebar h4 {
+        color: #ffffff !important;
+        font-weight: 700 !important;
+        text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+    }
+
+    /* ================= FOOTER (System Online) ================= */
+    .sidebar-footer,
+    .sidebar .footer-text {
+        color: #ffffff !important;
+        font-weight: 500 !important;
+    }

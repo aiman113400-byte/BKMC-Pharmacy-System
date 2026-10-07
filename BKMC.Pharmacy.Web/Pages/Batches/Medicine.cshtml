@@ -1,0 +1,661 @@
+﻿@page
+@model BKMC.Pharmacy.Web.Pages.Batches.MedicineModel
+
+@{
+    ViewData["Title"] = "Medicine Batches";
+}
+
+<style>
+    /* ================= THEME ================= */
+    :root {
+        --teal-50: #f0fdfa;
+        --teal-100: #ccfbf1;
+        --teal-600: #0f766e;
+        --teal-700: #0d5c56;
+        --slate-50: #f8fafc;
+        --slate-100: #f1f5f9;
+        --slate-200: #e2e8f0;
+        --slate-400: #94a3b8;
+        --slate-500: #64748b;
+        --slate-700: #334155;
+    }
+
+    /* ================= CARD ================= */
+    .card-custom {
+        border: 1px solid var(--slate-200) !important;
+        border-radius: 12px !important;
+        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04) !important;
+        overflow: hidden !important;
+        background: #ffffff !important;
+    }
+
+    /* ================= COMPACT HEADER ================= */
+    .compact-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.85rem 1.25rem;
+        background: var(--teal-50);
+        border-bottom: 1px solid var(--slate-200);
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+    .compact-header-left {
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
+    }
+    .compact-header-icon {
+        width: 32px;
+        height: 32px;
+        background: #ffffff;
+        border: 1px solid var(--slate-200);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--teal-600);
+        font-size: 0.9rem;
+        flex-shrink: 0;
+    }
+    .compact-header-title {
+        font-size: 0.82rem;
+        font-weight: 700;
+        color: var(--teal-600);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin: 0;
+        line-height: 1.2;
+    }
+    .compact-header-subtitle {
+        font-size: 0.7rem;
+        color: var(--slate-500);
+        margin: 0;
+        line-height: 1.2;
+    }
+
+    /* ================= COUNT BADGE ================= */
+    .count-pill {
+        font-size: 0.72rem;
+        font-weight: 700;
+        padding: 0.3rem 0.7rem;
+        border-radius: 999px;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        white-space: nowrap;
+    }
+    .count-pill-green {
+        background: #d1fae5;
+        color: #065f46;
+    }
+    .count-pill-teal {
+        background: var(--teal-100);
+        color: var(--teal-600);
+    }
+
+    /* ================= INFO BAR ================= */
+    .info-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.75rem 1.25rem;
+        background: #ffffff;
+        border-bottom: 1px solid var(--slate-100);
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+    .info-item {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+    }
+    .info-icon {
+        width: 34px;
+        height: 34px;
+        border-radius: 9px;
+        background: var(--slate-50);
+        border: 1px solid var(--slate-200);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--teal-600);
+        font-size: 0.9rem;
+    }
+    .info-label-small {
+        font-size: 0.65rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--slate-400);
+        font-weight: 600;
+        margin: 0;
+        line-height: 1.2;
+    }
+    .info-value-small {
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: #0f172a;
+        margin: 0;
+        line-height: 1.3;
+    }
+
+    /* ================= TABLE ================= */
+    .table-aesthetic {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0;
+    }
+    .table-aesthetic thead th {
+        background: var(--slate-50);
+        color: var(--slate-500);
+        font-size: 0.65rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        font-weight: 700;
+        padding: 0.75rem 1.25rem;
+        border-bottom: 1px solid var(--slate-200);
+        white-space: nowrap;
+    }
+    .table-aesthetic tbody tr {
+        border-bottom: 1px solid var(--slate-100);
+        transition: background 0.15s;
+    }
+    .table-aesthetic tbody tr:last-child {
+        border-bottom: none;
+    }
+    .table-aesthetic tbody tr:hover {
+        background: var(--teal-50);
+    }
+    .table-aesthetic tbody td {
+        padding: 0.9rem 1.25rem;
+        font-size: 0.85rem;
+        color: var(--slate-700);
+        vertical-align: middle;
+    }
+    .cell-id {
+        color: var(--slate-400) !important;
+        font-weight: 600;
+        font-size: 0.78rem !important;
+    }
+    .cell-batch {
+        font-weight: 700;
+        color: #0f172a !important;
+        font-family: 'SF Mono', Menlo, monospace;
+        font-size: 0.82rem !important;
+    }
+    .cell-date {
+        color: var(--slate-700);
+        font-weight: 500;
+    }
+    .cell-qty {
+        font-weight: 700;
+        color: #0f172a;
+        font-size: 0.9rem !important;
+    }
+
+    /* ================= STATUS PILL ================= */
+    .status-pill {
+        font-size: 0.7rem;
+        font-weight: 600;
+        padding: 0.3rem 0.7rem;
+        border-radius: 999px;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        white-space: nowrap;
+    }
+    .status-pill i {
+        font-size: 0.7rem;
+    }
+    .status-green {
+        background: #d1fae5;
+        color: #065f46;
+    }
+    .status-red {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+    .status-gray {
+        background: #f1f5f9;
+        color: #475569;
+    }
+
+    /* ================= EMPTY STATE ================= */
+    .empty-state {
+        text-align: center;
+        padding: 2.5rem 1rem;
+        color: var(--slate-400);
+    }
+    .empty-state-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: var(--slate-50);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+        color: var(--slate-400);
+        margin-bottom: 0.75rem;
+    }
+    .empty-state-title {
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: var(--slate-700);
+        margin-bottom: 0.25rem;
+    }
+    .empty-state-text {
+        font-size: 0.78rem;
+        color: var(--slate-500);
+        margin: 0;
+    }
+
+    /* ================= BACK BUTTON ================= */
+    .btn-back {
+        background: #ffffff !important;
+        border: 1px solid var(--slate-200) !important;
+        color: var(--slate-700) !important;
+        font-weight: 500 !important;
+        font-size: 0.82rem !important;
+        border-radius: 8px !important;
+        padding: 0.45rem 1rem !important;
+        transition: all 0.15s !important;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+    .btn-back:hover {
+        background: var(--slate-50) !important;
+        border-color: var(--slate-400) !important;
+    }
+
+    /* ================= PAGE HEADER ================= */
+    .page-title {
+        font-size: 1.35rem;
+        font-weight: 700;
+        color: #0f172a;
+        margin: 0 0 0.15rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .page-subtitle {
+        font-size: 0.8rem;
+        color: var(--slate-500);
+        margin: 0;
+    }
+</style>
+
+<div class="container-fluid py-4" style="max-width: 1400px;">
+
+    <!-- ================= PAGE HEADER ================= -->
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+        <div>
+            <h2 class="page-title">
+                <i class="bi bi-box-seam" style="color: var(--teal-600);"></i>
+                Medicine Batches
+            </h2>
+            <p class="page-subtitle">View all batches and available stock for this medicine.</p>
+        </div>
+        <a asp-page="/Batches/Index" class="btn-back">
+            <i class="bi bi-arrow-left"></i>
+            Back to Batches
+        </a>
+    </div>
+
+    <!-- ================= ERROR ================= -->
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger d-flex align-items-center mb-3" style="border-radius: 10px; border: none; font-size: 0.85rem;">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    <!-- ================= MEDICINE INFO BAR ================= -->
+    <div class="card-custom mb-3">
+        <div class="info-bar">
+            <div class="info-item">
+                <div class="info-icon">
+                    <i class="bi bi-capsule"></i>
+                </div>
+                <div>
+                    <p class="info-label-small">Medicine ID</p>
+                    <p class="info-value-small">@Model.MedicineId</p>
+                </div>
+            </div>
+            <div class="info-item">
+                <div class="info-icon">
+                    <i class="bi bi-boxes"></i>
+                </div>
+                <div>
+                    <p class="info-label-small">Total Batches</p>
+                    <p class="info-value-small">@Model.Batches.Count</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= FEFO AVAILABLE BATCHES ================= -->
+    <div class="card-custom mb-3">
+        <div class="compact-header">
+            <div class="compact-header-left">
+                <div class="compact-header-icon">
+                    <i class="bi bi-sort-down-alt"></i>
+                </div>
+                <div>
+                    <p class="compact-header-title">FEFO Available Batches</p>
+                    <p class="compact-header-subtitle">First Expiry, First Out order</p>
+                </div>
+            </div>
+            <span class="count-pill count-pill-green">
+                <i class="bi bi-check-circle-fill"></i>
+                @Model.AvailableBatches.Count available
+            </span>
+        </div>
+
+        @if (Model.AvailableBatches.Any())
+        {
+            <div class="table-responsive">
+                <table class="table-aesthetic">
+                    <thead>
+                        <tr>
+                            <th style="width: 60px;">#</th>
+                            <th>Batch Number</th>
+                            <th>Expiry Date</th>
+                            <th class="text-end">Available Qty</th>
+                            <th style="width: 180px;">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var batch in Model.AvailableBatches)
+                        {
+                            <tr>
+                                <td class="cell-id">@batch.Id</td>
+                                <td class="cell-batch">@batch.BatchNumber</td>
+                                <td class="cell-date">@batch.ExpiryDate.ToString("dd MMM yyyy")</td>
+                                <td class="text-end cell-qty">@batch.AvailableQuantity.ToString("0.##")</td>
+                                <td>
+                                    @{
+                                        var daysToExpiry = (batch.ExpiryDate - DateTime.Today).Days;
+                                    }
+                                    @if (daysToExpiry <= 90 && daysToExpiry >= 0)
+                                    {
+                                        <span class="status-pill status-red">
+                                            <i class="bi bi-clock-fill"></i> Expiring Soon
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="status-pill status-green">
+                                            <i class="bi bi-check-circle-fill"></i> Available
+                                        </span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="empty-state">
+                <div class="empty-state-icon"><i class="bi bi-box-seam"></i></div>
+                <div class="empty-state-title">No Available Batches</div>
+                <p class="empty-state-text">This medicine has no non-expired batches with available quantity.</p>
+            </div>
+        }
+    </div>
+
+    <!-- ================= ALL BATCHES ================= -->
+    <div class="card-custom">
+        <div class="compact-header">
+            <div class="compact-header-left">
+                <div class="compact-header-icon">
+                    <i class="bi bi-list-ul"></i>
+                </div>
+                <div>
+                    <p class="compact-header-title">All Batches</p>
+                    <p class="compact-header-subtitle">Includes expired and out-of-stock batches</p>
+                </div>
+            </div>
+            <span class="count-pill count-pill-teal">
+                <i class="bi bi-boxes"></i>
+                @Model.Batches.Count batch(s)
+            </span>
+        </div>
+
+        @if (Model.Batches.Any())
+        {
+            <div class="table-responsive">
+                <table class="table-aesthetic">
+                    <thead>
+                        <tr>
+                            <th style="width: 60px;">#</th>
+                            <th>Batch Number</th>
+                            <th>Expiry Date</th>
+                            <th class="text-end">Quantity</th>
+                            <th style="width: 180px;">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var batch in Model.Batches)
+                        {
+                            <tr>
+                                <td class="cell-id">@batch.Id</td>
+                                <td class="cell-batch">@batch.BatchNumber</td>
+                                <td class="cell-date">@batch.ExpiryDate.ToString("dd MMM yyyy")</td>
+                                <td class="text-end cell-qty">@batch.AvailableQuantity.ToString("0.##")</td>
+                                <td>
+                                    @if (batch.IsExpired)
+                                    {
+                                        <span class="status-pill status-red">
+                                            <i class="bi bi-x-circle-fill"></i> Expired
+                                        </span>
+                                    }
+                                    else if (batch.AvailableQuantity <= 0)
+                                    {
+                                        <span class="status-pill status-gray">
+                                            <i class="bi bi-box"></i> Out of Stock
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        var daysToExpiry = (batch.ExpiryDate - DateTime.Today).Days;
+                                        if (daysToExpiry <= 90)
+                                        {
+                                            <span class="status-pill status-red">
+                                                <i class="bi bi-clock-fill"></i> Expiring Soon
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="status-pill status-green">
+                                                <i class="bi bi-check-circle-fill"></i> Available
+                                            </span>
+                                        }
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="empty-state">
+                <div class="empty-state-icon"><i class="bi bi-box-seam"></i></div>
+                <div class="empty-state-title">No Batches Found</div>
+                <p class="empty-state-text">No batches are associated with this medicine.</p>
+            </div>
+        }
+    </div>
+
+</div>
+
+@* 
+ @page
+@model BKMC.Pharmacy.Web.Pages.Batches.MedicineModel
+
+@{
+    ViewData["Title"] = "Medicine Batches";
+}
+
+<div class="container-fluid py-4">
+
+    <div class="mb-4">
+        <h2 class="fw-bold mb-1">
+            <i class="bi bi-box-seam me-2"></i>
+            Medicine Batches
+        </h2>
+
+        <p class="text-muted mb-0">
+            View all batches associated with this medicine.
+        </p>
+    </div>
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show"
+             role="alert">
+
+            <i class="bi bi-exclamation-triangle me-2"></i>
+
+            @TempData["ErrorMessage"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert">
+            </button>
+
+        </div>
+    }
+
+    <div class="card shadow-sm border-0">
+
+        <div class="card-header bg-white py-3">
+
+            <div class="d-flex justify-content-between align-items-center">
+
+                <div>
+                    <h5 class="mb-1 fw-semibold">
+                        Batch List
+                    </h5>
+
+                    <small class="text-muted">
+                        Medicine ID: @Model.MedicineId
+                    </small>
+                </div>
+
+                <span class="badge bg-primary">
+                    @Model.Batches.Count batch(s)
+                </span>
+
+            </div>
+
+        </div>
+
+        <div class="card-body p-0">
+
+            @if (Model.Batches.Any())
+            {
+                <div class="table-responsive">
+
+                    <table class="table table-hover align-middle mb-0">
+
+                        <thead class="table-light">
+                            <tr>
+                                <th>#</th>
+                                <th>Batch Number</th>
+                                <th>Expiry Date</th>
+                                <th>Available Quantity</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            @foreach (var batch in Model.Batches)
+                            {
+                                <tr>
+
+                                    <td>
+                                        @batch.Id
+                                    </td>
+
+                                    <td>
+                                        <span class="fw-semibold">
+                                            @batch.BatchNumber
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        @batch.ExpiryDate
+                                            .ToString("dd MMM yyyy")
+                                    </td>
+
+                                    <td>
+                                        <span class="fw-semibold">
+                                            @batch.Quantity.ToString("0.##")
+                                        </span>
+                                    </td>
+
+                                    <td>
+
+                                        @if (batch.IsExpired)
+                                        {
+                                            <span class="badge bg-danger">
+                                                <i class="bi bi-x-circle me-1"></i>
+                                                Expired
+                                            </span>
+                                        }
+                                        else if (batch.Quantity <= 0)
+                                        {
+                                            <span class="badge bg-secondary">
+                                                <i class="bi bi-box me-1"></i>
+                                                Out of Stock
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-success">
+                                                <i class="bi bi-check-circle me-1"></i>
+                                                Available
+                                            </span>
+                                        }
+
+                                    </td>
+
+                                </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-5">
+
+                    <i class="bi bi-box-seam display-4 text-muted"></i>
+
+                    <h5 class="mt-3">
+                        No batches found
+                    </h5>
+
+                    <p class="text-muted mb-0">
+                        No batches are associated with this medicine.
+                    </p>
+
+                </div>
+            }
+
+        </div>
+
+    </div>
+
+</div>  *@

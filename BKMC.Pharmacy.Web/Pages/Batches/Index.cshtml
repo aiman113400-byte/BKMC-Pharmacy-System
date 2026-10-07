@@ -1,0 +1,507 @@
+﻿@page
+@model BKMC.Pharmacy.Web.Pages.Batches.IndexModel
+
+@{
+    ViewData["Title"] = "Medicine Batches";
+}
+
+<style>
+    /* ================= PROFESSIONAL THEME ================= */
+    .btn-teal {
+        background-color: #0f766e !important;
+        color: #ffffff !important;
+        border: none !important;
+        transition: background-color 0.2s !important;
+    }
+    .btn-teal:hover {
+        background-color: #0d5c56 !important;
+        color: #ffffff !important;
+    }
+    .text-teal { color: #0f766e !important; }
+
+    /* ================= CARD DESIGN ================= */
+    .card-custom {
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 0.75rem !important;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05) !important;
+        overflow: hidden !important;
+        background-color: #ffffff !important;
+    }
+
+    /* ================= SEARCH CARD ================= */
+    .search-label {
+        font-size: 0.78rem !important;
+        font-weight: 600 !important;
+        color: #374151 !important;
+        margin-bottom: 0.4rem !important;
+    }
+    .search-input {
+        border-radius: 0.5rem !important;
+        border: 1px solid #d1d5db !important;
+        padding: 0.55rem 1rem !important;
+        font-size: 0.875rem !important;
+        transition: all 0.2s !important;
+        height: 44px;
+    }
+    .search-input:focus {
+        border-color: #0f766e !important;
+        box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12) !important;
+        outline: none !important;
+    }
+    .btn-search {
+        background-color: #0f766e !important;
+        color: #ffffff !important;
+        border: none !important;
+        border-radius: 0.5rem !important;
+        font-weight: 500 !important;
+        padding: 0 1.5rem !important;
+        height: 44px;
+        transition: background-color 0.2s !important;
+        white-space: nowrap;
+    }
+    .btn-search:hover {
+        background-color: #0d5c56 !important;
+        color: #ffffff !important;
+    }
+
+    /* ================= TABLE HEADER ================= */
+    .table-custom th {
+        background-color: #f0fdfa !important;
+        color: #0f766e !important;
+        font-size: 0.72rem !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.06em !important;
+        font-weight: 700 !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+        padding: 1rem 1.25rem !important;
+    }
+
+    /* ================= TABLE ROWS ================= */
+    .table-custom tbody tr {
+        border-bottom: 1px solid #f1f5f9 !important;
+        transition: background-color 0.15s !important;
+    }
+    .table-custom tbody tr:hover {
+        background-color: #f8fafc !important;
+    }
+    .table-custom td {
+        padding: 1rem 1.25rem !important;
+        vertical-align: middle !important;
+        color: #334155 !important;
+        font-size: 0.875rem !important;
+    }
+
+    /* ================= STATUS BADGES ================= */
+    .badge-status {
+        font-size: 0.72rem !important;
+        font-weight: 600 !important;
+        padding: 0.35rem 0.75rem !important;
+        border-radius: 0.5rem !important;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        white-space: nowrap;
+    }
+    .badge-active {
+        background-color: #d1fae5 !important;
+        color: #065f46 !important;
+    }
+    .badge-red {
+        background-color: #fee2e2 !important;
+        color: #991b1b !important;
+    }
+
+    /* ================= MEDICINE LINK ================= */
+    .medicine-link {
+        color: #0f766e !important;
+        font-weight: 600 !important;
+        text-decoration: none !important;
+        display: inline-flex;
+        align-items: center;
+        gap: 2px;
+        transition: color 0.15s !important;
+        cursor: pointer;
+    }
+    .medicine-link:hover {
+        color: #0d5c56 !important;
+        text-decoration: underline !important;
+    }
+
+    /* ================= VIEW BATCHES BUTTON ================= */
+    .btn-view-batches {
+        background-color: #ffffff !important;
+        border: 1px solid #d1d5db !important;
+        color: #0f766e !important;
+        font-weight: 500 !important;
+        font-size: 0.78rem !important;
+        padding: 0.35rem 0.75rem !important;
+        border-radius: 0.5rem !important;
+        transition: all 0.15s !important;
+        text-decoration: none !important;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        white-space: nowrap;
+    }
+    .btn-view-batches:hover {
+        background-color: #0f766e !important;
+        color: #ffffff !important;
+        border-color: #0f766e !important;
+    }
+
+    /* ================= NO RESULTS ================= */
+    .no-results {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: #94a3b8;
+    }
+    .no-results i {
+        font-size: 2.5rem;
+        color: #cbd5e1;
+        margin-bottom: 0.75rem;
+    }
+</style>
+
+<div class="container-fluid py-4">
+
+    <!-- ================= PAGE HEADER ================= -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-1 fw-bold text-dark">Medicine Batches</h2>
+            <p class="text-muted mb-0 small">View and monitor medicine batches and expiry information.</p>
+        </div>
+    </div>
+
+    <!-- ================= SEARCH CARD ================= -->
+    <div class="card-custom mb-4">
+        <div class="p-4">
+            <form method="get">
+                <label class="search-label">Search Medicine or Batch</label>
+                <div class="d-flex gap-2 align-items-end">
+                    <input type="text"
+                           name="searchTerm"
+                           id="searchInput"
+                           value="@Model.SearchTerm"
+                           class="search-input flex-grow-1"
+                           placeholder="Search by medicine name or batch number..." />
+                    <button type="submit" class="btn-search d-inline-flex align-items-center gap-2">
+                        <i class="bi bi-search"></i>
+                        Search
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ================= TABLE CARD ================= -->
+    <div class="card-custom">
+        <div class="table-responsive">
+            <table class="table table-custom mb-0 w-100">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Medicine</th>
+                        <th>Batch Number</th>
+                        <th>Manufacturing Date</th>
+                        <th>Expiry Date</th>
+                        <th class="text-end">Quantity</th>
+                        <th>Status</th>
+                        <th class="text-end">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="batchesTableBody">
+
+                    @if (Model.Batches.Count == 0)
+                    {
+                        <tr>
+                            <td colspan="8">
+                                <div class="no-results">
+                                    <i class="bi bi-search d-block"></i>
+                                    <strong>No batches found</strong>
+                                    <p class="mb-0 small mt-1">Try a different search term.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var batch in Model.Batches)
+                        {
+                            <tr>
+                                <td class="fw-semibold text-muted">@batch.Id</td>
+
+                                <!-- Medicine Name - Clickable Link -->
+                                <td>
+                                    <a asp-page="./Medicine"
+                                       asp-route-medicineId="@batch.MedicineId"
+                                       class="medicine-link"
+                                       title="View all batches for this medicine">
+                                        @batch.MedicineName
+                                        <i class="bi bi-arrow-right-short"></i>
+                                    </a>
+                                </td>
+
+                                <td class="fw-medium">@batch.BatchNumber</td>
+                                <td>@batch.ManufacturingDate.ToString("dd MMM yyyy")</td>
+                                <td>@batch.ExpiryDate.ToString("dd MMM yyyy")</td>
+                                <td class="text-end fw-bold">@batch.Quantity</td>
+                                <td>
+                                    @{
+                                        var daysToExpiry = (batch.ExpiryDate - DateTime.Today).Days;
+                                    }
+                                    @if (daysToExpiry < 0)
+                                    {
+                                        <span class="badge-status badge-red">
+                                            <i class="bi bi-x-circle-fill"></i> Expired
+                                        </span>
+                                    }
+                                    else if (daysToExpiry <= 90)
+                                    {
+                                        <span class="badge-status badge-red">
+                                            <i class="bi bi-clock-fill"></i> Expiring Soon
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge-status badge-active">
+                                            <i class="bi bi-check-circle-fill"></i> Active
+                                        </span>
+                                    }
+                                </td>
+                                <td class="text-end">
+                                    <a asp-page="./Medicine"
+                                       asp-route-medicineId="@batch.MedicineId"
+                                       class="btn-view-batches">
+                                        <i class="bi bi-eye"></i>
+                                        View Batches
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    }
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const searchInput = document.getElementById("searchInput");
+            const tableBody = document.getElementById("batchesTableBody");
+
+            if (!searchInput || !tableBody) return;
+
+            // Instant client-side filter while typing
+            searchInput.addEventListener("input", function () {
+                const query = this.value.toLowerCase().trim();
+                const rows = tableBody.querySelectorAll("tr");
+
+                rows.forEach(function (row) {
+                    if (row.querySelector(".no-results")) return;
+
+                    const rowText = row.textContent.toLowerCase();
+                    row.style.display = rowText.includes(query) ? "" : "none";
+                });
+            });
+
+            // Escape key clears search
+            searchInput.addEventListener("keydown", function (e) {
+                if (e.key === "Escape") {
+                    this.value = "";
+                    this.dispatchEvent(new Event("input"));
+                }
+            });
+        });
+    </script>
+}
+
+@* @page
+@model BKMC.Pharmacy.Web.Pages.Batches.IndexModel
+
+@{
+    ViewData["Title"] = "Batch Management";
+}
+
+<div class="container-fluid py-4">
+
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">
+                <i class="bi bi-box-seam me-2"></i>
+                Batch Management
+            </h2>
+            <p class="text-muted mb-0">
+                View and monitor medicine batches and expiry information.
+            </p>
+        </div>
+    </div>
+
+    <!-- Error Alert -->
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- ✅ Search Card -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body">
+            <form method="get">
+                <div class="row g-3 align-items-end">
+
+                    <div class="col-md-10">
+                        <label class="form-label fw-semibold">
+                            Search Medicine or Batch
+                        </label>
+                        <input type="text"
+                               name="SearchTerm"
+                               value="@Model.SearchTerm"
+                               class="form-control"
+                               placeholder="Search by medicine name or batch number..." />
+                    </div>
+
+                    <div class="col-md-2">
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="bi bi-search me-1"></i> Search
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+
+                @if (!string.IsNullOrWhiteSpace(Model.SearchTerm))
+                {
+                    <div class="mt-2">
+                        <a href="/Batches/Index" class="text-decoration-none small">
+                            <i class="bi bi-x-circle me-1"></i> Clear search
+                        </a>
+                    </div>
+                }
+
+            </form>
+        </div>
+    </div> *@
+
+    @* <!-- ✅ Batch List Card -->
+    <div class="card shadow-sm border-0">
+
+        <div class="card-header bg-white py-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0 fw-semibold">
+                    Batch List
+                </h5>
+                <span class="badge bg-primary">
+                    @Model.Batches.Count batch(s)
+                </span>
+            </div>
+        </div> *@
+
+@*         <div class="card-body p-0">
+
+            @if (Model.Batches.Any())
+            {
+                <div class="table-responsive">
+
+                    <table class="table table-hover align-middle mb-0">
+
+                        <thead class="table-light">
+                            <tr>
+                                <th>#</th>
+                                <th>Medicine</th>
+                                <th>Batch Number</th>
+                                <th>Manufacturing Date</th>
+                                <th>Expiry Date</th>
+                                <th>Quantity</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var batch in Model.Batches)
+                            {
+                                var isExpired = batch.ExpiryDate.Date < DateTime.Today;
+                                var isExpiringSoon = !isExpired && batch.ExpiryDate.Date <= DateTime.Today.AddDays(30);
+
+                                <tr>
+                                    <td>@batch.Id</td>
+
+                                    <td>
+                                        <div class="fw-semibold">@batch.MedicineName</div>
+                                    </td>
+
+                                    <td>
+                                        <span class="fw-semibold">@batch.BatchNumber</span>
+                                    </td>
+
+                                    <td>
+                                        @batch.ManufacturingDate.ToString("dd MMM yyyy")
+                                    </td>
+
+                                    <td>
+                                        @batch.ExpiryDate.ToString("dd MMM yyyy")
+                                    </td>
+
+                                    <td>
+                                        <span class="fw-semibold">@batch.Quantity.ToString("0.##")</span>
+                                    </td>
+
+                                    <td>
+                                        @if (isExpired)
+                                        {
+                                            <span class="badge bg-danger">
+                                                <i class="bi bi-x-circle me-1"></i> Expired
+                                            </span>
+                                        }
+                                        else if (isExpiringSoon)
+                                        {
+                                            <span class="badge bg-warning">
+                                                <i class="bi bi-clock me-1"></i> Expiring Soon
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-success">
+                                                <i class="bi bi-check-circle me-1"></i> Active
+                                            </span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+
+                    </table>
+
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-5">
+                    <i class="bi bi-box-seam display-4 text-muted"></i>
+                    <h5 class="mt-3">No batches found</h5>
+                    <p class="text-muted mb-0">
+                        @if (!string.IsNullOrWhiteSpace(Model.SearchTerm))
+                        {
+                            <text>No batches match your search "<strong>@Model.SearchTerm</strong>".</text>
+                        }
+                        else
+                        {
+                            <text>No medicine batches are currently available.</text>
+                        }
+                    </p>
+                </div>
+            }
+
+        </div>
+
+    </div>
+
+</div> *@

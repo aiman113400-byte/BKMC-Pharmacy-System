@@ -1,0 +1,544 @@
+﻿@page
+@model BKMC.Pharmacy.Web.Pages.StockAdjustment.CreateModel
+
+@{
+    ViewData["Title"] = "Stock Adjustment";
+}
+
+<div class="container py-4">
+
+    <div class="mb-4">
+        <h2>Stock Adjustment</h2>
+        <p class="text-muted">
+            Adjust the current stock quantity for a specific medicine, batch, and location.
+        </p>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger">
+            @Model.ErrorMessage
+        </div>
+    }
+
+    <form method="post">
+
+        <!-- Medicine -->
+        <div class="mb-3">
+            <label class="form-label">Medicine</label>
+            <select class="form-select"
+                    asp-for="Adjustment.MedicineId"
+                    id="medicineSelect">
+                <option value="0">Select Medicine</option>
+                @foreach (var medicine in Model.Medicines)
+                {
+                    <option value="@medicine.Id">
+                        @medicine.Name
+                        @if (!string.IsNullOrWhiteSpace(medicine.Strength))
+                        {
+                            <text> - @medicine.Strength</text>
+                        }
+                    </option>
+                }
+            </select>
+            <span asp-validation-for="Adjustment.MedicineId" class="text-danger"></span>
+        </div>
+
+        <!-- Batch -->
+        <div class="mb-3">
+            <label class="form-label">Batch</label>
+            <select class="form-select"
+                    asp-for="Adjustment.BatchId"
+                    id="batchSelect">
+                <option value="0">Select Batch</option>
+            </select>
+            <span asp-validation-for="Adjustment.BatchId" class="text-danger"></span>
+        </div>
+
+        <!-- Location -->
+        <div class="mb-3">
+            <label class="form-label">Location</label>
+            <select class="form-select"
+                    asp-for="Adjustment.Location"
+                    id="locationSelect">
+                <option value="1">Warehouse</option>
+                <option value="2">Pharmacy</option>
+            </select>
+        </div>
+
+        <!-- Current Quantity -->
+        <div class="mb-3">
+            <label class="form-label">Current Quantity</label>
+            <input type="text"
+                   class="form-control"
+                   id="currentQuantity"
+                   value="0"
+                   readonly
+                   style="background-color: #f9fafb;" />
+        </div>
+
+        <!-- New Quantity -->
+        <div class="mb-3">
+            <label asp-for="Adjustment.NewQuantity" class="form-label">
+                New Quantity
+            </label>
+            <input asp-for="Adjustment.NewQuantity"
+                   class="form-control"
+                   type="number"
+                   min="0"
+                   step="0.01" />
+            <span asp-validation-for="Adjustment.NewQuantity" class="text-danger"></span>
+        </div>
+
+        <!-- Reason -->
+        <div class="mb-3">
+            <label asp-for="Adjustment.Reason" class="form-label">
+                Reason
+            </label>
+            <textarea asp-for="Adjustment.Reason"
+                      class="form-control"
+                      rows="3"
+                      maxlength="500"></textarea>
+            <span asp-validation-for="Adjustment.Reason" class="text-danger"></span>
+        </div>
+
+        <!-- Adjustment Date -->
+        <div class="mb-3">
+            <label asp-for="Adjustment.AdjustmentDate" class="form-label">
+                Adjustment Date
+            </label>
+            <input asp-for="Adjustment.AdjustmentDate"
+                   class="form-control"
+                   type="datetime-local" />
+            <span asp-validation-for="Adjustment.AdjustmentDate" class="text-danger"></span>
+        </div>
+
+        <!-- Buttons -->
+        <div class="d-flex gap-2">
+            <a asp-page="/Stock/Index" class="btn btn-secondary">
+                Cancel
+            </a>
+            <button type="submit" class="btn btn-primary">
+                Adjust Stock
+            </button>
+        </div>
+
+    </form>
+
+</div>
+
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            // ==========================================
+            // ELEMENTS
+            // ==========================================
+            const medicineSelect = document.getElementById("medicineSelect");
+            const batchSelect = document.getElementById("batchSelect");
+            const locationSelect = document.getElementById("locationSelect");
+            const currentQuantity = document.getElementById("currentQuantity");
+
+            // ==========================================
+            // VALIDATION
+            // ==========================================
+            if (!medicineSelect || !batchSelect || !locationSelect || !currentQuantity) {
+                console.error("Required elements not found:", {
+                    medicineSelect: !!medicineSelect,
+                    batchSelect: !!batchSelect,
+                    locationSelect: !!locationSelect,
+                    currentQuantity: !!currentQuantity
+                });
+                return;
+            }
+
+            // ==========================================
+            // 1. MEDICINE CHANGE → Load Batches
+            // ==========================================
+            medicineSelect.addEventListener("change", async function () {
+                const medicineId = this.value;
+
+                batchSelect.innerHTML = '<option value="0">Loading...</option>';
+                currentQuantity.value = "0";  // Reset
+
+                if (!medicineId || medicineId === "0") {
+                    batchSelect.innerHTML = '<option value="0">Select Batch</option>';
+                    return;
+                }
+
+                try {
+                    const response = await fetch(
+                        `?handler=Batches&medicineId=${encodeURIComponent(medicineId)}`
+                    );
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}`);
+                    }
+
+                    const batches = await response.json();
+                    console.log("Batches received:", batches);
+
+                    batchSelect.innerHTML = '<option value="0">Select Batch</option>';
+
+                    if (!Array.isArray(batches) || batches.length === 0) {
+                        batchSelect.innerHTML = '<option value="0">No batches available</option>';
+                        return;
+                    }
+
+                    batches.forEach(function (batch) {
+                        const option = document.createElement("option");
+                        option.value = batch.id ?? batch.Id;
+                        option.textContent = `${batch.batchNumber ?? batch.BatchNumber} - Exp: ${new Date(batch.expiryDate ?? batch.ExpiryDate).toLocaleDateString()}`;
+                        batchSelect.appendChild(option);
+                    });
+
+                } catch (error) {
+                    console.error("Error loading batches:", error);
+                    batchSelect.innerHTML = '<option value="0">Unable to load batches</option>';
+                }
+            });
+
+            // ==========================================
+            // 2. BATCH CHANGE → Load Current Quantity
+            // ==========================================
+            batchSelect.addEventListener("change", loadCurrentQuantity);
+
+            // ==========================================
+            // 3. LOCATION CHANGE → Load Current Quantity
+            // ==========================================
+            locationSelect.addEventListener("change", loadCurrentQuantity);
+
+            // ==========================================
+            // MAIN: Load Current Quantity
+            // ==========================================
+            async function loadCurrentQuantity() {
+                const medicineId = medicineSelect.value;
+                const batchId = batchSelect.value;
+                const location = locationSelect.value;
+
+                console.log("Loading Qty:", { medicineId, batchId, location });
+
+                // Validation
+                if (!medicineId || medicineId === "0" ||
+                    !batchId || batchId === "0" ||
+                    !location) {
+                    currentQuantity.value = "0";
+                    return;
+                }
+
+                currentQuantity.value = "...";
+
+                try {
+                    const response = await fetch(
+                        `?handler=CurrentQuantity&medicineId=${medicineId}&batchId=${batchId}&location=${location}`
+                    );
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    console.log("Quantity data:", data);
+
+                    currentQuantity.value = data.quantity ?? 0;
+
+                } catch (error) {
+                    console.error("Error loading quantity:", error);
+                    currentQuantity.value = "0";
+                }
+            }
+
+        });
+    </script>
+}
+
+
+
+
+
+@* 
+@page
+@model BKMC.Pharmacy.Web.Pages.StockAdjustment.CreateModel
+
+@{
+    ViewData["Title"] = "Stock Adjustment";
+}
+
+<div class="container py-4">
+
+    <div class="mb-4">
+        <h2>Stock Adjustment</h2>
+        <p class="text-muted">
+            Adjust the current stock quantity for a specific medicine,
+            batch, and location.
+        </p>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger">
+            @Model.ErrorMessage
+        </div>
+    }
+
+    <form method="post">
+
+        <!-- Medicine -->
+        <div class="mb-3">
+            <label class="form-label">Medicine</label>
+
+            <select class="form-select"
+                    asp-for="Adjustment.MedicineId"
+                    id="medicineSelect">
+
+                <option value="0">Select Medicine</option>
+
+                @foreach (var medicine in Model.Medicines)
+                {
+                    <option value="@medicine.Id">
+                        @medicine.Name
+                        @if (!string.IsNullOrWhiteSpace(medicine.Strength))
+                        {
+                            <text> - @medicine.Strength</text>
+                        }
+                    </option>
+                }
+
+            </select>
+
+            <span asp-validation-for="Adjustment.MedicineId"
+                  class="text-danger">
+            </span>
+        </div>
+
+        <!-- Batch -->
+        <div class="mb-3">
+            <label class="form-label">Batch</label>
+
+            <select class="form-select"
+                    asp-for="Adjustment.BatchId"
+                    id="batchSelect">
+
+                <option value="0">Select Batch</option>
+
+            </select>
+
+            <span asp-validation-for="Adjustment.BatchId"
+                  class="text-danger">
+            </span>
+        </div>
+
+        <!-- Location -->
+        <div class="mb-3">
+            <label class="form-label">Location</label>
+
+            <select class="form-select"
+                    asp-for="Adjustment.Location">
+
+                <option value="1">Warehouse</option>
+                <option value="2">Pharmacy</option>
+
+            </select>
+        </div>
+
+        <!-- Current Quantity -->
+        <div class="mb-3">
+            <label class="form-label">Current Quantity</label>
+
+            <input type="text"
+                   class="form-control"
+                   id="currentQuantity"
+                   value="0"
+                   readonly
+                   style="background-color: #f9fafb;" />
+        </div>
+
+        <!-- New Quantity -->
+        <div class="mb-3">
+            <label asp-for="Adjustment.NewQuantity"
+                   class="form-label">
+                New Quantity
+            </label>
+
+            <input asp-for="Adjustment.NewQuantity"
+                   class="form-control"
+                   type="number"
+                   min="0"
+                   step="0.01" />
+
+            <span asp-validation-for="Adjustment.NewQuantity"
+                  class="text-danger">
+            </span>
+        </div>
+
+        <!-- Reason -->
+        <div class="mb-3">
+            <label asp-for="Adjustment.Reason"
+                   class="form-label">
+                Reason
+            </label>
+
+            <textarea asp-for="Adjustment.Reason"
+                      class="form-control"
+                      rows="3"
+                      maxlength="500"></textarea>
+
+            <span asp-validation-for="Adjustment.Reason"
+                  class="text-danger">
+            </span>
+        </div>
+
+        <!-- Adjustment Date -->
+        <div class="mb-3">
+            <label asp-for="Adjustment.AdjustmentDate"
+                   class="form-label">
+                Adjustment Date
+            </label>
+
+            <input asp-for="Adjustment.AdjustmentDate"
+                   class="form-control"
+                   type="datetime-local" />
+
+            <span asp-validation-for="Adjustment.AdjustmentDate"
+                  class="text-danger">
+            </span>
+        </div>
+
+        <!-- Buttons -->
+        <div class="d-flex gap-2">
+
+            <a asp-page="/Stock/Index"
+               class="btn btn-secondary">
+                Cancel
+            </a>
+
+            <button type="submit"
+                    class="btn btn-primary">
+                Adjust Stock
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const medicineSelect =
+                document.getElementById("medicineSelect");
+
+            const batchSelect =
+                document.getElementById("batchSelect");
+
+            if (!medicineSelect || !batchSelect) {
+                console.error(
+                    "Medicine or Batch select was not found."
+                );
+                return;
+            }
+
+            medicineSelect.addEventListener(
+                "change",
+                async function () {
+
+                    const medicineId = this.value;
+
+                    batchSelect.innerHTML =
+                        '<option value="0">Loading batches...</option>';
+
+                    if (!medicineId || medicineId === "0") {
+
+                        batchSelect.innerHTML =
+                            '<option value="0">Select Batch</option>';
+
+                        return;
+                    }
+
+                    try {
+
+                        const response = await fetch(
+                            `?handler=Batches&medicineId=${encodeURIComponent(medicineId)}`
+                        );
+
+                        if (!response.ok) {
+                            throw new Error(
+                                `Failed to load batches. Status: ${response.status}`
+                            );
+                        }
+
+                        const batches =
+                            await response.json();
+
+                        console.log(
+                            "Batches received:",
+                            batches
+                        );
+
+                        batchSelect.innerHTML =
+                            '<option value="0">Select Batch</option>';
+
+                        if (!Array.isArray(batches) ||
+                            batches.length === 0) {
+
+                            batchSelect.innerHTML =
+                                '<option value="0">No batches available</option>';
+
+                            return;
+                        }
+
+                        batches.forEach(function (batch) {
+
+                            const option =
+                                document.createElement("option");
+
+                            const batchId =
+                                batch.id ?? batch.Id;
+
+                            const batchNumber =
+                                batch.batchNumber ??
+                                batch.BatchNumber;
+
+                            const expiryDate =
+                                batch.expiryDate ??
+                                batch.ExpiryDate;
+
+                            option.value = batchId;
+
+                            option.textContent =
+                                `${batchNumber} - Exp: ${
+                                    new Date(expiryDate)
+                                        .toLocaleDateString()
+                                }`;
+
+                            batchSelect.appendChild(option);
+
+                        });
+
+                    }
+                    catch (error) {
+
+                        console.error(
+                            "Error loading batches:",
+                            error
+                        );
+
+                        batchSelect.innerHTML =
+                            '<option value="0">Unable to load batches</option>';
+                    }
+                }
+            );
+        });
+    </script>
+} 
+ *@

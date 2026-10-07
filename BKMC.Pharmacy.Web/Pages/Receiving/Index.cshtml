@@ -1,0 +1,254 @@
+﻿@page
+@model BKMC.Pharmacy.Web.Pages.Receiving.IndexModel
+
+@{
+    ViewData["Title"] = "Medicine Receiving";
+}
+
+<style>
+    /* Professional Theme Colors */
+    .btn-teal { background-color: #0f766e !important; color: white !important; border: none !important; }
+    .btn-teal:hover { background-color: #0d5c56 !important; color: white !important; }
+    .text-teal { color: #0f766e !important; }
+
+    /* Card Container */
+    .card-custom {
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 0.75rem !important;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05) !important;
+        overflow: hidden !important;
+        background-color: #ffffff !important;
+    }
+
+    /* Table Header */
+    .table-custom th {
+        background-color: #f0fdfa !important;
+        color: #0f766e !important;
+        font-size: 0.72rem !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.06em !important;
+        font-weight: 700 !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+        padding: 1rem 1.25rem !important;
+    }
+
+    /* Table Rows */
+    .table-custom tbody tr {
+        border-bottom: 1px solid #f1f5f9 !important;
+        transition: background-color 0.15s !important;
+    }
+    .table-custom tbody tr:hover {
+        background-color: #f8fafc !important;
+    }
+    .table-custom td {
+        padding: 1rem 1.25rem !important;
+        vertical-align: middle !important;
+        color: #334155 !important;
+        font-size: 0.875rem !important;
+    }
+
+    /* Items Badge */
+    .badge-items {
+        background-color: #d1fae5 !important;
+        color: #065f46 !important;
+        font-weight: 600 !important;
+        font-size: 0.75rem !important;
+        padding: 0.35rem 0.65rem !important;
+        border-radius: 0.5rem !important;
+    }
+
+    /* View Button */
+    .btn-view {
+        background-color: #ffffff !important;
+        border: 1px solid #e2e8f0 !important;
+        color: #0f766e !important;
+        font-weight: 500 !important;
+        font-size: 0.8rem !important;
+        padding: 0.4rem 0.85rem !important;
+        border-radius: 0.5rem !important;
+        transition: all 0.15s !important;
+        cursor: pointer !important;
+    }
+    .btn-view:hover {
+        background-color: #0f766e !important;
+        color: #ffffff !important;
+        border-color: #0f766e !important;
+    }
+
+    /* Modal Styling */
+    .modal-header-custom {
+        background-color: #f0fdfa !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+        padding: 1rem 1.5rem !important;
+    }
+    .modal-header-custom h5 {
+        color: #0f766e !important;
+        font-weight: 700 !important;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: 0.9rem !important;
+        margin: 0 !important;
+    }
+    .modal-detail-row {
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #f1f5f9;
+    }
+    .modal-detail-label {
+        font-size: 0.72rem;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+    }
+    .modal-detail-value {
+        font-size: 0.95rem;
+        color: #0f172a;
+        font-weight: 500;
+    }
+</style>
+
+<div class="container-fluid py-4">
+
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-1 fw-bold text-dark">Medicine Receiving</h2>
+            <p class="text-muted mb-0 small">View received medicines, supplier invoices and batches.</p>
+        </div>
+
+        <a asp-page="./Create" class="btn btn-teal d-inline-flex align-items-center gap-2 px-4 py-2" style="border-radius: 0.5rem; font-weight: 500;">
+            <i class="bi bi-plus-circle"></i>
+            New Receiving
+        </a>
+    </div>
+
+    <!-- Error Message -->
+    @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger border-0 shadow-sm" style="border-radius: 0.75rem;">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            @Model.ErrorMessage
+        </div>
+    }
+
+    <!-- Table Card -->
+    <div class="card-custom">
+        <div class="table-responsive">
+            <table class="table table-custom mb-0 w-100">
+                <thead>
+                    <tr>
+                        <th>Invoice #</th>
+                        <th>Supplier</th>
+                        <th>Invoice Date</th>
+                        <th class="text-center">Items</th>
+                        <th>Created At</th>
+                        <th class="text-end">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Receivings)
+                    {
+                        <tr>
+                            <td>
+                                <span class="fw-semibold text-dark">@item.InvoiceNumber</span>
+                            </td>
+                            <td>@item.SupplierName</td>
+                            <td>
+                                <span class="text-teal fw-medium">@item.InvoiceDate.ToString("dd MMM yyyy, hh:mm tt")</span>
+                            </td>
+                            <td class="text-center">
+                                <span class="badge-items">@item.Items.Count</span>
+                            </td>
+                            <td class="text-muted">@item.CreatedAt.ToString("dd MMM yyyy, hh:mm tt")</td>
+                            <td class="text-end">
+                                <!-- VIEW BUTTON - Ab JavaScript Modal Kholta Hai -->
+                                <button type="button"
+                                        class="btn-view d-inline-flex align-items-center gap-1"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#viewModal"
+                                        data-invoice="@item.InvoiceNumber"
+                                        data-supplier="@item.SupplierName"
+                                        data-invoice-date="@item.InvoiceDate.ToString("dd MMM yyyy, hh:mm tt")"
+                                        data-created="@item.CreatedAt.ToString("dd MMM yyyy, hh:mm tt")"
+                                        data-items="@item.Items.Count">
+                                    <i class="bi bi-eye"></i>
+                                    View
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<!-- ================= VIEW DETAILS MODAL ================= -->
+<div class="modal fade" id="viewModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 0.75rem; border: 1px solid #e2e8f0; overflow: hidden;">
+            
+            <div class="modal-header-custom">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5><i class="bi bi-receipt me-2"></i> Receiving Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+            </div>
+
+            <div class="modal-body p-4">
+                <div class="modal-detail-row">
+                    <div class="modal-detail-label">Invoice Number</div>
+                    <div class="modal-detail-value" id="modalInvoice">-</div>
+                </div>
+                <div class="modal-detail-row">
+                    <div class="modal-detail-label">Supplier</div>
+                    <div class="modal-detail-value" id="modalSupplier">-</div>
+                </div>
+                <div class="modal-detail-row">
+                    <div class="modal-detail-label">Invoice Date</div>
+                    <div class="modal-detail-value" id="modalInvoiceDate">-</div>
+                </div>
+                <div class="modal-detail-row">
+                    <div class="modal-detail-label">Created At</div>
+                    <div class="modal-detail-value" id="modalCreated">-</div>
+                </div>
+                <div class="modal-detail-row border-0">
+                    <div class="modal-detail-label">Total Items</div>
+                    <div class="modal-detail-value">
+                        <span class="badge-items" id="modalItems">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer border-0 px-4 pb-3">
+                <button type="button" class="btn btn-teal px-4 py-2" data-bs-dismiss="modal" style="border-radius: 0.5rem;">
+                    Close
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const viewModal = document.getElementById('viewModal');
+            
+            if (!viewModal) return;
+
+            viewModal.addEventListener('show.bs.modal', function (event) {
+                const button = event.relatedTarget;
+
+                document.getElementById('modalInvoice').textContent     = button.getAttribute('data-invoice');
+                document.getElementById('modalSupplier').textContent    = button.getAttribute('data-supplier');
+                document.getElementById('modalInvoiceDate').textContent = button.getAttribute('data-invoice-date');
+                document.getElementById('modalCreated').textContent     = button.getAttribute('data-created');
+                document.getElementById('modalItems').textContent       = button.getAttribute('data-items');
+            });
+        });
+    </script>
+}
+

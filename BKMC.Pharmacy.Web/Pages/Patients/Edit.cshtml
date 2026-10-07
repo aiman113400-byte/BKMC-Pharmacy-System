@@ -1,0 +1,168 @@
+﻿@page "{id:int}"
+@model BKMC.Pharmacy.Web.Pages.Patients.EditModel
+
+@{
+    ViewData["Title"] = "Edit Patient";
+}
+
+<div class="container py-4">
+
+    <div class="mb-4">
+        <h2>Edit Patient</h2>
+
+        <p class="text-muted">
+            Update patient medical record information.
+        </p>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger">
+            @Model.ErrorMessage
+        </div>
+    }
+
+    <div class="card shadow-sm border-0">
+
+        <div class="card-body">
+
+            <form method="post">
+
+                <!-- MR Number -->
+                <div class="mb-3">
+
+                    <label asp-for="Patient.MRNumber"
+                           class="form-label">
+                        MR Number
+                    </label>
+
+                    <input asp-for="Patient.MRNumber"
+                           class="form-control"
+                           placeholder="Enter MR Number" />
+
+                    <span asp-validation-for="Patient.MRNumber"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+                <!-- Patient Name -->
+                <div class="mb-3">
+
+                    <label asp-for="Patient.Name"
+                           class="form-label">
+                        Patient Name
+                    </label>
+
+                    <input asp-for="Patient.Name"
+                           class="form-control"
+                           placeholder="Enter patient name" />
+
+                    <span asp-validation-for="Patient.Name"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+                <!-- Age -->
+                <div class="mb-3">
+
+                    <label asp-for="Patient.Age"
+                           class="form-label">
+                        Age
+                    </label>
+
+                    <input asp-for="Patient.Age"
+                           class="form-control"
+                           type="number"
+                           min="0"
+                           max="150"
+                           placeholder="Enter age" />
+
+                    <span asp-validation-for="Patient.Age"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+                <!-- Gender -->
+                <div class="mb-3">
+
+                    
+                    <select asp-for="Patient.Gender" class="form-select">
+        <option value="">-- Select Gender --</option>
+        <option value="1">Male</option>
+        <option value="2">Female</option>
+        <option value="3">Other</option>
+    </select>
+
+                    <span asp-validation-for="Patient.Gender"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+                <!-- Admission Number -->
+                <div class="mb-3">
+
+                    <label asp-for="Patient.AdmissionNumber"
+                           class="form-label">
+                        Admission Number
+                    </label>
+
+                    <input asp-for="Patient.AdmissionNumber"
+                           class="form-control"
+                           placeholder="Optional" />
+
+                    <span asp-validation-for="Patient.AdmissionNumber"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+                <!-- Referral ID -->
+                <div class="mb-3">
+
+                    <label asp-for="Patient.ReferralId"
+                           class="form-label">
+                        Referral ID
+                    </label>
+
+                    <input asp-for="Patient.ReferralId"
+                           class="form-control"
+                           placeholder="Optional" />
+
+                    <span asp-validation-for="Patient.ReferralId"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+                <!-- Buttons -->
+                <div class="d-flex gap-2">
+
+                    <a asp-page="/Patients/Index"
+                       class="btn btn-secondary">
+                        Cancel
+                    </a>
+
+                    <button type="submit"
+                            class="btn btn-primary">
+                        Update Patient
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+}

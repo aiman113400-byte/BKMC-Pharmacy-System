@@ -1,0 +1,1031 @@
+﻿@page
+@model BKMC.Pharmacy.Web.Pages.Receiving.CreateModel
+
+@{
+    ViewData["Title"] = "New Medicine Receiving";
+}
+
+<style>
+    /* ================= PROFESSIONAL THEME ================= */
+    .btn-teal {
+        background-color: #0f766e !important;
+        color: #ffffff !important;
+        border: none !important;
+        transition: background-color 0.2s !important;
+    }
+    .btn-teal:hover {
+        background-color: #0d5c56 !important;
+        color: #ffffff !important;
+    }
+    .text-teal { color: #0f766e !important; }
+
+    /* ================= CARD DESIGN ================= */
+    .card-custom {
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 0.75rem !important;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05) !important;
+        overflow: hidden !important;
+        background-color: #ffffff !important;
+    }
+
+    /* ================= CARD HEADER (Matching Table Header) ================= */
+    .card-header-custom {
+        background-color: #f0fdfa !important;       /* Light teal */
+        background-image: none !important;          /* Gradient khatam */
+        border-bottom: 1px solid #e2e8f0 !important;
+        padding: 1rem 1.5rem !important;
+        border-radius: 0 !important;
+    }
+    .card-header-custom h5 {
+        color: #0f766e !important;                  /* Teal text */
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.5px !important;
+        font-size: 0.85rem !important;
+        margin: 0 !important;
+    }
+    .card-header-custom small {
+        color: #64748b !important;
+        font-size: 0.72rem !important;
+    }
+
+    /* ================= FORM CONTROLS ================= */
+    .form-label {
+        font-size: 0.78rem !important;
+        font-weight: 600 !important;
+        color: #374151 !important;
+        margin-bottom: 0.35rem !important;
+    }
+    .form-control, .form-select {
+        border-radius: 0.5rem !important;
+        border: 1px solid #d1d5db !important;
+        padding: 0.5rem 0.75rem !important;
+        font-size: 0.85rem !important;
+        transition: all 0.2s !important;
+    }
+    .form-control:focus, .form-select:focus {
+        border-color: #0f766e !important;
+        box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12) !important;
+        outline: none !important;
+    }
+
+    /* ================= RECEIVING ITEM BOX ================= */
+    .receiving-item {
+        background-color: #fafbfc !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 0.5rem !important;
+        transition: border-color 0.15s !important;
+    }
+    .receiving-item:hover {
+        border-color: #cbd5e1 !important;
+    }
+
+    /* ================= ADD MEDICINE BUTTON ================= */
+    .btn-add-medicine {
+        background-color: #0f766e !important;
+        color: #ffffff !important;
+        border: none !important;
+        font-weight: 500 !important;
+        font-size: 0.82rem !important;
+        padding: 0.45rem 1rem !important;
+        border-radius: 0.5rem !important;
+        transition: background-color 0.2s !important;
+        white-space: nowrap !important;
+    }
+    .btn-add-medicine:hover {
+        background-color: #0d5c56 !important;
+        color: #ffffff !important;
+    }
+
+    /* ================= REMOVE BUTTON ================= */
+    .btn-remove {
+        background-color: #ffffff !important;
+        border: 1px solid #fca5a5 !important;
+        color: #dc2626 !important;
+        border-radius: 0.5rem !important;
+        transition: all 0.15s !important;
+    }
+    .btn-remove:hover {
+        background-color: #dc2626 !important;
+        color: #ffffff !important;
+        border-color: #dc2626 !important;
+    }
+
+    /* ================= CANCEL BUTTON ================= */
+    .btn-cancel {
+        background-color: #ffffff !important;
+        border: 1px solid #d1d5db !important;
+        color: #374151 !important;
+        font-weight: 500 !important;
+        border-radius: 0.5rem !important;
+        padding: 0.5rem 1.25rem !important;
+        transition: all 0.15s !important;
+    }
+    .btn-cancel:hover {
+        background-color: #f8fafc !important;
+        border-color: #9ca3af !important;
+    }
+</style>
+
+<div class="container-fluid py-4">
+
+    <!-- ================= PAGE HEADER ================= -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1 text-dark">New Medicine Receiving</h2>
+            <p class="text-muted mb-0 small">Record medicines received from a supplier.</p>
+        </div>
+
+        <a asp-page="/Receiving/Index" class="btn btn-cancel d-inline-flex align-items-center gap-2">
+            <i class="bi bi-arrow-left"></i>
+            Back to Receiving
+        </a>
+    </div>
+
+    <!-- ================= ERROR ALERT ================= -->
+    @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger border-0 shadow-sm d-flex align-items-center" style="border-radius: 0.75rem;">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            @Model.ErrorMessage
+        </div>
+    }
+
+    <form method="post">
+
+        <!-- ================= VALIDATION SUMMARY ================= -->
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="alert alert-danger border-0 shadow-sm" style="border-radius: 0.75rem;">
+                <div class="fw-semibold mb-2">
+                    <i class="bi bi-exclamation-circle me-1"></i>
+                    Please correct the following errors:
+                </div>
+                <div asp-validation-summary="ModelOnly"></div>
+            </div>
+        }
+
+        <!-- ================= CARD 1: INVOICE INFORMATION ================= -->
+        <div class="card-custom mb-4">
+            <div class="card-header-custom">
+                <h5><i class="bi bi-receipt me-2"></i> Invoice Information</h5>
+            </div>
+
+            <div class="card-body p-4">
+                <div class="row g-3">
+
+                    <!-- Supplier -->
+                    <div class="col-md-4">
+                        <label class="form-label">Supplier <span class="text-danger">*</span></label>
+                        <select asp-for="Receiving.SupplierId" class="form-select">
+                            <option value="0">Select Supplier</option>
+                            @foreach (var supplier in Model.Suppliers)
+                            {
+                                <option value="@supplier.Id">
+                                    @supplier.SupplierCode - @supplier.Name
+                                </option>
+                            }
+                        </select>
+                        <span asp-validation-for="Receiving.SupplierId" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Invoice Number -->
+                    <div class="col-md-4">
+                        <label class="form-label">Invoice Number</label>
+                        <input asp-for="Receiving.InvoiceNumber"
+                               class="form-control"
+                               placeholder="Enter invoice number" />
+                        <span asp-validation-for="Receiving.InvoiceNumber" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Invoice Date -->
+                    <div class="col-md-4">
+                        <label class="form-label">Invoice Date</label>
+                        <input asp-for="Receiving.InvoiceDate"
+                               type="date"
+                               class="form-control" />
+                        <span asp-validation-for="Receiving.InvoiceDate" class="text-danger small"></span>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= CARD 2: RECEIVING ITEMS ================= -->
+        <div class="card-custom mb-4">
+            <div class="card-header-custom">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5><i class="bi bi-capsule me-2"></i> Receiving Items</h5>
+                        <small class="text-muted">Add one or more medicines received in this invoice.</small>
+                    </div>
+                    <button type="button" id="addItemBtn" class="btn-add-medicine">
+                        <i class="bi bi-plus-circle me-1"></i>
+                        Add Medicine
+                    </button>
+                </div>
+            </div>
+
+            <div class="card-body p-4">
+                <div id="receivingItems">
+
+                    @for (var i = 0; i < Model.Receiving.Items.Count; i++)
+                    {
+                        <div class="receiving-item p-3 mb-3">
+                            <div class="row g-3">
+
+                                <!-- Medicine -->
+                                <div class="col-md-4">
+                                    <label class="form-label">Medicine</label>
+                                    <select name="Receiving.Items[@i].MedicineId" class="form-select">
+                                        <option value="0">Select Medicine</option>
+                                        @foreach (var medicine in Model.Medicines)
+                                        {
+                                            if (medicine.Id == Model.Receiving.Items[i].MedicineId)
+                                            {
+                                                <option value="@medicine.Id" selected>
+                                                    @medicine.Name (@medicine.MedicineCode)
+                                                </option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@medicine.Id">
+                                                    @medicine.Name (@medicine.MedicineCode)
+                                                </option>
+                                            }
+                                        }
+                                    </select>
+                                    <span asp-validation-for="Receiving.Items[i].MedicineId" class="text-danger small"></span>
+                                </div>
+
+                                <!-- Batch Number -->
+                                <div class="col-md-4">
+                                    <label class="form-label">Batch Number</label>
+                                    <input name="Receiving.Items[@i].BatchNumber"
+                                           value="@Model.Receiving.Items[i].BatchNumber"
+                                           class="form-control"
+                                           placeholder="Batch number" />
+                                    <span asp-validation-for="Receiving.Items[i].BatchNumber" class="text-danger small"></span>
+                                </div>
+
+                                <!-- Quantity -->
+                                <div class="col-md-4">
+                                    <label class="form-label">Quantity</label>
+                                    <input name="Receiving.Items[@i].Quantity"
+                                           value="@Model.Receiving.Items[i].Quantity"
+                                           type="number"
+                                           step="0.01"
+                                           min="0.01"
+                                           class="form-control"
+                                           placeholder="Quantity" />
+                                    <span asp-validation-for="Receiving.Items[i].Quantity" class="text-danger small"></span>
+                                </div>
+
+                                <!-- Manufacturing Date -->
+                                <div class="col-md-4">
+                                    <label class="form-label">Manufacturing Date</label>
+                                    <input name="Receiving.Items[@i].ManufacturingDate"
+                                           value="@(Model.Receiving.Items[i].ManufacturingDate == default
+                                               ? ""
+                                               : Model.Receiving.Items[i].ManufacturingDate.ToString("yyyy-MM-dd"))"
+                                           type="date"
+                                           class="form-control" />
+                                    <span asp-validation-for="Receiving.Items[i].ManufacturingDate" class="text-danger small"></span>
+                                </div>
+
+                                <!-- Expiry Date -->
+                                <div class="col-md-4">
+                                    <label class="form-label">Expiry Date</label>
+                                    <input name="Receiving.Items[@i].ExpiryDate"
+                                           value="@(Model.Receiving.Items[i].ExpiryDate == default
+                                               ? ""
+                                               : Model.Receiving.Items[i].ExpiryDate.ToString("yyyy-MM-dd"))"
+                                           type="date"
+                                           class="form-control" />
+                                    <span asp-validation-for="Receiving.Items[i].ExpiryDate" class="text-danger small"></span>
+                                </div>
+
+                                <!-- Unit Price -->
+                                <div class="col-md-3">
+                                    <label class="form-label">Unit Price</label>
+                                    <input name="Receiving.Items[@i].UnitPrice"
+                                           value="@Model.Receiving.Items[i].UnitPrice"
+                                           type="number"
+                                           step="0.01"
+                                           min="0"
+                                           class="form-control"
+                                           placeholder="Unit price" />
+                                    <span asp-validation-for="Receiving.Items[i].UnitPrice" class="text-danger small"></span>
+                                </div>
+
+                                <!-- Remove Button -->
+                                <div class="col-md-1 d-flex align-items-end">
+                                    <button type="button"
+                                            class="btn-remove remove-item w-100 p-2"
+                                            title="Remove">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+
+                            </div>
+                        </div>
+                    }
+
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= ACTIONS ================= -->
+        <div class="d-flex justify-content-end gap-2">
+            <a asp-page="/Receiving/Index" class="btn btn-cancel">
+                Cancel
+            </a>
+            <button type="submit" class="btn btn-teal px-4 py-2" style="border-radius: 0.5rem; font-weight: 500;">
+                <i class="bi bi-check-circle me-1"></i>
+                Save Receiving
+            </button>
+        </div>
+
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        const medicines = @Html.Raw(
+            System.Text.Json.JsonSerializer.Serialize(Model.Medicines)
+        );
+
+        const container = document.getElementById("receivingItems");
+        const addItemBtn = document.getElementById("addItemBtn");
+
+        function createMedicineOptions()
+        {
+            let options = '<option value="0">Select Medicine</option>';
+            medicines.forEach(function (medicine) {
+                options += `<option value="${medicine.id}">${medicine.name} (${medicine.medicineCode})</option>`;
+            });
+            return options;
+        }
+
+        function createItem(index)
+        {
+            return `
+                <div class="receiving-item p-3 mb-3">
+                    <div class="row g-3">
+
+                        <div class="col-md-4">
+                            <label class="form-label">Medicine</label>
+                            <select name="Receiving.Items[${index}].MedicineId" class="form-select">
+                                ${createMedicineOptions()}
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Batch Number</label>
+                            <input name="Receiving.Items[${index}].BatchNumber"
+                                   class="form-control"
+                                   placeholder="Batch number" />
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Quantity</label>
+                            <input name="Receiving.Items[${index}].Quantity"
+                                   type="number"
+                                   step="0.01"
+                                   min="0.01"
+                                   class="form-control"
+                                   placeholder="Quantity" />
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Manufacturing Date</label>
+                            <input name="Receiving.Items[${index}].ManufacturingDate"
+                                   type="date"
+                                   class="form-control" />
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Expiry Date</label>
+                            <input name="Receiving.Items[${index}].ExpiryDate"
+                                   type="date"
+                                   class="form-control" />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Unit Price</label>
+                            <input name="Receiving.Items[${index}].UnitPrice"
+                                   type="number"
+                                   step="0.01"
+                                   min="0"
+                                   class="form-control"
+                                   placeholder="Unit price" />
+                        </div>
+
+                        <div class="col-md-1 d-flex align-items-end">
+                            <button type="button"
+                                    class="btn-remove remove-item w-100 p-2"
+                                    title="Remove">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+
+                    </div>
+                </div>`;
+        }
+
+        addItemBtn.addEventListener("click", function () {
+            const index = container.querySelectorAll(".receiving-item").length;
+            container.insertAdjacentHTML("beforeend", createItem(index));
+        });
+
+        container.addEventListener("click", function (event) {
+            const button = event.target.closest(".remove-item");
+            if (!button) return;
+
+            const items = container.querySelectorAll(".receiving-item");
+            if (items.length <= 1) return;
+
+            button.closest(".receiving-item").remove();
+        });
+    </script>
+}
+
+
+
+
+@* 
+@page
+@model BKMC.Pharmacy.Web.Pages.Receiving.CreateModel
+
+@{
+    ViewData["Title"] = "New Medicine Receiving";
+}
+
+<div class="container-fluid py-4">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h2 class="fw-bold mb-1">
+                New Medicine Receiving
+            </h2>
+
+            <p class="text-muted mb-0">
+                Record medicines received from a supplier.
+            </p>
+        </div>
+
+        <a asp-page="/Receiving/Index"
+           class="btn btn-outline-secondary">
+
+            <i class="bi bi-arrow-left me-2"></i>
+            Back to Receiving
+
+        </a>
+
+    </div>
+
+
+    <!-- Error -->
+    @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger alert-dismissible fade show"
+             role="alert">
+
+            <i class="bi bi-exclamation-triangle me-2"></i>
+
+            @Model.ErrorMessage
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert">
+            </button>
+
+        </div>
+    }
+
+
+    <form method="post">
+
+        <!-- Validation Summary -->
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="alert alert-danger">
+                <div class="fw-semibold mb-2">
+                    Please correct the following errors:
+                </div>
+
+                <div asp-validation-summary="ModelOnly"></div>
+            </div>
+        }
+
+
+        <!-- Invoice Information -->
+        <div class="card shadow-sm border-0 mb-4">
+
+            <div class="card-header bg-white py-3">
+
+                <h5 class="mb-0 fw-semibold">
+                    Invoice Information
+                </h5>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="row g-3">
+
+                    <div class="col-md-4">
+
+                        <label class="form-label fw-semibold">
+                            Supplier
+                        </label>
+
+                        <select asp-for="Receiving.SupplierId"
+                                class="form-select">
+
+                            <option value="0">
+                                Select Supplier
+                            </option>
+
+                            @foreach (var supplier in Model.Suppliers)
+                            {
+                                <option value="@supplier.Id">
+                                    @supplier.SupplierCode - @supplier.Name
+                                </option>
+                            }
+
+                        </select>
+
+                        <span asp-validation-for="Receiving.SupplierId"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+
+                    <div class="col-md-4">
+
+                        <label class="form-label fw-semibold">
+                            Invoice Number
+                        </label>
+
+                        <input asp-for="Receiving.InvoiceNumber"
+                               class="form-control"
+                               placeholder="Enter invoice number" />
+
+                        <span asp-validation-for="Receiving.InvoiceNumber"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+
+                    <div class="col-md-4">
+
+                        <label class="form-label fw-semibold">
+                            Invoice Date
+                        </label>
+
+                        <input asp-for="Receiving.InvoiceDate"
+                               type="date"
+                               class="form-control" />
+
+                        <span asp-validation-for="Receiving.InvoiceDate"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Receiving Items -->
+        <div class="card shadow-sm border-0 mb-4">
+
+            <div class="card-header bg-white py-3">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div>
+                        <h5 class="mb-1 fw-semibold">
+                            Receiving Items
+                        </h5>
+
+                        <small class="text-muted">
+                            Add one or more medicines received in this invoice.
+                        </small>
+                    </div>
+
+                    <button type="button"
+                            id="addItemBtn"
+                            class="btn btn-outline-primary">
+
+                        <i class="bi bi-plus-circle me-2"></i>
+                        Add Medicine
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div class="card-body">
+
+                <div id="receivingItems">
+
+                    @for (var i = 0; i < Model.Receiving.Items.Count; i++)
+                    {
+                        <div class="receiving-item border rounded p-3 mb-3">
+
+                            <div class="row g-3">
+
+                                <!-- Medicine -->
+                                <div class="col-md-4">
+
+                                    <label class="form-label">
+                                        Medicine
+                                    </label>
+
+                                    <select name="Receiving.Items[@i].MedicineId"
+                                            class="form-select">
+
+                                        <option value="0">
+                                            Select Medicine
+                                        </option>
+
+                                        @foreach (var medicine in Model.Medicines)
+                                        {
+                                            if (medicine.Id == Model.Receiving.Items[i].MedicineId)
+                                            {
+                                                <option value="@medicine.Id" selected>
+                                                    @medicine.Name (@medicine.MedicineCode)
+                                                </option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@medicine.Id">
+                                                    @medicine.Name (@medicine.MedicineCode)
+                                                </option>
+                                            }
+                                        }
+
+                                    </select>
+
+                                    <span asp-validation-for="Receiving.Items[i].MedicineId"
+                                          class="text-danger">
+                                    </span>
+
+                                </div>
+
+
+                                <!-- Batch -->
+                                <div class="col-md-4">
+
+                                    <label class="form-label">
+                                        Batch Number
+                                    </label>
+
+                                    <input name="Receiving.Items[@i].BatchNumber"
+                                           value="@Model.Receiving.Items[i].BatchNumber"
+                                           class="form-control"
+                                           placeholder="Batch number" />
+
+                                    <span asp-validation-for="Receiving.Items[i].BatchNumber"
+                                          class="text-danger">
+                                    </span>
+
+                                </div>
+
+
+                                <!-- Quantity -->
+                                <div class="col-md-4">
+
+                                    <label class="form-label">
+                                        Quantity
+                                    </label>
+
+                                    <input name="Receiving.Items[@i].Quantity"
+                                           value="@Model.Receiving.Items[i].Quantity"
+                                           type="number"
+                                           step="0.01"
+                                           min="0.01"
+                                           class="form-control"
+                                           placeholder="Quantity" />
+
+                                    <span asp-validation-for="Receiving.Items[i].Quantity"
+                                          class="text-danger">
+                                    </span>
+
+                                </div>
+
+
+                                <!-- Manufacturing Date -->
+                                <div class="col-md-4">
+
+                                    <label class="form-label">
+                                        Manufacturing Date
+                                    </label>
+
+                                    <input name="Receiving.Items[@i].ManufacturingDate"
+                                           value="@(Model.Receiving.Items[i].ManufacturingDate == default
+                                               ? ""
+                                               : Model.Receiving.Items[i].ManufacturingDate.ToString("yyyy-MM-dd"))"
+                                           type="date"
+                                           class="form-control" />
+
+                                    <span asp-validation-for="Receiving.Items[i].ManufacturingDate"
+                                          class="text-danger">
+                                    </span>
+
+                                </div>
+
+
+                                <!-- Expiry Date -->
+                                <div class="col-md-4">
+
+                                    <label class="form-label">
+                                        Expiry Date
+                                    </label>
+
+                                    <input name="Receiving.Items[@i].ExpiryDate"
+                                           value="@(Model.Receiving.Items[i].ExpiryDate == default
+                                               ? ""
+                                               : Model.Receiving.Items[i].ExpiryDate.ToString("yyyy-MM-dd"))"
+                                           type="date"
+                                           class="form-control" />
+
+                                    <span asp-validation-for="Receiving.Items[i].ExpiryDate"
+                                          class="text-danger">
+                                    </span>
+
+                                </div>
+
+
+                                <!-- Unit Price -->
+                                <div class="col-md-3">
+
+                                    <label class="form-label">
+                                        Unit Price
+                                    </label>
+
+                                    <input name="Receiving.Items[@i].UnitPrice"
+                                           value="@Model.Receiving.Items[i].UnitPrice"
+                                           type="number"
+                                           step="0.01"
+                                           min="0"
+                                           class="form-control"
+                                           placeholder="Unit price" />
+
+                                    <span asp-validation-for="Receiving.Items[i].UnitPrice"
+                                          class="text-danger">
+                                    </span>
+
+                                </div>
+
+
+                                <!-- Remove -->
+                                <div class="col-md-1 d-flex align-items-end">
+
+                                    <button type="button"
+                                            class="btn btn-outline-danger remove-item w-100"
+                                            title="Remove">
+
+                                        <i class="bi bi-trash"></i>
+
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    }
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Actions -->
+        <div class="d-flex justify-content-end gap-2">
+
+            <a asp-page="/Receiving/Index"
+               class="btn btn-light border">
+
+                Cancel
+
+            </a>
+
+            <button type="submit"
+                    class="btn btn-primary">
+
+                <i class="bi bi-check-circle me-2"></i>
+                Save Receiving
+
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+
+        const medicines = @Html.Raw(
+            System.Text.Json.JsonSerializer.Serialize(Model.Medicines)
+        );
+
+        const container =
+            document.getElementById("receivingItems");
+
+        const addItemBtn =
+            document.getElementById("addItemBtn");
+
+
+        function createMedicineOptions()
+        {
+            let options =
+                '<option value="0">Select Medicine</option>';
+
+            medicines.forEach(function (medicine)
+            {
+                options += `
+                    <option value="${medicine.id}">
+                        ${medicine.name} (${medicine.medicineCode})
+                    </option>`;
+            });
+
+            return options;
+        }
+
+
+        function createItem(index)
+        {
+            return `
+                <div class="receiving-item border rounded p-3 mb-3">
+
+                    <div class="row g-3">
+
+                        <div class="col-md-4">
+
+                            <label class="form-label">
+                                Medicine
+                            </label>
+
+                            <select
+                                name="Receiving.Items[${index}].MedicineId"
+                                class="form-select">
+
+                                ${createMedicineOptions()}
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="col-md-4">
+
+                            <label class="form-label">
+                                Batch Number
+                            </label>
+
+                            <input
+                                name="Receiving.Items[${index}].BatchNumber"
+                                class="form-control"
+                                placeholder="Batch number" />
+
+                        </div>
+
+
+                        <div class="col-md-4">
+
+                            <label class="form-label">
+                                Quantity
+                            </label>
+
+                            <input
+                                name="Receiving.Items[${index}].Quantity"
+                                type="number"
+                                step="0.01"
+                                min="0.01"
+                                class="form-control"
+                                placeholder="Quantity" />
+
+                        </div>
+
+
+                        <div class="col-md-4">
+
+                            <label class="form-label">
+                                Manufacturing Date
+                            </label>
+
+                            <input
+                                name="Receiving.Items[${index}].ManufacturingDate"
+                                type="date"
+                                class="form-control" />
+
+                        </div>
+
+
+                        <div class="col-md-4">
+
+                            <label class="form-label">
+                                Expiry Date
+                            </label>
+
+                            <input
+                                name="Receiving.Items[${index}].ExpiryDate"
+                                type="date"
+                                class="form-control" />
+
+                        </div>
+
+
+                        <div class="col-md-3">
+
+                            <label class="form-label">
+                                Unit Price
+                            </label>
+
+                            <input
+                                name="Receiving.Items[${index}].UnitPrice"
+                                type="number"
+                                step="0.01"
+                                min="0"
+                                class="form-control"
+                                placeholder="Unit price" />
+
+                        </div>
+
+
+                        <div class="col-md-1 d-flex align-items-end">
+
+                            <button
+                                type="button"
+                                class="btn btn-outline-danger remove-item w-100"
+                                title="Remove">
+
+                                <i class="bi bi-trash"></i>
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>`;
+        }
+
+
+        addItemBtn.addEventListener("click", function ()
+        {
+            const index =
+                container.querySelectorAll(".receiving-item").length;
+
+            container.insertAdjacentHTML(
+                "beforeend",
+                createItem(index)
+            );
+        });
+
+
+        container.addEventListener("click", function (event)
+        {
+            const button =
+                event.target.closest(".remove-item");
+
+            if (!button)
+                return;
+
+            const items =
+                container.querySelectorAll(".receiving-item");
+
+            if (items.length <= 1)
+            {
+                return;
+            }
+
+            button.closest(".receiving-item").remove();
+        });
+
+    </script>
+}
+ *@

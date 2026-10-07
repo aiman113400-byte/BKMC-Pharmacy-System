@@ -1,0 +1,6 @@
+@BKMC.Pharmacy.API_HostAddress = http://localhost:5293
+
+GET {{BKMC.Pharmacy.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

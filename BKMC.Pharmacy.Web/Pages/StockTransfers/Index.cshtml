@@ -1,0 +1,194 @@
+﻿
+ @page
+@model BKMC.Pharmacy.Web.Pages.StockTransfers.IndexModel
+@using BKMC.Pharmacy.Web.Models.Stock
+
+@{
+    ViewData["Title"] = "Stock Transfers";
+}
+
+<div class="container-fluid py-4">
+
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">
+                <i class="bi bi-arrow-left-right me-2"></i>
+                Stock Transfers
+            </h2>
+            <p class="text-muted mb-0">
+                View stock transfers between locations.
+            </p>
+        </div>
+
+        <a asp-page="/StockTransfers/Create" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-1"></i>
+            New Transfer
+        </a>
+    </div>
+
+    <!-- Error Alert -->
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            @Model.ErrorMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Empty State / Table -->
+    @if (Model.Transfers.Count == 0 && string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle me-2"></i>
+            No stock transfers found.
+        </div>
+    }
+    else if (Model.Transfers.Count > 0)
+    {
+        <div class="card shadow-sm border-0">
+
+            <!-- Card Header -->
+            <div class="card-header bg-white py-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-semibold">Transfer History</h5>
+                    <span class="badge bg-light text-dark border">
+                        @Model.Transfers.Count transfer(s)
+                    </span>
+                </div>
+            </div>
+
+            <!-- Card Body -->
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0 transfer-table">
+
+                        <thead class="table-light">
+                            <tr>
+                                <th style="width: 50px;">#</th>
+                                <th style="width: 140px;">Reference</th>
+                                <th style="width: 130px;">From</th>
+                                <th style="width: 130px;">To</th>
+                                <th style="width: 160px;">Date</th>
+                                <th style="width: 90px;">Items</th>
+                                <th style="width: 160px;">Created At</th>
+                                <th class="text-center" style="width: 90px;">Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var transfer in Model.Transfers)
+                            {
+                                <tr>
+                                    <!-- # -->
+                                    <td>@transfer.Id</td>
+
+                                    <!-- Reference -->
+                                    <td>
+                                        <span class="fw-semibold reference-text"
+                                              title="@transfer.ReferenceNumber">
+                                            @transfer.ReferenceNumber
+                                        </span>
+                                    </td>
+
+                                    <!-- From Location -->
+                                    <td>
+                                        @if (transfer.FromLocation == StockLocation.Warehouse)
+                                        {
+                                            <span class="badge badge-location">
+                                                <i class="bi bi-building"></i> Warehouse
+                                            </span>
+                                        }
+                                        else if (transfer.FromLocation == StockLocation.Pharmacy)
+                                        {
+                                            <span class="badge badge-location">
+                                                <i class="bi bi-shop"></i> Pharmacy
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge badge-location">
+                                                @transfer.FromLocation
+                                            </span>
+                                        }
+                                    </td>
+
+                                    <!-- To Location -->
+                                    <td>
+                                        @if (transfer.ToLocation == StockLocation.Warehouse)
+                                        {
+                                            <span class="badge badge-location">
+                                                <i class="bi bi-building"></i> Warehouse
+                                            </span>
+                                        }
+                                        else if (transfer.ToLocation == StockLocation.Pharmacy)
+                                        {
+                                            <span class="badge badge-location">
+                                                <i class="bi bi-shop"></i> Pharmacy
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge badge-location">
+                                                @transfer.ToLocation
+                                            </span>
+                                        }
+                                    </td>
+
+                                    <!-- Date -->
+                                    <td>
+                                        <div class="date-text">
+                                            @transfer.TransferDate.ToString("MM/dd/yyyy")
+                                        </div>
+                                        <small class="text-muted">
+                                            @transfer.TransferDate.ToString("h:mm tt")
+                                        </small>
+                                    </td>
+
+                                    <!-- Items -->
+                                    <td>
+                                        <span class="badge badge-items">
+                                            @transfer.Items.Count item(s)
+                                        </span>
+                                    </td>
+
+                                    <!-- Created At -->
+                                    <td>
+                                        <div class="date-text">
+                                            @transfer.CreatedAt.ToLocalTime().ToString("MM/dd/yyyy")
+                                        </div>
+                                        <small class="text-muted">
+                                            @transfer.CreatedAt.ToLocalTime().ToString("h:mm tt")
+                                        </small>
+                                    </td>
+
+                                    <!-- Action -->
+                                    <td class="text-center">
+                                        <a asp-page="/StockTransfers/Details"
+                                           asp-route-id="@transfer.Id"
+                                           class="btn btn-sm btn-action"
+                                           title="View Details">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    }
+
+</div> 
+
+
+
+
+
+
+
+

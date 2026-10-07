@@ -1,0 +1,144 @@
+﻿@page
+@model BKMC.Pharmacy.Web.Pages.Medicines.EditModel
+
+@{
+    ViewData["Title"] = "Edit Medicine";
+}
+
+<div class="container-fluid py-4">
+
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">Edit Medicine</h2>
+            <p class="text-muted mb-0">Update medicine master information.</p>
+        </div>
+
+        <a asp-page="/Medicines/Index" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>
+            Back to Medicines
+        </a>
+    </div>
+
+    <!-- Error Alert -->
+    @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            @Model.ErrorMessage
+        </div>
+    }
+
+    <!-- Edit Card -->
+    <div class="card shadow-sm border-0">
+
+        <div class="card-header bg-white py-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0 fw-semibold">Medicine Information</h5>
+                <span class="badge bg-light text-dark">ID: @Model.Id</span>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <form method="post">
+
+                <input type="hidden" asp-for="Id" />
+
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="row g-4">
+
+                    @*
+                        Medicine Code — Commented out
+                        (Agar isay wapas chahiye to comment hata dein)
+
+                        <div class="col-md-6">
+                            <label asp-for="Medicine.MedicineCode" class="form-label fw-semibold">
+                                Medicine Code
+                                <span class="text-danger">*</span>
+                            </label>
+
+                            <input asp-for="Medicine.MedicineCode" class="form-control" placeholder="e.g. MED-001" />
+
+                            <span asp-validation-for="Medicine.MedicineCode" class="text-danger"></span>
+                        </div>
+                    *@
+
+
+                    <!-- Medicine Name -->
+                    <div class="col-md-6">
+                        <label asp-for="Medicine.Name" class="form-label fw-semibold">
+                            Medicine Name
+                            <span class="text-danger">*</span>
+                        </label>
+
+                        <input asp-for="Medicine.Name" class="form-control" placeholder="e.g. Panadol" />
+
+                        <span asp-validation-for="Medicine.Name" class="text-danger"></span>
+                    </div>
+
+
+                    <!-- Generic Name -->
+                    <div class="col-md-6">
+                        <label asp-for="Medicine.GenericName" class="form-label fw-semibold">
+                            Generic Name
+                        </label>
+
+                        <input asp-for="Medicine.GenericName" class="form-control" placeholder="e.g. Paracetamol" />
+
+                        <span asp-validation-for="Medicine.GenericName" class="text-danger"></span>
+                    </div>
+
+
+                    <!-- Strength -->
+                    <div class="col-md-3">
+                        <label asp-for="Medicine.Strength" class="form-label fw-semibold">
+                            Strength
+                        </label>
+
+                        <input asp-for="Medicine.Strength" class="form-control" placeholder="e.g. 500mg" />
+
+                        <span asp-validation-for="Medicine.Strength" class="text-danger"></span>
+                    </div>
+
+
+                    <!-- Form -->
+                    <div class="col-md-3">
+                        <label asp-for="Medicine.Form" class="form-label fw-semibold">
+                            Form
+                        </label>
+
+                        <input asp-for="Medicine.Form" class="form-control" placeholder="e.g. Tablet" />
+
+                        <span asp-validation-for="Medicine.Form" class="text-danger"></span>
+                    </div>
+
+                </div>
+
+
+                <!-- Actions -->
+                <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+
+                    <a asp-page="/Medicines/Index" class="btn btn-outline-secondary">
+                        Cancel
+                    </a>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save me-1"></i>
+                        Update Medicine
+                    </button>
+
+                </div>
+
+            </form>
+        </div>
+
+    </div>
+
+</div>
+
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,261 @@
+﻿@page
+@model BKMC.Pharmacy.Web.Pages.Patients.IndexModel
+
+@{
+    ViewData["Title"] = "Patients";
+}
+
+<style>
+    /* Professional Teal Color matching your theme */
+    .bg-teal { background-color: #0f766e !important; }
+    .text-teal { color: #0f766e !important; }
+    .btn-teal { background-color: #0f766e; color: white; border: none; }
+    .btn-teal:hover { background-color: #0d5c56; color: white; }
+    
+    /* Table Header Styling */
+    .table-custom-header th {
+        background-color: #f0fdfa; /* Light teal background */
+        color: #475569;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-weight: 600;
+        border-bottom: 1px solid #e2e8f0;
+        padding: 1rem 1.5rem;
+    }
+    
+    /* Table Row Styling */
+    .table-custom tbody tr {
+        border-bottom: 1px solid #f1f5f9;
+        transition: background-color 0.2s;
+    }
+    .table-custom tbody tr:hover {
+        background-color: #f8fafc;
+    }
+    .table-custom td {
+        padding: 1rem 1.5rem;
+        vertical-align: middle;
+        color: #334155;
+        font-size: 0.875rem;
+    }
+</style>
+
+<div class="container py-4">
+
+    <!-- 1. Header Card -->
+    <div class="card shadow-sm border-0 mb-4" style="border-radius: 0.75rem;">
+        <div class="card-body p-4 d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3">
+            <div>
+                <h2 class="mb-1 fw-bold text-dark">Patients</h2>
+                <p class="text-muted mb-0 small">Manage registered patients and their medical record information.</p>
+            </div>
+            
+            <a asp-page="/Patients/Create" class="btn btn-teal d-inline-flex align-items-center gap-2 px-4 py-2" style="border-radius: 0.5rem; font-weight: 500;">
+                <i class="bi bi-plus-circle"></i>
+                Add Patient
+            </a>
+        </div>
+    </div>
+
+    <!-- 2. Error Alert -->
+    @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger border-0 shadow-sm" style="border-radius: 0.75rem;">
+            @Model.ErrorMessage
+        </div>
+    }
+
+    <!-- 3. Empty State Alert -->
+    @if (Model.Patients.Count == 0)
+    {
+        <div class="alert alert-info border-0 shadow-sm" style="border-radius: 0.75rem;">
+            No patients found.
+        </div>
+    }
+    else
+    {
+        <!-- 4. Table Card -->
+        <div class="card shadow-sm border-0" style="border-radius: 0.75rem; overflow: hidden;">
+            <div class="table-responsive">
+                <table class="table table-custom mb-0 w-100">
+                    
+                    <thead class="table-custom-header">
+                        <tr>
+                            <th>MR Number</th>
+                            <th>Name</th>
+                            <th>Age</th>
+                            <th>Gender</th>
+                            <th>Admission No.</th>
+                            <th>Referral ID</th>
+                            <th>Created</th>
+                            <th class="text-end">Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var patient in Model.Patients)
+                        {
+                            <tr>
+                                <td>
+                                    <span class="fw-semibold text-dark">@patient.MRNumber</span>
+                                </td>
+                                <td>@patient.Name</td>
+                                <td>
+                                    <span class="fw-medium text-teal">@patient.Age</span>
+                                </td>
+                                <td>@patient.Gender</td>
+                                <td>
+                                    @(string.IsNullOrWhiteSpace(patient.AdmissionNumber) ? "-" : patient.AdmissionNumber)
+                                </td>
+                                <td>
+                                    @(string.IsNullOrWhiteSpace(patient.ReferralId) ? "-" : patient.ReferralId)
+                                </td>
+                                <td class="text-muted">
+                                    @patient.CreatedAt.ToLocalTime()
+                                </td>
+                                <td class="text-end">
+                                    <a asp-page="/Patients/Edit" asp-route-id="@patient.Id" 
+                                       class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1" 
+                                       style="border-radius: 0.375rem; font-weight: 500;">
+                                        <i class="bi bi-pencil"></i>
+                                        Edit
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    }
+
+</div>
+
+
+@* @page
+@model BKMC.Pharmacy.Web.Pages.Patients.IndexModel
+
+@{
+    ViewData["Title"] = "Patients";
+}
+
+<div class="container py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h2 class="mb-1">Patients</h2>
+
+            <p class="text-muted mb-0">
+                Manage registered patients and their medical record information.
+            </p>
+        </div>
+
+        <a asp-page="/Patients/Create"
+           class="btn btn-primary">
+            <i class="bi bi-plus-circle me-1"></i>
+            Add Patient
+        </a>
+
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger">
+            @Model.ErrorMessage
+        </div>
+    }
+
+    @if (Model.Patients.Count == 0)
+    {
+        <div class="alert alert-info">
+            No patients found.
+        </div>
+    }
+    else
+    {
+        <div class="card shadow-sm border-0">
+
+            <div class="card-body">
+
+                <div class="table-responsive">
+
+                    <table class="table table-hover align-middle">
+
+                        <thead>
+                            <tr>
+                                <th>MR Number</th>
+                                <th>Name</th>
+                                <th>Age</th>
+                                <th>Gender</th>
+                                <th>Admission No.</th>
+                                <th>Referral ID</th>
+                                <th>Created</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            @foreach (var patient in Model.Patients)
+                            {
+                                <tr>
+
+                                    <td>
+                                        <strong>
+                                            @patient.MRNumber
+                                        </strong>
+                                    </td>
+
+                                    <td>
+                                        @patient.Name
+                                    </td>
+
+                                    <td>
+                                        @patient.Age
+                                    </td>
+
+                                    <td>
+                                        @patient.Gender
+                                    </td>
+
+                                    <td>
+                                        @(string.IsNullOrWhiteSpace(patient.AdmissionNumber)
+                                            ? "-"
+                                            : patient.AdmissionNumber)
+                                    </td>
+
+                                    <td>
+                                        @(string.IsNullOrWhiteSpace(patient.ReferralId)
+                                            ? "-"
+                                            : patient.ReferralId)
+                                    </td>
+
+                                    <td>
+                                        @patient.CreatedAt.ToLocalTime()
+                                           
+                                    </td>
+                                    <td>
+    <a asp-page="/Patients/Edit"
+       asp-route-id="@patient.Id"
+       class="btn btn-sm btn-outline-primary">
+        <i class="bi bi-pencil"></i>
+        Edit
+    </a>
+</td>
+
+                                </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+    }
+
+</div> *@

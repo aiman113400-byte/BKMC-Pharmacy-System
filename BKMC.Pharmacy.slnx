@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="BKMC.Pharmacy.API/BKMC.Pharmacy.API.csproj" />
+  <Project Path="BKMC.Pharmacy.Application/BKMC.Pharmacy.Application.csproj" />
+  <Project Path="BKMC.Pharmacy.Domain/BKMC.Pharmacy.Domain.csproj" />
+  <Project Path="BKMC.Pharmacy.Infrastructure/BKMC.Pharmacy.Infrastructure.csproj" />
+  <Project Path="BKMC.Pharmacy.Web/BKMC.Pharmacy.Web.csproj" Id="8e54f101-dd9c-4c60-bd44-78c8a396b5f6" />
+</Solution>
