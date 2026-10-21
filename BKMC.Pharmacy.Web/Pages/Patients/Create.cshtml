@@ -7,12 +7,123 @@
 
 <div class="container py-4">
 
-    <div class="mb-4">
-        <h2>Add Patient</h2>
+    <!-- Header Section with Right Side Back Button -->
+    <div class="mb-4 d-flex justify-content-between align-items-center">
+        <div>
+            <h2>Add Patient</h2>
+            <p class="text-muted mb-0">Register a new patient in the pharmacy system.</p>
+        </div>
+        
+        <a asp-page="./Index" class="btn text-white px-4 py-2 d-inline-flex align-items-center gap-2" 
+           style="background-color: #0f766e; border-radius: 0.5rem; font-weight: 500; text-decoration: none; transition: 0.2s;">
+            <i class="bi bi-arrow-left"></i> Back
+        </a>
+    </div>
 
-        <p class="text-muted">
-            Register a new patient in the pharmacy system.
-        </p>
+    @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger">@Model.ErrorMessage</div>
+    }
+
+    <div class="card shadow-sm border-0 mx-auto" style="max-width: 800px; border-radius: 12px;">
+        <div class="card-body p-4">
+            
+            <!-- ✅ Form (action="/Patients/Create" hata diya hai) -->
+            <form method="post">
+                
+                <!-- ✅ Validation Errors ko dikhane ke liye yeh zaroori hai -->
+                <div asp-validation-summary="All" class="text-danger mb-3 fw-bold"></div>
+
+                <div class="row g-3">
+                    
+                    <!-- MR Number -->
+                    <div class="col-md-6">
+                        <label asp-for="Patient.MRNumber" class="form-label">MR Number</label>
+                        <input asp-for="Patient.MRNumber" class="form-control" placeholder="Enter MR Number" />
+                        <span asp-validation-for="Patient.MRNumber" class="text-danger"></span>
+                    </div>
+
+                    <!-- ✅ Patient Name (Yahan 'Patient.Name' use kiya hai, 'PatientName' nahi) -->
+                    <div class="col-md-6">
+                        <label asp-for="Patient.Name" class="form-label">Patient Name</label>
+                        <input asp-for="Patient.Name" class="form-control" placeholder="Enter patient name" />
+                        <span asp-validation-for="Patient.Name" class="text-danger"></span>
+                    </div>
+
+                    <!-- Age & Gender -->
+                    <div class="col-md-6">
+                        <label asp-for="Patient.Age" class="form-label">Age</label>
+                        <input asp-for="Patient.Age" class="form-control" type="number" value="0" />
+                        <span asp-validation-for="Patient.Age" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Patient.Gender" class="form-label">Gender</label>
+                        <select asp-for="Patient.Gender" class="form-select">
+                            <option value="">-- Select Gender --</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <span asp-validation-for="Patient.Gender" class="text-danger"></span>
+                    </div>
+
+                    <!-- Admission Number & Referral ID -->
+                    <div class="col-md-6">
+                        <label asp-for="Patient.AdmissionNumber" class="form-label">Admission Number</label>
+                        <input asp-for="Patient.AdmissionNumber" class="form-control" placeholder="Optional" />
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Patient.ReferralId" class="form-label">Referral ID</label>
+                        <input asp-for="Patient.ReferralId" class="form-control" placeholder="Optional" />
+                    </div>
+
+                </div>
+
+                <!-- Footer / Buttons (Right aligned) -->
+                <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+                    <!-- ✅ Cancel Button Fixed: Ab yeh wapas Index page par le jayega -->
+                    <a asp-page="./Index" class="btn btn-secondary px-4">Cancel</a>
+                    <button type="submit" class="btn btn-primary px-4">Create Patient</button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+
+
+@* 
+ @page
+@model BKMC.Pharmacy.Web.Pages.Patients.CreateModel
+
+@{
+    ViewData["Title"] = "Add Patient";
+}
+
+<div class="container py-4">
+
+    <!-- Header Section with Right Side Back Button -->
+    <div class="mb-4 d-flex justify-content-between align-items-center">
+        <div>
+            <h2>Add Patient</h2>
+            <p class="text-muted mb-0">
+                Register a new patient in the pharmacy system.
+            </p>
+        </div>
+        
+        <!-- 👇 YEH HAI RIGHT SIDE KA BACK BUTTON 👇 -->
+        <a asp-page="./Index" class="btn text-white px-4 py-2 d-inline-flex align-items-center gap-2" 
+           style="background-color: #0f766e; border-radius: 0.5rem; font-weight: 500; text-decoration: none; transition: 0.2s;"
+           onmouseover="this.style.backgroundColor='#0d5c56'" 
+           onmouseout="this.style.backgroundColor='#0f766e'">
+            <i class="bi bi-arrow-left"></i> Back
+        </a>
     </div>
 
     @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
@@ -25,139 +136,60 @@
     <div class="card shadow-sm border-0">
 
         <div class="card-body">
+            <!-- Card ya Modal Body ke andar yeh form lagayein -->
+<form method="post" action="/Patients/Create">
+    <div class="card-body p-3"> <!-- p-3 se padding thodi kam ho gayi -->
+        
+        <div class="row g-3"> <!-- g-3 se fields ke beech ka gap set hai -->
+            
+            <!-- MR Number (Full Width) -->
+            <div class="col-12">
+                <label class="form-label">MR Number</label>
+                <input type="text" class="form-control" name="MRNumber" placeholder="Enter MR Number" required />
+            </div>
 
-            <form method="post">
+            <!-- Patient Name (Full Width) -->
+            <div class="col-12">
+                <label class="form-label">Patient Name</label>
+                <input type="text" class="form-control" name="PatientName" placeholder="Enter patient name" required />
+            </div>
 
-                <!-- MR Number -->
-                <div class="mb-3">
+            <!-- Age & Gender (Aadhi-Aadhi width, ek line mein) -->
+            <div class="col-md-6">
+                <label class="form-label">Age</label>
+                <input type="number" class="form-control" name="Age" value="0" />
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Gender</label>
+                <select class="form-select" name="Gender">
+                    <option value="">-- Select Gender --</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
 
-                    <label asp-for="Patient.MRNumber"
-                           class="form-label">
-                        MR Number
-                    </label>
+            <!-- Admission Number & Referral ID (Aadhi-Aadhi width, ek line mein) -->
+            <div class="col-md-6">
+                <label class="form-label">Admission Number</label>
+                <input type="text" class="form-control" name="AdmissionNumber" placeholder="Optional" />
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Referral ID</label>
+                <input type="text" class="form-control" name="ReferralId" placeholder="Optional" />
+            </div>
 
-                    <input asp-for="Patient.MRNumber"
-                           class="form-control"
-                           placeholder="Enter MR Number" />
+        </div>
+    </div>
 
-                    <span asp-validation-for="Patient.MRNumber"
-                          class="text-danger">
-                    </span>
+    <!-- Footer / Buttons (Right aligned) -->
+    <div class="card-footer bg-light d-flex justify-content-end gap-2 p-3 border-top">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-primary">Create Patient</button>
+    </div>
+</form>
 
-                </div>
-
-                <!-- Patient Name -->
-                <div class="mb-3">
-
-                    <label asp-for="Patient.Name"
-                           class="form-label">
-                        Patient Name
-                    </label>
-
-                    <input asp-for="Patient.Name"
-                           class="form-control"
-                           placeholder="Enter patient name" />
-
-                    <span asp-validation-for="Patient.Name"
-                          class="text-danger">
-                    </span>
-
-                </div>
-
-                <!-- Age -->
-                <div class="mb-3">
-
-                    <label asp-for="Patient.Age"
-                           class="form-label">
-                        Age
-                    </label>
-
-                    <input asp-for="Patient.Age"
-                           class="form-control"
-                           type="number"
-                           min="0"
-                           max="150"
-                           placeholder="Enter age" />
-
-                    <span asp-validation-for="Patient.Age"
-                          class="text-danger">
-                    </span>
-
-                </div>
-
-                <!-- Gender -->
-                <div class="mb-3">
-
-                    <label asp-for="Patient.Gender"
-                           class="form-label">
-                        Gender
-                    </label>
-
-                    <select asp-for="Patient.Gender" class="form-select">
-        <option value="">-- Select Gender --</option>
-        <option value="1">Male</option>
-        <option value="2">Female</option>
-        <option value="3">Other</option>
-    </select>
-
-                    <span asp-validation-for="Patient.Gender"
-                          class="text-danger">
-                    </span>
-
-                </div>
-
-                <!-- Admission Number -->
-                <div class="mb-3">
-
-                    <label asp-for="Patient.AdmissionNumber"
-                           class="form-label">
-                        Admission Number
-                    </label>
-
-                    <input asp-for="Patient.AdmissionNumber"
-                           class="form-control"
-                           placeholder="Optional" />
-
-                    <span asp-validation-for="Patient.AdmissionNumber"
-                          class="text-danger">
-                    </span>
-
-                </div>
-
-                <!-- Referral ID -->
-                <div class="mb-3">
-
-                    <label asp-for="Patient.ReferralId"
-                           class="form-label">
-                        Referral ID
-                    </label>
-
-                    <input asp-for="Patient.ReferralId"
-                           class="form-control"
-                           placeholder="Optional" />
-
-                    <span asp-validation-for="Patient.ReferralId"
-                          class="text-danger">
-                    </span>
-
-                </div>
-
-                <!-- Buttons -->
-                <div class="d-flex gap-2">
-
-                    <a asp-page="/Patients/Index"
-                       class="btn btn-secondary">
-                        Cancel
-                    </a>
-
-                    <button type="submit"
-                            class="btn btn-primary">
-                        Create Patient
-                    </button>
-
-                </div>
-
-            </form>
+    
 
         </div>
 
@@ -166,7 +198,12 @@
 </div>
 
 @section Scripts {
-
     <partial name="_ValidationScriptsPartial" />
-
 }
+
+
+
+
+
+
+   *@

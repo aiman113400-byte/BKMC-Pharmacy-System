@@ -1,9 +1,455 @@
 /* ============================================================
+   BKMC PHARMACY — GLOBAL DESIGN SYSTEM (CLEAN & PROFESSIONAL)
+   ============================================================ */
+
+:root {
+    --primary-teal: #0f766e;
+    --primary-hover: #0d5c63;
+    --light-teal: #f0fdfa;
+   
+    --header-bg: #e8f0ee;
+    --header-border: #b2dfdb;
+    --text-dark: #111827;
+    --text-muted: #6b7280;
+    --border-color: #e5e7eb;
+    --bg-page: #f4fbfa;
+}
+
+/* ---------- BASE & TYPOGRAPHY ---------- */
+html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 15px;
+    }
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-page);
+    color: var(--text-dark);
+}
+
+a {
+    color: var(--primary-teal);
+    text-decoration: none;
+}
+
+    a:hover {
+        color: var(--primary-hover);
+        text-decoration: none;
+    }
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    color: var(--text-dark);
+    margin: 0;
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 4px;
+}
+
+/* ---------- PAGE HEADERS ---------- */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.page-header__title, .container-fluid h2.fw-bold {
+    font-size: 1.35rem !important;
+    font-weight: 700 !important;
+    color: var(--text-dark) !important;
+    margin-bottom: 3px !important;
+    letter-spacing: -0.01em;
+}
+
+.page-header__subtitle, .container-fluid .text-muted {
+    font-size: 0.8rem !important;
+    color: var(--text-muted) !important;
+}
+
+/* ---------- UNIVERSAL CARDS ---------- */
+.card {
+    border: 1px solid var(--border-color) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+    overflow: hidden !important;
+    background: #ffffff !important;
+    margin-bottom: 16px !important;
+}
+
+/* Universal Card Header (Same color for every page) */
+.card-header {
+    background-color: var(--header-bg) !important;
+    border-bottom: 2px solid var(--header-border) !important;
+    padding: 12px 20px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+}
+
+    .card-header h5,
+    .card-header h6,
+    .card-header .fw-semibold,
+    .card-header h2 {
+        font-size: 0.9rem !important;
+        font-weight: 700 !important;
+        color: var(--primary-teal) !important;
+        margin: 0 !important;
+        letter-spacing: .01em !important;
+    }
+
+.card-body {
+    padding: 18px 20px !important;
+}
+
+    .card-body.p-0 {
+        padding: 0 !important;
+    }
+
+/* ---------- UNIVERSAL TABLES ---------- */
+.table {
+    width: 100% !important;
+    font-size: 0.8rem !important;
+    color: #374151 !important;
+    margin: 0 !important;
+    border-collapse: collapse !important;
+}
+
+    /* Table Header (Same color as Card Header) */
+    .table thead th,
+    .table > thead > tr > th,
+    .table thead.table-light th {
+        background-color: var(--header-bg) !important;
+        color: var(--primary-teal) !important;
+        font-size: 0.65rem !important;
+        font-weight: 700 !important;
+        letter-spacing: .08em !important;
+        text-transform: uppercase !important;
+        padding: 12px 16px !important;
+        text-align: left !important;
+        border-bottom: 2px solid var(--header-border) !important;
+        white-space: nowrap !important;
+        vertical-align: middle !important;
+    }
+
+    /* Table Rows */
+    .table tbody td {
+        padding: 12px 16px !important;
+        border-bottom: 1px solid var(--border-color) !important;
+        vertical-align: middle !important;
+        background-color: #ffffff !important;
+        font-size: 0.8rem !important;
+        line-height: 1.35 !important;
+    }
+
+    .table tbody tr:last-child td {
+        border-bottom: none !important;
+    }
+
+    /* Universal Table Hover (Same everywhere) */
+    .table tbody tr:hover,
+    .table tbody tr:hover td {
+        background-color: var(--light-teal) !important;
+        transition: background-color .15s ease !important;
+    }
+
+/* ---------- UNIVERSAL FORMS ---------- */
+.form-label, label.form-label {
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+    color: #374151 !important;
+    margin-bottom: 5px !important;
+    display: block !important;
+}
+
+.form-control, .form-select, input[type="text"], input[type="number"], textarea, select {
+    width: 100% !important;
+    padding: 8px 12px !important;
+    font-size: 0.8rem !important;
+    color: var(--text-dark) !important;
+    background-color: #ffffff !important;
+    border: 1px solid #d1d5db !important;
+    border-radius: 8px !important;
+    outline: none !important;
+    transition: all .15s ease !important;
+}
+
+    .form-control:focus, .form-select:focus, input:focus, textarea:focus {
+        border-color: var(--primary-teal) !important;
+        box-shadow: 0 0 0 3px rgba(15, 118, 110, .1) !important;
+    }
+
+    .form-control::placeholder {
+        color: #9ca3af !important;
+        font-size: 0.78rem !important;
+    }
+
+.text-danger, .field-validation-error, span.text-danger {
+    font-size: 0.7rem !important;
+    color: #dc2626 !important;
+    display: block !important;
+    margin-top: 4px !important;
+}
+
+/* ---------- UNIVERSAL BUTTONS ---------- */
+.btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    padding: 8px 16px !important;
+    font-size: 0.8rem !important;
+    font-weight: 600 !important;
+    border-radius: 8px !important;
+    text-decoration: none !important;
+    transition: all .15s ease !important;
+    cursor: pointer !important;
+}
+
+.btn-primary {
+    background-color: var(--primary-teal) !important;
+    border-color: var(--primary-teal) !important;
+    color: #ffffff !important;
+    box-shadow: 0 2px 5px rgba(15, 118, 110, .2) !important;
+}
+
+    .btn-primary:hover {
+        background-color: var(--primary-hover) !important;
+        border-color: var(--primary-hover) !important;
+        transform: translateY(-1px) !important;
+    }
+
+.btn-secondary, .btn-outline-secondary {
+    background-color: #ffffff !important;
+    color: #374151 !important;
+    border: 1px solid #d1d5db !important;
+}
+
+    .btn-secondary:hover, .btn-outline-secondary:hover {
+        background-color: #f9fafb !important;
+        color: var(--text-dark) !important;
+        border-color: #9ca3af !important;
+    }
+
+/* ---------- STATUS PILLS & BADGES ---------- */
+.badge, .status-pill {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+    padding: 4px 10px !important;
+    border-radius: 999px !important;
+    font-size: 0.68rem !important;
+    font-weight: 700 !important;
+    letter-spacing: .02em !important;
+    white-space: nowrap !important;
+    border: none !important;
+}
+
+    .badge.bg-success, .status-pill--active, .status-pill.active {
+        background-color: #d1fae5 !important;
+        color: #065f46 !important;
+    }
+
+    .badge.bg-warning {
+        background-color: #fef3c7 !important;
+        color: #92400e !important;
+    }
+
+    .badge.bg-danger, .status-pill--inactive, .status-pill.inactive {
+        background-color: #fee2e2 !important;
+        color: #991b1b !important;
+    }
+
+    .badge.bg-secondary, .badge.items-badge {
+        background-color: var(--light-teal) !important;
+        color: var(--primary-teal) !important;
+    }
+
+    .badge.location-badge {
+        background-color: var(--light-teal) !important;
+        color: var(--primary-teal) !important;
+    }
+
+/* ---------- ALERTS ---------- */
+.alert {
+    border-radius: 10px !important;
+    font-size: 0.82rem;
+    padding: 12px 16px !important;
+    border: 1px solid transparent;
+}
+
+.alert-danger {
+    background: #fef2f2 !important;
+    border-left: 4px solid #dc2626 !important;
+    color: #991b1b !important;
+}
+
+.alert-success {
+    background: #f0fdf4 !important;
+    border-left: 4px solid #16a34a !important;
+    color: #166534 !important;
+}
+
+/* ---------- SEARCH & FILTER BAR ---------- */
+.filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.filter-search {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    min-width: 220px;
+    max-width: 420px;
+}
+
+    .filter-search input {
+        border: none;
+        background: transparent;
+        outline: none;
+        font-size: 0.8rem;
+        flex: 1;
+        color: #374151;
+        padding: 0;
+    }
+
+/* ---------- SIDEBAR (Professional Dark Teal) ---------- */
+.sidebar, .main-sidebar, aside, .nav-sidebar, #sidebar {
+    background-color: #0d5c56 !important;
+}
+
+    .sidebar .nav-link, .main-sidebar .nav-link, aside .nav-link, .nav-sidebar .nav-link, #sidebar .nav-link {
+        color: #ffffff !important;
+        font-weight: 500 !important;
+        text-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
+        letter-spacing: 0.2px;
+        padding: 10px 16px !important;
+        border-radius: 6px !important;
+        margin: 2px 8px !important;
+    }
+
+        .sidebar .nav-link i, .main-sidebar .nav-link i, aside .nav-link i {
+            color: #ffffff !important;
+            font-size: 1rem !important;
+        }
+
+        .sidebar .nav-link:hover, .sidebar .nav-link.active,
+        .main-sidebar .nav-link:hover, .main-sidebar .nav-link.active {
+            background-color: #083d38 !important;
+            color: #ffffff !important;
+            font-weight: 600 !important;
+        }
+
+    .sidebar .nav-header, .nav-sidebar .nav-header {
+        color: #fbbf24 !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        opacity: 1 !important;
+        padding: 16px 16px 8px 16px !important;
+    }
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 768px) {
+    .page-header__title, .container-fluid h2.fw-bold {
+        font-size: 1.15rem !important;
+    }
+
+    .card-header {
+        padding: 10px 14px !important;
+    }
+
+    .card-body {
+        padding: 14px 16px !important;
+    }
+
+    .table thead th, .table tbody td {
+        padding: 10px 12px !important;
+        font-size: 0.72rem !important;
+    }
+}
+/* ============================================================
+   PROFESSIONAL MODAL DESIGN (Matching Clean Card System)
+   ============================================================ */
+
+.modal-content {
+    border: 1px solid var(--border-color) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
+    overflow: hidden !important;
+}
+
+/* Modal Header (Exactly like Card Header) */
+.modal-header {
+    background-color: var(--header-bg) !important;
+    border-bottom: 2px solid var(--header-border) !important;
+    padding: 14px 20px !important;
+}
+
+.modal-title {
+    font-size: 0.95rem !important;
+    font-weight: 700 !important;
+    color: var(--primary-teal) !important;
+    margin: 0 !important;
+}
+
+/* Modal Body (Compact padding) */
+.modal-body {
+    padding: 20px !important;
+    background-color: #ffffff;
+}
+
+/* Modal Footer */
+.modal-footer {
+    background-color: #f9fafb !important;
+    border-top: 1px solid var(--border-color) !important;
+    padding: 14px 20px !important;
+    gap: 8px !important;
+}
+
+/* Make the modal medium-small */
+.modal-dialog.modal-md {
+    max-width: 600px !important; /* Medium Small Size */
+}
+
+
+
+
+/* ============================================================
    SITE.CSS — Global + Medicine Master Styles
    ============================================================ */
 
 /* ---------- BASE ---------- */
-html {
+/*html {
     font-size: 14px;
 }
 
@@ -44,13 +490,13 @@ h1, h2, h3, h4, h5, h6 {
 ::-webkit-scrollbar-thumb {
     background: #d1d5db;
     border-radius: 4px;
-}
+}*/
 
 
 /* ============================================================
    PAGE HEADER (Breadcrumb + Title + Action)
    ============================================================ */
-.page-header {
+/*.page-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
@@ -84,10 +530,10 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 0.78rem;
     color: #6b7280;
     margin: 0;
-}
+}*/
 
 /* Add Button */
-.btn-add {
+/*.btn-add {
     display: inline-flex;
     align-items: center;
     gap: 6px;
@@ -108,14 +554,14 @@ h1, h2, h3, h4, h5, h6 {
         color: #ffffff;
         transform: translateY(-1px);
         box-shadow: 0 4px 10px rgba(15, 118, 110, .25);
-    }
+    }*/
 
 
 /* ============================================================
    FILTER BAR — Exactly Demo Style
    ============================================================ */
 
-.filter-bar {
+/*.filter-bar {
     display: flex;
     align-items: center;
     gap: 12px;
@@ -125,21 +571,21 @@ h1, h2, h3, h4, h5, h6 {
     border-radius: 10px;
     margin-bottom: 14px;
     flex-wrap: wrap;
-}
+}*/
 
 /* Tabs Container */
-.filter-tabs {
+/*.filter-tabs {
     display: flex;
     align-items: center;
     gap: 2px;
     padding: 3px;
-    background: #e6f7f5 !important; /* ✅ Grey background */
-    border-radius: 8px;
+    background: #e6f7f5 !important;*/ /* ✅ Grey background */
+    /*border-radius: 8px;
     border: 1px solid #a7f3d0 !important;
-}
+}*/
 
 /* Individual Tab */
-.filter-tab {
+/*.filter-tab {
     display: inline-flex;
     align-items: center;
     gap: 6px;
@@ -159,24 +605,24 @@ h1, h2, h3, h4, h5, h6 {
 
     .filter-tab:hover {
         color: #374151;
-    }
+    }*/
 
     /* ✅ Active tab — White background + Teal text */
-    .filter-tab.active {
+    /*.filter-tab.active {
         background: #ffffff;
         color: #0f766e;
         font-weight: 700;
         box-shadow: 0 1px 3px rgba(0, 0, 0, .08);
-    }
+    }*/
 
 /* ✅ Count Badge — Grey circle (like demo) */
-.filter-tab__count {
+/*.filter-tab__count {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     padding: 0 6px;
-    background: #dcfce7; /* ✅ Grey by default */
-    color: #6b7280;
+    background: #dcfce7;*/ /* ✅ Grey by default */
+    /*color: #6b7280;
     border-radius: 999px;
     font-size: 0.6rem;
     font-weight: 700;
@@ -184,16 +630,16 @@ h1, h2, h3, h4, h5, h6 {
     height: 16px;
     line-height: 1;
     text-align: center;
-}
+}*/
 
 /* ✅ Active tab ka count badge — Teal */
-.filter-tab.active .filter-tab__count {
+/*.filter-tab.active .filter-tab__count {
     background: #dcfce7;
     color: #16a34a;
-}
+}*/
 
 /* Search Input */
-.filter-search {
+/*.filter-search {
     flex: 1;
     display: flex;
     align-items: center;
@@ -223,7 +669,7 @@ h1, h2, h3, h4, h5, h6 {
 
         .filter-search input::placeholder {
             color: #9ca3af;
-        }
+        }*/
 
 
 /* ============================================================
@@ -352,7 +798,7 @@ h1, h2, h3, h4, h5, h6 {
    MEDICINES TABLE — Compact & Professional
    ============================================================ */
 
-.med-table-wrapper {
+/*.med-table-wrapper {
     background: #ffffff !important;
     border: 1px solid #e5e7eb;
     border-radius: 8px;
@@ -363,27 +809,27 @@ h1, h2, h3, h4, h5, h6 {
     width: 100%;
     border-collapse: collapse;
     font-size: 0.78rem;
-}
+}*/
 
     /* ---------- HEADER ---------- */
-    .med-table thead th {
-        background: #e6f7f5 !important; /* ✅ Grey header (demo jaisa) */
-        color: #065f46 !important;
+    /*.med-table thead th {
+        background: #e6f7f5 !important;*/ /* ✅ Grey header (demo jaisa) */
+        /*color: #065f46 !important;
         font-size: 0.6rem;
         font-weight: 700;
         letter-spacing: .08em;
         text-transform: uppercase;
-        padding: 11px 16px; /* ✅ Compact */
-        text-align: left;
+        padding: 11px 16px;*/ /* ✅ Compact */
+        /*text-align: left;
         border-bottom: 1px solid #a7f3d0 !important;
         white-space: nowrap;
         vertical-align: middle;
-    }
+    }*/
 
     /* ---------- BODY ---------- */
-    .med-table tbody td {
-        padding: 10px 16px; /* ✅ Compact padding */
-        border-bottom: 1px solid #f3f4f6;
+    /*.med-table tbody td {
+        padding: 10px 16px;*/ /* ✅ Compact padding */
+        /*border-bottom: 1px solid #f3f4f6;
         color: #374151;
         vertical-align: middle;
         font-size: 0.78rem;
@@ -391,8 +837,8 @@ h1, h2, h3, h4, h5, h6 {
     }
 
     .med-table tbody tr {
-        height: 48px; /* ✅ Fixed compact height */
-    }
+        height: 48px;*/ /* ✅ Fixed compact height */
+    /*}
 
         .med-table tbody tr:hover {
             background: #fafbfc;
@@ -400,10 +846,10 @@ h1, h2, h3, h4, h5, h6 {
 
         .med-table tbody tr:last-child td {
             border-bottom: none;
-        }
+        }*/
 
 /* ---------- MEDICINE NAME CELL ---------- */
-.med-name {
+/*.med-name {
     display: block;
     font-weight: 600;
     color: #111827;
@@ -417,10 +863,10 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 0.66rem;
     color: #9ca3af;
     line-height: 1.25;
-}
+}*/
 
 /* ---------- STATUS PILL (Compact) ---------- */
-.status-pill {
+/*.status-pill {
     display: inline-flex !important;
     align-items: center !important;
     gap: 6px !important;
@@ -431,20 +877,20 @@ h1, h2, h3, h4, h5, h6 {
     letter-spacing: .02em !important;
     white-space: nowrap !important;
     line-height: 1.2 !important;
-}
+}*/
 
     /* Dot (Common) */
-    .status-pill::before {
+    /*.status-pill::before {
         content: '' !important;
         width: 6px !important;
         height: 6px !important;
         border-radius: 50% !important;
         display: inline-block !important;
         flex-shrink: 0 !important;
-    }
+    }*/
 
     /* ---------- ACTIVE — Green ---------- */
-    .status-pill--active,
+    /*.status-pill--active,
     .status-pill.active {
         background-color: #d1fae5 !important;
         color: #065f46 !important;
@@ -453,20 +899,20 @@ h1, h2, h3, h4, h5, h6 {
         .status-pill--active::before,
         .status-pill.active::before {
             background-color: #10b981 !important;
-        }
+        }*/
 
     /* ---------- INACTIVE — RED ---------- */
-    .status-pill--inactive,
+    /*.status-pill--inactive,
     .status-pill.inactive {
         background-color: #fee2e2 !important;
         color: #991b1b !important;
-    }
+    }*/
 
 /* ============================================================
    ACTION BUTTONS
    ============================================================ */
 
-.table-actions {
+/*.table-actions {
     display: flex;
     gap: 6px;
     justify-content: flex-end;
@@ -499,12 +945,12 @@ h1, h2, h3, h4, h5, h6 {
         background: #fef2f2;
         color: #dc2626;
         border-color: #dc2626;
-    }
+    }*/
 
 /* ============================================================
    ALERTS
    ============================================================ */
-.alert {
+/*.alert {
     border-radius: 10px !important;
     font-size: 0.82rem;
     padding: 10px 14px !important;
@@ -521,13 +967,13 @@ h1, h2, h3, h4, h5, h6 {
     background: #f0fdf4 !important;
     border-left: 4px solid #16a34a !important;
     color: #166534 !important;
-}
+}*/
 
 
 /* ============================================================
    RESPONSIVE
    ============================================================ */
-@media (max-width: 768px) {
+/*@media (max-width: 768px) {
     .filter-bar {
         flex-direction: column;
         align-items: stretch;
@@ -545,7 +991,7 @@ h1, h2, h3, h4, h5, h6 {
     .med-table tbody td {
         padding: 10px 12px;
     }
-}
+}*/
 
 
 /* ============================================================
@@ -553,7 +999,7 @@ h1, h2, h3, h4, h5, h6 {
    ============================================================ */
 
 /* ---------- PAGE TITLE ---------- */
-.container-fluid h2.fw-bold {
+/*.container-fluid h2.fw-bold {
     font-size: 1.25rem !important;
     font-weight: 700 !important;
     color: #111827 !important;
@@ -564,20 +1010,20 @@ h1, h2, h3, h4, h5, h6 {
 .container-fluid .text-muted {
     font-size: 0.75rem !important;
     color: #6b7280 !important;
-}
+}*/
 
 /* ---------- CARD ---------- */
-.card {
+/*.card {
     border: 1px solid #e5e7eb !important;
     border-radius: 10px !important;
     box-shadow: 0 1px 3px rgba(0, 0, 0, .03) !important;
     overflow: hidden !important;
-}
+}*/
 
 /* ✅ CARD HEADER — GREEN (Like Table Header) */
-.card-header {
-    background-color: #e6f7f5 !important; /* ✅ Light green */
-    border-bottom: 1px solid #a7f3d0 !important;
+/*.card-header {
+    background-color: #e6f7f5 !important;*/ /* ✅ Light green */
+    /*border-bottom: 1px solid #a7f3d0 !important;
     padding: 10px 16px !important;
 }
 
@@ -586,18 +1032,18 @@ h1, h2, h3, h4, h5, h6 {
     .card-header .fw-semibold {
         font-size: 0.85rem !important;
         font-weight: 700 !important;
-        color: #065f46 !important;             /* ✅ Dark green text */
-        margin: 0 !important;
+        color: #065f46 !important;*/             /* ✅ Dark green text */
+        /*margin: 0 !important;
         letter-spacing: .01em !important;
-    }
+    }*/
 
 /* ✅ CARD BODY — Compact Padding */
-.card-body {
+/*.card-body {
     padding: 14px 16px !important;
-}
+}*/
 
 /* ---------- FORM LABELS ---------- */
-.form-label,
+/*.form-label,
 label.form-label {
     font-size: 0.7rem !important;
     font-weight: 600 !important;
@@ -606,23 +1052,23 @@ label.form-label {
     margin-bottom: 4px !important;
     display: block !important;
     line-height: 1.2 !important;
-}
+}*/
 
 /* Required star (*) */
-.text-danger {
+/*.text-danger {
     color: #dc2626 !important;
     font-size: 0.7rem !important;
-}
+}*/
 
 /* ---------- FORM INPUTS — Compact ---------- */
-.form-control,
+/*.form-control,
 .form-select,
 input[type="text"],
 input[type="number"],
 textarea {
     width: 100% !important;
-    padding: 7px 11px !important;             /* ✅ Chhota padding */
-    font-size: 0.78rem !important;
+    padding: 7px 11px !important;*/             /* ✅ Chhota padding */
+    /*font-size: 0.78rem !important;
     color: #111827 !important;
     background-color: #ffffff !important;
     border: 1px solid #e5e7eb !important;
@@ -644,29 +1090,29 @@ textarea {
     textarea::placeholder {
         color: #9ca3af !important;
         font-size: 0.76rem !important;
-    }
+    }*/
 
 /* Validation message */
-.text-danger.small,
+/*.text-danger.small,
 span.text-danger,
 .field-validation-error {
     font-size: 0.68rem !important;
     color: #dc2626 !important;
     display: block !important;
     margin-top: 3px !important;
-}
+}*/
 
 /* ---------- ROW SPACING (Compact) ---------- */
-.row.g-4,
+/*.row.g-4,
 .row.g-3 {
-    --bs-gutter-y: 0.85rem !important;         /* ✅ Chhota vertical gap */
-    --bs-gutter-x: 1rem !important;
-}
+    --bs-gutter-y: 0.85rem !important;*/         /* ✅ Chhota vertical gap */
+    /*--bs-gutter-x: 1rem !important;
+}*/
 
 /* ---------- BUTTONS ---------- */
 
 /* Primary Submit Button — TEAL */
-.btn.btn-primary,
+/*.btn.btn-primary,
 button.btn-primary {
     display: inline-flex !important;
     align-items: center !important;
@@ -689,10 +1135,10 @@ button.btn-primary {
         border-color: #0d5c63 !important;
         transform: translateY(-1px) !important;
         box-shadow: 0 4px 9px rgba(15, 118, 110, .3) !important;
-    }
+    }*/
 
 /* Cancel Button */
-.btn.btn-secondary,
+/*.btn.btn-secondary,
 a.btn.btn-secondary {
     display: inline-flex !important;
     align-items: center !important;
@@ -712,18 +1158,18 @@ a.btn.btn-secondary {
         background-color: #f9fafb !important;
         color: #111827 !important;
         border-color: #d1d5db !important;
-    }
+    }*/
 
 /* ---------- BUTTONS CONTAINER ---------- */
-.d-flex.justify-content-end {
+/*.d-flex.justify-content-end {
     gap: 8px !important;
     margin-top: 14px !important;
     padding-top: 14px !important;
     border-top: 1px solid #f3f4f6 !important;
-}
+}*/
 
 /* ---------- RESPONSIVE ---------- */
-@media (max-width: 768px) {
+/*@media (max-width: 768px) {
     .container-fluid h2.fw-bold {
         font-size: 1.1rem !important;
     }
@@ -731,14 +1177,14 @@ a.btn.btn-secondary {
     .card-body {
         padding: 12px 14px !important;
     }
-}
+}*/
 
 /* ============================================================
    MEDICINE RECEIVING PAGE — Compact & Professional
    ============================================================ */
 
 /* ---------- PAGE TITLE ---------- */
-.container-fluid h2.fw-bold {
+/*.container-fluid h2.fw-bold {
     font-size: 1.25rem !important;
     font-weight: 700 !important;
     color: #111827 !important;
@@ -749,25 +1195,25 @@ a.btn.btn-secondary {
 .container-fluid .text-muted {
     font-size: 0.75rem !important;
     color: #6b7280 !important;
-}
+}*/
 
 /* ============================================================
    RECEIVING RECORDS CARD — Premium Compact Design
    ============================================================ */
 
 /* ---------- CARD WRAPPER ---------- */
-.card {
+/*.card {
     border: 1px solid #e5e7eb !important;
     border-radius: 12px !important;
     box-shadow: 0 1px 2px rgba(0, 0, 0, .04) !important;
     overflow: hidden !important;
     background: #ffffff !important;
-}
+}*/
 
 /* ---------- CARD HEADER — Light Teal ---------- */
-.card-header {
-    background-color: #e6f7f5 !important; /* ✅ Halka teal */
-    border-bottom: 1px solid #b2dfdb !important;
+/*.card-header {
+    background-color: #e6f7f5 !important;*/ /* ✅ Halka teal */
+    /*border-bottom: 1px solid #b2dfdb !important;
     padding: 10px 16px !important;
 }
 
@@ -776,40 +1222,40 @@ a.btn.btn-secondary {
     .card-header .fw-semibold {
         font-size: 0.82rem !important;
         font-weight: 700 !important;
-        color: #0f766e !important; /* ✅ Dark teal */
-        margin: 0 !important;
+        color: #0f766e !important;*/ /* ✅ Dark teal */
+        /*margin: 0 !important;
         letter-spacing: .01em !important;
-    }
+    }*/
 
     /* ---------- RECORDS BADGE (Compact Premium) ---------- */
-    .card-header .badge,
+    /*.card-header .badge,
     .card-header .badge.bg-primary {
-        background-color: #ffffff !important; /* ✅ White */
-        color: #0f766e !important; /* ✅ Teal text */
-        font-size: 0.65rem !important;
+        background-color: #ffffff !important;*/ /* ✅ White */
+        /*color: #0f766e !important;*/ /* ✅ Teal text */
+        /*font-size: 0.65rem !important;
         font-weight: 700 !important;
         padding: 4px 10px !important;
         border-radius: 999px !important;
-        border: 1px solid #b2dfdb !important; /* ✅ Halka border */
-        box-shadow: 0 1px 2px rgba(15, 118, 110, .06) !important;
-    }
+        border: 1px solid #b2dfdb !important;*/ /* ✅ Halka border */
+        /*box-shadow: 0 1px 2px rgba(15, 118, 110, .06) !important;
+    }*/
 
 /* ---------- TABLE ---------- */
-.table {
+/*.table {
     width: 100% !important;
     font-size: 0.74rem !important;
     color: #374151 !important;
     margin: 0 !important;
     border-collapse: collapse !important;
-}
+}*/
 
     /* ---------- TABLE HEADER — Very Light ---------- */
-    .table thead th,
+    /*.table thead th,
     .table > thead > tr > th,
     .table thead.table-light th {
-        background-color: #f0fdfa !important; /* ✅ Bahut halka teal */
-        color: #0f766e !important; /* ✅ Teal text */
-        font-size: 0.6rem !important;
+        background-color: #f0fdfa !important;*/ /* ✅ Bahut halka teal */
+        /*color: #0f766e !important;*/ /* ✅ Teal text */
+        /*font-size: 0.6rem !important;
         font-weight: 700 !important;
         letter-spacing: .08em !important;
         text-transform: uppercase !important;
@@ -818,12 +1264,12 @@ a.btn.btn-secondary {
         border-bottom: 1px solid #e5e7eb !important;
         white-space: nowrap !important;
         vertical-align: middle !important;
-    }
+    }*/
 
     /* ---------- TABLE BODY — Compact ---------- */
-    .table tbody td {
-        padding: 10px 14px !important; /* ✅ Chhota padding */
-        border-bottom: 1px solid #f3f4f6 !important;
+    /*.table tbody td {
+        padding: 10px 14px !important;*/ /* ✅ Chhota padding */
+        /*border-bottom: 1px solid #f3f4f6 !important;
         color: #374151 !important;
         vertical-align: middle !important;
         font-size: 0.74rem !important;
@@ -831,32 +1277,32 @@ a.btn.btn-secondary {
     }
 
     .table tbody tr {
-        height: 48px !important; /* ✅ Fixed compact height */
-        transition: background .15s ease !important;
+        height: 48px !important;*/ /* ✅ Fixed compact height */
+        /*transition: background .15s ease !important;
     }
 
         .table tbody tr:hover {
-            background-color: #f0fdfa !important; /* ✅ Halka teal hover */
-        }
+            background-color: #f0fdfa !important;*/ /* ✅ Halka teal hover */
+        /*}
 
         .table tbody tr:last-child td {
             border-bottom: none !important;
-        }
+        }*/
 
     /* ---------- INVOICE NUMBER ---------- */
-    .table tbody td .fw-semibold,
+    /*.table tbody td .fw-semibold,
     .table tbody td strong {
         font-weight: 700 !important;
         color: #111827 !important;
         font-size: 0.76rem !important;
-    }
+    }*/
 
     /* ---------- ITEMS BADGE (Compact Pill) ---------- */
-    .table tbody .badge,
+    /*.table tbody .badge,
     .table tbody .badge.bg-secondary {
-        background-color: #ccfbf1 !important; /* ✅ Light teal */
-        color: #0f766e !important; /* ✅ Dark teal text */
-        font-size: 0.65rem !important;
+        background-color: #ccfbf1 !important;*/ /* ✅ Light teal */
+        /*color: #0f766e !important;*/ /* ✅ Dark teal text */
+        /*font-size: 0.65rem !important;
         font-weight: 700 !important;
         padding: 3px 9px !important;
         border-radius: 999px !important;
@@ -867,10 +1313,10 @@ a.btn.btn-secondary {
         min-width: 22px !important;
         height: 20px !important;
         line-height: 1 !important;
-    }
+    }*/
 
     /* ---------- VIEW BUTTON (Compact) ---------- */
-    .table .btn.btn-sm,
+    /*.table .btn.btn-sm,
     .table a.btn.btn-sm,
     .table .btn-outline-primary {
         display: inline-flex !important;
@@ -898,22 +1344,22 @@ a.btn.btn-secondary {
             background-color: #0f766e !important;
             color: #ffffff !important;
             border-color: #0f766e !important;
-        }
+        }*/
 
     /* ---------- DATE COLUMNS (Consistent) ---------- */
-    .table tbody td {
+    /*.table tbody td {
         font-size: 0.74rem !important;
         color: #4b5563 !important;
-    }
+    }*/
 
 /* ---------- SPACING (Outer) ---------- */
-.container-fluid {
+/*.container-fluid {
     padding-top: 16px !important;
     padding-bottom: 16px !important;
-}
+}*/
 
 /* ---------- RESPONSIVE ---------- */
-@media (max-width: 768px) {
+/*@media (max-width: 768px) {
     .card-header {
         padding: 9px 12px !important;
     }
@@ -928,7 +1374,7 @@ a.btn.btn-secondary {
         padding: 4px 8px !important;
         font-size: 0.68rem !important;
     }
-}
+}*/
 
 /* ============================================================
    NEW MEDICINE RECEIVING — Remove Error Icons + Compact
@@ -937,15 +1383,15 @@ a.btn.btn-secondary {
 /* ---------- HIDE EMPTY VALIDATION ICONS ---------- */
 /* Jab validation message khaali ho, uska icon bhi na dikhe */
 
-.text-danger:empty,
+/*.text-danger:empty,
 .field-validation-error:empty,
 span.text-danger:empty,
 .validation-message:empty {
     display: none !important;
-}
+}*/
 
 /* Agar validation span khaali hai to poori tarah chhupa dein */
-span[data-valmsg-for]:empty,
+/*span[data-valmsg-for]:empty,
 .validation-summary-valid,
 .field-validation-valid {
     display: none !important;
@@ -953,113 +1399,113 @@ span[data-valmsg-for]:empty,
     padding: 0 !important;
     margin: 0 !important;
     border: none !important;
-}
+}*/
 
 /* ---------- REMOVE RED ICON BEFORE ERROR ---------- */
 /* Pichli CSS mein ::before icon laga tha — usay hatayein */
 
-.text-danger::before,
+/*.text-danger::before,
 .field-validation-error::before,
 span.text-danger::before {
-    content: none !important; /* ✅ Icon hata dein */
-    display: none !important;
-}
+    content: none !important;*/ /* ✅ Icon hata dein */
+    /*display: none !important;
+}*/
 
 /* ---------- Agar sirf warning icon box dikh raha hai ---------- */
 /* Yeh rule un empty error containers ko hide karega */
 
-.card-body .text-danger,
+/*.card-body .text-danger,
 .card-body .field-validation-error {
     min-height: 0 !important;
     margin: 0 !important;
     padding: 0 !important;
-}
+}*/
 
 /* ---------- COMPACT CARD ---------- */
-.card {
-    margin-bottom: 12px !important; /* ✅ Pehle 16px tha */
-}
+/*.card {
+    margin-bottom: 12px !important;*/ /* ✅ Pehle 16px tha */
+/*}
 
 .card-header {
-    padding: 10px 16px !important; /* ✅ Compact */
-}
+    padding: 10px 16px !important;*/ /* ✅ Compact */
+/*}
 
 .card-body {
-    padding: 14px 16px !important; /* ✅ Compact (pehle 18px 20px) */
-}
+    padding: 14px 16px !important;*/ /* ✅ Compact (pehle 18px 20px) */
+/*}*/
 
 /* ---------- COMPACT FORM LABELS ---------- */
-.form-label,
+/*.form-label,
 label.form-label {
     font-size: 0.7rem !important;
     margin-bottom: 4px !important;
-}
+}*/
 
 /* ---------- COMPACT INPUTS ---------- */
-.form-control,
+/*.form-control,
 .form-select,
 input[type="text"],
 input[type="number"],
 input[type="date"],
 select {
-    padding: 7px 11px !important; /* ✅ Compact */
-    font-size: 0.78rem !important;
-}
+    padding: 7px 11px !important;*/ /* ✅ Compact */
+    /*font-size: 0.78rem !important;
+}*/
 
 /* ---------- COMPACT ROW SPACING ---------- */
-.row.g-3,
+/*.row.g-3,
 .row.g-4 {
-    --bs-gutter-y: 0.7rem !important; /* ✅ Chhota gap */
-    --bs-gutter-x: 0.9rem !important;
-}
+    --bs-gutter-y: 0.7rem !important;*/ /* ✅ Chhota gap */
+    /*--bs-gutter-x: 0.9rem !important;
+}*/
 
 /* ---------- COMPACT INNER ITEM CARD ---------- */
-.card .card,
+/*.card .card,
 .card-body .border,
 .receiving-item {
-    padding: 12px 14px !important; /* ✅ Compact (pehle 16px 18px) */
-    margin-bottom: 8px !important;
-}
+    padding: 12px 14px !important;*/ /* ✅ Compact (pehle 16px 18px) */
+    /*margin-bottom: 8px !important;
+}*/
 
 /* ---------- COMPACT ADD MEDICINE BUTTON ---------- */
-.btn.btn-outline-primary {
+/*.btn.btn-outline-primary {
     padding: 6px 12px !important;
     font-size: 0.74rem !important;
-}
+}*/
 
 /* ---------- COMPACT DELETE BUTTON ---------- */
-.btn.btn-outline-danger {
-    width: 34px !important; /* ✅ Chhota */
-    height: 34px !important;
+/*.btn.btn-outline-danger {
+    width: 34px !important;*/ /* ✅ Chhota */
+    /*height: 34px !important;
     font-size: 0.78rem !important;
-}
+}*/
 
 /* ---------- OUTER SPACING ---------- */
-.container-fluid {
+/*.container-fluid {
     padding-top: 14px !important;
     padding-bottom: 14px !important;
-}
+}*/
 
 /* ============================================================
    BATCH MANAGEMENT — Compact Card Design
    ============================================================ */
 
 /* ---------- SEARCH CARD (Compact) ---------- */
-.card {
+/*.card {
     border: 1px solid #e5e7eb !important;
     border-radius: 10px !important;
     box-shadow: 0 1px 3px rgba(0, 0, 0, .03) !important;
     overflow: hidden !important;
     margin-bottom: 14px !important;
-}
+}*/
 
 /* Search Card Body */
-.card-body {
-    padding: 14px 16px !important; /* ✅ Compact (pehle 18px 20px) */
-}
+/*.card-body {
+    padding: 14px 16px !important;*/ /* ✅ Compact (pehle 18px 20px) */
+/*}*/
 
 /* ---------- SEARCH LABEL + INPUT ---------- */
-.form-label,
+/*.form-label,
 label.form-label {
     font-size: 0.72rem !important;
     font-weight: 600 !important;
@@ -1070,8 +1516,8 @@ label.form-label {
 .form-control,
 .form-select,
 input[type="text"] {
-    padding: 8px 12px !important; /* ✅ Compact */
-    font-size: 0.78rem !important;
+    padding: 8px 12px !important;*/ /* ✅ Compact */
+    /*font-size: 0.78rem !important;
     border: 1px solid #e5e7eb !important;
     border-radius: 7px !important;
 }
@@ -1085,38 +1531,38 @@ input[type="text"] {
     .form-control::placeholder {
         font-size: 0.76rem !important;
         color: #9ca3af !important;
-    }
+    }*/
 
 /* Search Button */
-.btn.btn-primary {
+/*.btn.btn-primary {
     display: inline-flex !important;
     align-items: center !important;
     gap: 6px !important;
-    padding: 8px 18px !important; /* ✅ Compact */
-    font-size: 0.78rem !important;
+    padding: 8px 18px !important;*/ /* ✅ Compact */
+    /*font-size: 0.78rem !important;
     background-color: #0f766e !important;
     border-color: #0f766e !important;
     border-radius: 7px !important;
     color: #ffffff !important;
-}
+}*/
 
 /* ---------- BATCH LIST CARD HEADER ---------- */
-.card-header {
+/*.card-header {
     background: linear-gradient(135deg, #e6f7f5 0%, #d1fae5 100%) !important;
     border-bottom: 1px solid #b2dfdb !important;
-    padding: 10px 16px !important; /* ✅ Compact (pehle 12px 18px) */
-}
+    padding: 10px 16px !important;*/ /* ✅ Compact (pehle 12px 18px) */
+/*}
 
     .card-header h5,
     .card-header .fw-semibold {
-        font-size: 0.85rem !important; /* ✅ Chhota title */
-        font-weight: 700 !important;
+        font-size: 0.85rem !important;*/ /* ✅ Chhota title */
+        /*font-weight: 700 !important;
         color: #0f766e !important;
         margin: 0 !important;
-    }
+    }*/
 
     /* Records Badge */
-    .card-header .badge {
+    /*.card-header .badge {
         background: #ffffff !important;
         color: #0f766e !important;
         border: 1px solid #b2dfdb !important;
@@ -1124,37 +1570,37 @@ input[type="text"] {
         font-weight: 700 !important;
         padding: 3px 10px !important;
         border-radius: 999px !important;
-    }
+    }*/
 
 /* ---------- TABLE ---------- */
-.table {
+/*.table {
     width: 100% !important;
     font-size: 0.76rem !important;
     margin: 0 !important;
     border-collapse: collapse !important;
-}
+}*/
 
     /* Table Header — Light Teal */
-    .table thead th,
+    /*.table thead th,
     .table > thead > tr > th,
     .table thead.table-light th {
-        background-color: #f0fdfa !important; /* ✅ Bahut halka teal */
-        color: #0f766e !important; /* ✅ Teal text */
-        font-size: 0.6rem !important;
+        background-color: #f0fdfa !important;*/ /* ✅ Bahut halka teal */
+        /*color: #0f766e !important;*/ /* ✅ Teal text */
+        /*font-size: 0.6rem !important;
         font-weight: 700 !important;
         letter-spacing: .08em !important;
         text-transform: uppercase !important;
-        padding: 10px 14px !important; /* ✅ Compact */
-        text-align: left !important;
+        padding: 10px 14px !important;*/ /* ✅ Compact */
+        /*text-align: left !important;
         border-bottom: 1px solid #e5e7eb !important;
         white-space: nowrap !important;
         vertical-align: middle !important;
-    }
+    }*/
 
     /* Table Body — Compact */
-    .table tbody td {
-        padding: 10px 14px !important; /* ✅ Compact (pehle 12px 16px) */
-        border-bottom: 1px solid #f3f4f6 !important;
+    /*.table tbody td {
+        padding: 10px 14px !important;*/ /* ✅ Compact (pehle 12px 16px) */
+        /*border-bottom: 1px solid #f3f4f6 !important;
         color: #374151 !important;
         vertical-align: middle !important;
         font-size: 0.76rem !important;
@@ -1162,72 +1608,72 @@ input[type="text"] {
     }
 
     .table tbody tr {
-        height: 46px !important; /* ✅ Fixed compact height */
-        transition: background .15s ease !important;
+        height: 46px !important;*/ /* ✅ Fixed compact height */
+        /*transition: background .15s ease !important;
     }
 
         .table tbody tr:hover {
-            background-color: #f0fdfa !important; /* ✅ Halka teal hover */
-        }
+            background-color: #f0fdfa !important;*/ /* ✅ Halka teal hover */
+        /*}
 
         .table tbody tr:last-child td {
             border-bottom: none !important;
-        }
+        }*/
 
     /* ---------- MEDICINE NAME (Bold) ---------- */
-    .table tbody td .fw-semibold,
+    /*.table tbody td .fw-semibold,
     .table tbody td strong {
         font-weight: 700 !important;
         color: #111827 !important;
         font-size: 0.76rem !important;
-    }
+    }*/
 
     /* ---------- BATCH NUMBER ---------- */
-    .table tbody td:nth-child(3) {
+    /*.table tbody td:nth-child(3) {
         font-family: 'Courier New', monospace !important;
         font-size: 0.74rem !important;
         font-weight: 600 !important;
         color: #0f766e !important;
-    }
+    }*/
 
 /* ---------- STATUS PILLS (Compact) ---------- */
-.badge.bg-success,
+/*.badge.bg-success,
 .badge.bg-warning,
 .badge.bg-danger,
 .status-pill {
     display: inline-flex !important;
     align-items: center !important;
     gap: 5px !important;
-    padding: 3px 10px !important; /* ✅ Compact pill */
-    border-radius: 999px !important;
+    padding: 3px 10px !important;*/ /* ✅ Compact pill */
+    /*border-radius: 999px !important;
     font-size: 0.65rem !important;
     font-weight: 700 !important;
     letter-spacing: .01em !important;
     white-space: nowrap !important;
     border: none !important;
-}
+}*/
 
 /* Active — Green */
-.badge.bg-success {
+/*.badge.bg-success {
     background-color: #d1fae5 !important;
     color: #065f46 !important;
-}
+}*/
 
 /* Expiring Soon — Orange/Yellow */
-.badge.bg-warning,
+/*.badge.bg-warning,
 .badge.bg-warning.text-dark {
     background-color: #fef3c7 !important;
     color: #92400e !important;
-}
+}*/
 
 /* Expired — Red */
-.badge.bg-danger {
+/*.badge.bg-danger {
     background-color: #fee2e2 !important;
     color: #991b1b !important;
-}
+}*/
 
 /* ---------- PAGE TITLE ---------- */
-.container-fluid h2.fw-bold {
+/*.container-fluid h2.fw-bold {
     font-size: 1.25rem !important;
     font-weight: 700 !important;
     color: #111827 !important;
@@ -1240,16 +1686,16 @@ input[type="text"] {
 .container-fluid .text-muted {
     font-size: 0.75rem !important;
     color: #6b7280 !important;
-}
+}*/
 
 /* ---------- OUTER SPACING ---------- */
-.container-fluid {
+/*.container-fluid {
     padding-top: 16px !important;
     padding-bottom: 16px !important;
-}
+}*/
 
 /* ---------- RESPONSIVE ---------- */
-@media (max-width: 768px) {
+/*@media (max-width: 768px) {
     .container-fluid h2.fw-bold {
         font-size: 1.1rem !important;
     }
@@ -1267,21 +1713,21 @@ input[type="text"] {
         padding: 8px 10px !important;
         font-size: 0.72rem !important;
     }
-}
+}*/
 
 /* ============================================================
    BATCH TABLE — Red Expiring Badge + Clear Row Lines
    ============================================================ */
 
 /* ---------- EXPIRING SOON — FORCE RED ---------- */
-.badge.bg-warning,
+/*.badge.bg-warning,
 .badge.bg-warning.text-dark,
 .badge.expiring-soon,
 .status-pill--warning,
 td .badge.bg-warning {
-    background-color: #fee2e2 !important; /* ✅ Light RED background */
-    color: #991b1b !important; /* ✅ Dark RED text */
-    display: inline-flex !important;
+    background-color: #fee2e2 !important;*/ /* ✅ Light RED background */
+    /*color: #991b1b !important;*/ /* ✅ Dark RED text */
+    /*display: inline-flex !important;
     align-items: center !important;
     gap: 5px !important;
     padding: 3px 10px !important;
@@ -1292,17 +1738,17 @@ td .badge.bg-warning {
     white-space: nowrap !important;
     border: none !important;
     line-height: 1.2 !important;
-}
+}*/
 
     /* Expiring Soon ka icon — Red */
-    .badge.bg-warning i,
+    /*.badge.bg-warning i,
     .badge.bg-warning.text-dark i {
         color: #dc2626 !important;
         font-size: 0.68rem !important;
-    }
+    }*/
 
     /* Expiring Soon ka dot — Red */
-    .badge.bg-warning::before {
+    /*.badge.bg-warning::before {
         content: '' !important;
         width: 5px !important;
         height: 5px !important;
@@ -1310,30 +1756,30 @@ td .badge.bg-warning {
         background-color: #dc2626 !important;
         display: inline-block !important;
         flex-shrink: 0 !important;
-    }
+    }*/
 
 /* ---------- TABLE ROWS — Clear Lines ---------- */
 
 /* Har row ke neeche clear border */
-.table tbody td {
-    border-bottom: 1px solid #e5e7eb !important; /* ✅ Clear grey line */
-    padding: 12px 14px !important;
+/*.table tbody td {
+    border-bottom: 1px solid #e5e7eb !important;*/ /* ✅ Clear grey line */
+    /*padding: 12px 14px !important;
     vertical-align: middle !important;
     background-color: #ffffff !important;
-}
+}*/
 
 /* Last row mein border nahi */
-.table tbody tr:last-child td {
+/*.table tbody tr:last-child td {
     border-bottom: none !important;
-}
+}*/
 
 /* Row hover — Halka teal */
-.table tbody tr:hover td {
+/*.table tbody tr:hover td {
     background-color: #f0fdfa !important;
-}
+}*/
 
 /* ---------- TABLE HEADER — Clear Bottom Border ---------- */
-.table thead th,
+/*.table thead th,
 .table thead.table-light th {
     background-color: #f0fdfa !important;
     color: #0f766e !important;
@@ -1343,13 +1789,13 @@ td .badge.bg-warning {
     text-transform: uppercase !important;
     padding: 11px 14px !important;
     text-align: left !important;
-    border-bottom: 2px solid #b2dfdb !important; /* ✅ Thick teal line */
-    white-space: nowrap !important;
+    border-bottom: 2px solid #b2dfdb !important;*/ /* ✅ Thick teal line */
+    /*white-space: nowrap !important;
     vertical-align: middle !important;
-}
+}*/
 
 /* ---------- ACTIVE BADGE — Green (unchanged) ---------- */
-.badge.bg-success {
+/*.badge.bg-success {
     background-color: #d1fae5 !important;
     color: #065f46 !important;
     display: inline-flex !important;
@@ -1369,10 +1815,10 @@ td .badge.bg-warning {
         border-radius: 50% !important;
         background-color: #10b981 !important;
         display: inline-block !important;
-    }
+    }*/
 
 /* ---------- EXPIRED — Solid Red ---------- */
-.badge.bg-danger {
+/*.badge.bg-danger {
     background-color: #dc2626 !important;
     color: #ffffff !important;
     display: inline-flex !important;
@@ -1383,28 +1829,28 @@ td .badge.bg-warning {
     font-size: 0.65rem !important;
     font-weight: 700 !important;
     border: none !important;
-}
+}*/
 
 /* ============================================================
    TABLE ROW HOVER — Grey-Teal Background
    ============================================================ */
 
 /* ✅ Row Hover — Soft Grey-Teal (Screenshot Jaisa) */
-.table tbody tr:hover,
+/*.table tbody tr:hover,
 .table tbody tr:hover td {
-    background-color: #e8f0ee !important; /* ✅ Soft grey-teal */
-    transition: background-color .15s ease !important;
-}
+    background-color: #e8f0ee !important;*/ /* ✅ Soft grey-teal */
+    /*transition: background-color .15s ease !important;
+}*/
 
 /* Har row ke neeche clear line */
-.table tbody td {
+/*.table tbody td {
     border-bottom: 1px solid #e5e7eb !important;
-}
+}*/
 
 /* Last row mein border nahi */
-.table tbody tr:last-child td {
+/*.table tbody tr:last-child td {
     border-bottom: none !important;
-}
+}*/
 
 /* ============================================================
    UNIVERSAL TABLE HEADER — Soft Grey-Teal (#e8f0ee)
@@ -1412,7 +1858,7 @@ td .badge.bg-warning {
    ============================================================ */
 
 /* ✅ ALL TABLE HEADERS — Grey-Teal Background */
-.table thead th,
+/*.table thead th,
 .table > thead > tr > th,
 table thead th,
 .med-table thead th,
@@ -1421,61 +1867,61 @@ table thead th,
 .stock-table thead th,
 table thead.table-light th,
 .table thead.table-light th {
-    background-color: #e8f0ee !important; /* ✅ Soft grey-teal */
-    color: #0f766e !important; /* ✅ Dark teal text */
-    font-size: 0.62rem !important;
+    background-color: #e8f0ee !important;*/ /* ✅ Soft grey-teal */
+    /*color: #0f766e !important;*/ /* ✅ Dark teal text */
+    /*font-size: 0.62rem !important;
     font-weight: 700 !important;
     letter-spacing: .08em !important;
     text-transform: uppercase !important;
     padding: 11px 14px !important;
     text-align: left !important;
-    border-bottom: 2px solid #b2dfdb !important; /* ✅ Thick teal line */
-    white-space: nowrap !important;
+    border-bottom: 2px solid #b2dfdb !important;*/ /* ✅ Thick teal line */
+    /*white-space: nowrap !important;
     vertical-align: middle !important;
-}
+}*/
 
 /* ---------- TABLE ROWS — Clear Lines ---------- */
-.table tbody td {
+/*.table tbody td {
     padding: 12px 14px !important;
     border-bottom: 1px solid #e5e7eb !important;
     vertical-align: middle !important;
     background-color: #ffffff;
-}
+}*/
 
 /* Last row mein border nahi */
-.table tbody tr:last-child td {
+/*.table tbody tr:last-child td {
     border-bottom: none !important;
-}
+}*/
 
 /* ---------- ROW HOVER — Same Grey-Teal ---------- */
-.table tbody tr:hover,
+/*.table tbody tr:hover,
 .table tbody tr:hover td {
-    background-color: #e8f0ee !important; /* ✅ Same grey-teal */
-    transition: background-color .15s ease !important;
-}
+    background-color: #e8f0ee !important;*/ /* ✅ Same grey-teal */
+    /*transition: background-color .15s ease !important;
+}*/
 
 /* ============================================================
    HIDE — Batch List Header (Optional)
    ============================================================ */
 
 /* Sirf Batch page ka header hide karein */
-.card-header:has(h5:contains("Batch List")),
+/*.card-header:has(h5:contains("Batch List")),
 .card-header h5:contains("Batch List") {
     display: none !important;
-}
+}*/
 
 /* Alternative — Yeh zyada reliable hai */
-.batch-list-header,
+/*.batch-list-header,
 .card-header.batch-header {
     display: none !important;
-}
+}*/
 
 /* ============================================================
    STOCK MANAGEMENT — Compact Card Design
    ============================================================ */
 
 /* ---------- PAGE TITLE ---------- */
-.container-fluid h2.fw-bold {
+/*.container-fluid h2.fw-bold {
     font-size: 1.3rem !important;
     font-weight: 700 !important;
     color: #111827 !important;
@@ -1488,10 +1934,10 @@ table thead.table-light th,
 .container-fluid .text-muted {
     font-size: 0.75rem !important;
     color: #6b7280 !important;
-}
+}*/
 
 /* ---------- SEARCH CARD (Compact) ---------- */
-.card {
+/*.card {
     border: 1px solid #e5e7eb !important;
     border-radius: 10px !important;
     box-shadow: 0 1px 3px rgba(0, 0, 0, .03) !important;
@@ -1501,25 +1947,25 @@ table thead.table-light th,
 }
 
 .card-body {
-    padding: 14px 16px !important; /* ✅ Compact (pehle 18px 20px) */
-}
+    padding: 14px 16px !important;*/ /* ✅ Compact (pehle 18px 20px) */
+/*}
 
     .card-body.p-0 {
         padding: 0 !important;
-    }
+    }*/
 
 /* ---------- FORM LABELS ---------- */
-.form-label,
+/*.form-label,
 label.form-label {
     font-size: 0.7rem !important;
     font-weight: 600 !important;
     color: #374151 !important;
     margin-bottom: 4px !important;
     display: block !important;
-}
+}*/
 
 /* ---------- FORM INPUTS (Compact) ---------- */
-.form-control,
+/*.form-control,
 .form-select,
 input[type="text"],
 select {
@@ -1543,10 +1989,10 @@ select {
     .form-control::placeholder {
         font-size: 0.76rem !important;
         color: #9ca3af !important;
-    }
+    }*/
 
 /* ---------- SEARCH / CLEAR BUTTONS ---------- */
-.btn.btn-primary {
+/*.btn.btn-primary {
     display: inline-flex !important;
     align-items: center !important;
     gap: 5px !important;
@@ -1587,12 +2033,12 @@ select {
         background-color: #f9fafb !important;
         color: #111827 !important;
         border-color: #d1d5db !important;
-    }
+    }*/
 
 /* ---------- CARD HEADER — Grey-Teal ---------- */
-.card-header {
-    background-color: #e8f0ee !important; /* ✅ Grey-teal */
-    border-bottom: 2px solid #b2dfdb !important;
+/*.card-header {
+    background-color: #e8f0ee !important;*/ /* ✅ Grey-teal */
+    /*border-bottom: 2px solid #b2dfdb !important;
     padding: 11px 16px !important;
     display: flex !important;
     align-items: center !important;
@@ -1605,10 +2051,10 @@ select {
         font-weight: 700 !important;
         color: #0f766e !important;
         margin: 0 !important;
-    }
+    }*/
 
     /* Record Count Badge */
-    .card-header .badge {
+    /*.card-header .badge {
         background-color: #ffffff !important;
         color: #0f766e !important;
         border: 1px solid #b2dfdb !important;
@@ -1616,10 +2062,10 @@ select {
         font-weight: 700 !important;
         padding: 3px 10px !important;
         border-radius: 999px !important;
-    }
+    }*/
 
 /* ---------- TABLE HEADER — Grey-Teal (Same as other pages) ---------- */
-.table thead th,
+/*.table thead th,
 .table > thead > tr > th,
 .table thead.table-light th {
     background-color: #e8f0ee !important;
@@ -1633,12 +2079,12 @@ select {
     border-bottom: 2px solid #b2dfdb !important;
     white-space: nowrap !important;
     vertical-align: middle !important;
-}
+}*/
 
 /* ---------- TABLE BODY — Compact ---------- */
-.table tbody td {
-    padding: 11px 14px !important; /* ✅ Compact (pehle 14px 16px) */
-    border-bottom: 1px solid #e5e7eb !important;
+/*.table tbody td {
+    padding: 11px 14px !important;*/ /* ✅ Compact (pehle 14px 16px) */
+    /*border-bottom: 1px solid #e5e7eb !important;
     color: #374151 !important;
     vertical-align: middle !important;
     font-size: 0.78rem !important;
@@ -1646,45 +2092,45 @@ select {
 }
 
 .table tbody tr {
-    height: 48px !important; /* ✅ Fixed compact height */
-    transition: background-color .15s ease !important;
+    height: 48px !important;*/ /* ✅ Fixed compact height */
+    /*transition: background-color .15s ease !important;
 }
 
     .table tbody tr:hover,
     .table tbody tr:hover td {
-        background-color: #e8f0ee !important; /* ✅ Same grey-teal hover */
-    }
+        background-color: #e8f0ee !important;*/ /* ✅ Same grey-teal hover */
+    /*}
 
     .table tbody tr:last-child td {
         border-bottom: none !important;
-    }
+    }*/
 
 /* ---------- MEDICINE NAME (Bold) ---------- */
-.table tbody td strong,
+/*.table tbody td strong,
 .table tbody td .fw-semibold {
     color: #111827 !important;
     font-weight: 700 !important;
     font-size: 0.78rem !important;
-}
+}*/
 
 /* ---------- BATCH BADGE (Light Teal) ---------- */
-.table tbody .badge,
+/*.table tbody .badge,
 .table tbody .badge.bg-secondary {
     display: inline-flex !important;
     align-items: center !important;
     padding: 3px 10px !important;
-    background-color: #ccfbf1 !important; /* ✅ Light teal */
-    color: #0f766e !important; /* ✅ Dark teal */
-    border-radius: 6px !important;
+    background-color: #ccfbf1 !important;*/ /* ✅ Light teal */
+    /*color: #0f766e !important;*/ /* ✅ Dark teal */
+    /*border-radius: 6px !important;
     font-size: 0.65rem !important;
     font-weight: 700 !important;
     font-family: 'Courier New', monospace !important;
     border: none !important;
     letter-spacing: .02em !important;
-}
+}*/
 
     /* ---------- LOCATION BADGE ---------- */
-    .table tbody .badge.bg-info,
+    /*.table tbody .badge.bg-info,
     .table tbody .badge.location-badge {
         background-color: #ccfbf1 !important;
         color: #0f766e !important;
@@ -1696,10 +2142,10 @@ select {
         display: inline-flex !important;
         align-items: center !important;
         gap: 4px !important;
-    }
+    }*/
 
 /* ---------- VIEW BUTTON ---------- */
-.table .btn.btn-sm,
+/*.table .btn.btn-sm,
 .table .btn-outline-primary {
     display: inline-flex !important;
     align-items: center !important;
@@ -1721,16 +2167,16 @@ select {
         background-color: #0f766e !important;
         color: #ffffff !important;
         border-color: #0f766e !important;
-    }
+    }*/
 
 /* ---------- OUTER SPACING ---------- */
-.container-fluid {
+/*.container-fluid {
     padding-top: 16px !important;
     padding-bottom: 16px !important;
-}
+}*/
 
 /* ---------- RESPONSIVE ---------- */
-@media (max-width: 768px) {
+/*@media (max-width: 768px) {
     .container-fluid h2.fw-bold {
         font-size: 1.1rem !important;
     }
@@ -1749,14 +2195,14 @@ select {
         padding: 4px 8px !important;
         font-size: 0.68rem !important;
     }
-}
+}*/
 
 /* ============================================================
    STOCK DETAILS PAGE — Compact & Professional
    ============================================================ */
 
 /* ---------- PAGE TITLE ---------- */
-.container-fluid h2.fw-bold {
+/*.container-fluid h2.fw-bold {
     font-size: 1.3rem !important;
     font-weight: 700 !important;
     color: #111827 !important;
@@ -1769,10 +2215,10 @@ select {
 .container-fluid .text-muted {
     font-size: 0.75rem !important;
     color: #6b7280 !important;
-}
+}*/
 
 /* ---------- BACK BUTTON ---------- */
-.btn.btn-outline-secondary {
+/*.btn.btn-outline-secondary {
     display: inline-flex !important;
     align-items: center !important;
     gap: 6px !important;
@@ -1791,21 +2237,21 @@ select {
         background-color: #f9fafb !important;
         color: #111827 !important;
         border-color: #d1d5db !important;
-    }
+    }*/
 
 /* ---------- CARD ---------- */
-.card {
+/*.card {
     border: 1px solid #e5e7eb !important;
     border-radius: 10px !important;
     box-shadow: 0 1px 3px rgba(0, 0, 0, .03) !important;
     overflow: hidden !important;
     margin-bottom: 12px !important;
-}
+}*/
 
 /* ---------- CARD HEADER — Grey-Teal ---------- */
-.card-header {
-    background-color: #e8f0ee !important; /* ✅ Grey-teal */
-    border-bottom: 2px solid #b2dfdb !important;
+/*.card-header {
+    background-color: #e8f0ee !important;*/ /* ✅ Grey-teal */
+    /*border-bottom: 2px solid #b2dfdb !important;
     padding: 11px 16px !important;
 }
 
@@ -1815,15 +2261,15 @@ select {
         font-weight: 700 !important;
         color: #0f766e !important;
         margin: 0 !important;
-    }
+    }*/
 
 /* ---------- CARD BODY ---------- */
-.card-body {
+/*.card-body {
     padding: 18px 20px !important;
-}
+}*/
 
 /* ---------- INFO LABELS & VALUES ---------- */
-.info-label {
+/*.info-label {
     display: block;
     font-size: 0.68rem !important;
     font-weight: 700 !important;
@@ -1842,64 +2288,64 @@ select {
     .info-value.fw-bold {
         font-weight: 700 !important;
         font-size: 0.9rem !important;
-    }
+    }*/
 
 /* ---------- BATCH TAG ---------- */
-.batch-tag {
+/*.batch-tag {
     display: inline-block;
     padding: 4px 11px !important;
-    background-color: #ccfbf1 !important; /* ✅ Light teal */
-    color: #0f766e !important; /* ✅ Dark teal */
-    border-radius: 6px !important;
+    background-color: #ccfbf1 !important;*/ /* ✅ Light teal */
+    /*color: #0f766e !important;*/ /* ✅ Dark teal */
+    /*border-radius: 6px !important;
     font-size: 0.72rem !important;
     font-weight: 700 !important;
     font-family: 'Courier New', monospace !important;
     letter-spacing: .02em !important;
-}
+}*/
 
 /* ---------- LOCATION BADGE (Teal — not blue) ---------- */
-.badge.location-badge,
+/*.badge.location-badge,
 .badge.bg-primary {
     display: inline-flex !important;
     align-items: center !important;
     gap: 4px !important;
     padding: 4px 11px !important;
-    background-color: #ccfbf1 !important; /* ✅ Light teal */
-    color: #0f766e !important; /* ✅ Dark teal */
-    border-radius: 999px !important;
+    background-color: #ccfbf1 !important;*/ /* ✅ Light teal */
+    /*color: #0f766e !important;*/ /* ✅ Dark teal */
+    /*border-radius: 999px !important;
     font-size: 0.7rem !important;
     font-weight: 700 !important;
     border: none !important;
-}
+}*/
 
 /* ---------- QUANTITY HIGHLIGHT ---------- */
-.qty-highlight {
+/*.qty-highlight {
     display: inline-block;
     padding: 5px 14px !important;
-    background-color: #f0fdfa !important; /* ✅ Very light teal */
-    color: #0f766e !important; /* ✅ Teal text */
-    border-radius: 8px !important;
+    background-color: #f0fdfa !important;*/ /* ✅ Very light teal */
+    /*color: #0f766e !important;*/ /* ✅ Teal text */
+    /*border-radius: 8px !important;
     font-size: 1.4rem !important;
     font-weight: 800 !important;
     line-height: 1 !important;
     letter-spacing: -.02em !important;
-}
+}*/
 
 /* ---------- ROW GAP (Compact) ---------- */
-.row.g-4,
+/*.row.g-4,
 .row.g-3 {
     --bs-gutter-y: 1rem !important;
     --bs-gutter-x: 1.2rem !important;
-}
+}*/
 
 /* ---------- OUTER SPACING ---------- */
-.container-fluid {
+/*.container-fluid {
     padding-top: 16px !important;
     padding-bottom: 16px !important;
-}
+}*/
 
 /* ---------- RESPONSIVE ---------- */
-@media (max-width: 768px) {
+/*@media (max-width: 768px) {
     .container-fluid h2.fw-bold {
         font-size: 1.1rem !important;
     }
@@ -1911,14 +2357,14 @@ select {
     .qty-highlight {
         font-size: 1.2rem !important;
     }
-}
+}*/
 
 /* ============================================================
    TRANSFER DETAILS PAGE — Compact & Professional
    ============================================================ */
 
 /* ---------- PAGE TITLE ---------- */
-.container-fluid h2.fw-bold {
+/*.container-fluid h2.fw-bold {
     font-size: 1.25rem !important;
     font-weight: 700 !important;
     color: #111827 !important;
@@ -1931,10 +2377,10 @@ select {
 .container-fluid .text-muted {
     font-size: 0.72rem !important;
     color: #6b7280 !important;
-}
+}*/
 
 /* ---------- BACK BUTTON ---------- */
-.btn.btn-outline-secondary {
+/*.btn.btn-outline-secondary {
     display: inline-flex !important;
     align-items: center !important;
     gap: 6px !important;
@@ -1953,70 +2399,70 @@ select {
         background-color: #f9fafb !important;
         color: #111827 !important;
         border-color: #d1d5db !important;
-    }
+    }*/
 
 /* ---------- CARDS (Compact) ---------- */
-.card {
+/*.card {
     border: 1px solid #e5e7eb !important;
     border-radius: 10px !important;
     box-shadow: 0 1px 3px rgba(0, 0, 0, .03) !important;
     overflow: hidden !important;
-    margin-bottom: 10px !important; /* ✅ Chhota gap */
-}
+    margin-bottom: 10px !important;*/ /* ✅ Chhota gap */
+/*}*/
 
 /* ---------- CARD HEADER (Compact) ---------- */
-.card-header {
-    background-color: #e8f0ee !important; /* ✅ Grey-teal */
-    border-bottom: 2px solid #b2dfdb !important;
-    padding: 9px 14px !important; /* ✅ Compact */
-}
+/*.card-header {
+    background-color: #e8f0ee !important;*/ /* ✅ Grey-teal */
+    /*border-bottom: 2px solid #b2dfdb !important;
+    padding: 9px 14px !important;*/ /* ✅ Compact */
+/*}
 
     .card-header h5,
     .card-header .fw-bold,
     .card-header .fw-semibold {
-        font-size: 0.82rem !important; /* ✅ Chhota */
-        font-weight: 700 !important;
+        font-size: 0.82rem !important;*/ /* ✅ Chhota */
+        /*font-weight: 700 !important;
         color: #0f766e !important;
         margin: 0 !important;
-    }
+    }*/
 
     /* Header Icons */
-    .card-header i {
+    /*.card-header i {
         font-size: 0.9rem !important;
-    }
+    }*/
 
 /* ---------- CARD BODY (Compact) ---------- */
-.card-body {
-    padding: 12px 16px !important; /* ✅ Compact (pehle 18px 20px) */
-}
+/*.card-body {
+    padding: 12px 16px !important;*/ /* ✅ Compact (pehle 18px 20px) */
+/*}
 
     .card-body.p-0 {
         padding: 0 !important;
-    }
+    }*/
 
 /* ---------- INFO LABELS (Compact) ---------- */
-.info-label {
+/*.info-label {
     display: block;
-    font-size: 0.6rem !important; /* ✅ Bahut chhota */
-    font-weight: 700 !important;
+    font-size: 0.6rem !important;*/ /* ✅ Bahut chhota */
+    /*font-weight: 700 !important;
     text-transform: uppercase !important;
     letter-spacing: .08em !important;
     color: #6b7280 !important;
     margin-bottom: 3px !important;
-}
+}*/
 
 /* ---------- INFO VALUES (Compact) ---------- */
-.info-value {
-    font-size: 0.78rem !important; /* ✅ Chhota */
-    color: #111827 !important;
+/*.info-value {
+    font-size: 0.78rem !important;*/ /* ✅ Chhota */
+    /*color: #111827 !important;
     font-weight: 600 !important;
     line-height: 1.3 !important;
-}
+}*/
 
 /* ---------- BADGES (Compact) ---------- */
 
 /* Location Badge */
-.badge.location-badge {
+/*.badge.location-badge {
     display: inline-flex !important;
     align-items: center !important;
     gap: 4px !important;
@@ -2028,10 +2474,10 @@ select {
     font-weight: 700 !important;
     border: none !important;
     white-space: nowrap !important;
-}
+}*/
 
 /* Items Badge */
-.badge.items-badge {
+/*.badge.items-badge {
     display: inline-flex !important;
     align-items: center !important;
     gap: 4px !important;
@@ -2043,10 +2489,10 @@ select {
     font-weight: 700 !important;
     border: none !important;
     white-space: nowrap !important;
-}
+}*/
 
 /* Completed Badge */
-.badge-completed {
+/*.badge-completed {
     display: inline-flex !important;
     align-items: center !important;
     gap: 4px !important;
@@ -2058,44 +2504,44 @@ select {
     font-size: 0.62rem !important;
     font-weight: 700 !important;
     margin-left: 6px !important;
-}
+}*/
 
 /* Reference Number (Bold) */
-.card-header .fw-bold {
+/*.card-header .fw-bold {
     font-size: 0.85rem !important;
     font-family: 'Courier New', monospace !important;
     letter-spacing: .02em !important;
-}
+}*/
 
 /* ---------- TABLE (Compact) ---------- */
-.table {
+/*.table {
     width: 100% !important;
     font-size: 0.75rem !important;
     margin: 0 !important;
     border-collapse: collapse !important;
-}
+}*/
 
     /* Table Header */
-    .table thead th,
+    /*.table thead th,
     .table > thead > tr > th,
     .table thead.table-light th {
-        background-color: #e8f0ee !important; /* ✅ Grey-teal */
-        color: #0f766e !important;
-        font-size: 0.6rem !important; /* ✅ Chhota */
-        font-weight: 700 !important;
+        background-color: #e8f0ee !important;*/ /* ✅ Grey-teal */
+        /*color: #0f766e !important;
+        font-size: 0.6rem !important;*/ /* ✅ Chhota */
+        /*font-weight: 700 !important;
         letter-spacing: .08em !important;
         text-transform: uppercase !important;
-        padding: 9px 14px !important; /* ✅ Compact */
-        text-align: left !important;
+        padding: 9px 14px !important;*/ /* ✅ Compact */
+        /*text-align: left !important;
         border-bottom: 2px solid #b2dfdb !important;
         white-space: nowrap !important;
         vertical-align: middle !important;
-    }
+    }*/
 
     /* Table Body */
-    .table tbody td {
-        padding: 10px 14px !important; /* ✅ Compact */
-        border-bottom: 1px solid #e5e7eb !important;
+    /*.table tbody td {
+        padding: 10px 14px !important;*/ /* ✅ Compact */
+        /*border-bottom: 1px solid #e5e7eb !important;
         color: #374151 !important;
         vertical-align: middle !important;
         font-size: 0.75rem !important;
@@ -2103,66 +2549,66 @@ select {
     }
 
     .table tbody tr {
-        height: 44px !important; /* ✅ Fixed height */
-        transition: background-color .15s ease !important;
+        height: 44px !important;*/ /* ✅ Fixed height */
+        /*transition: background-color .15s ease !important;
     }
 
         .table tbody tr:hover,
         .table tbody tr:hover td {
-            background-color: #e8f0ee !important; /* ✅ Grey-teal hover */
-        }
+            background-color: #e8f0ee !important;*/ /* ✅ Grey-teal hover */
+        /*}
 
         .table tbody tr:last-child td {
             border-bottom: none !important;
-        }
+        }*/
 
     /* Medicine Name (Bold) */
-    .table tbody td strong,
+    /*.table tbody td strong,
     .table tbody td .fw-bold {
         color: #111827 !important;
         font-weight: 700 !important;
         font-size: 0.75rem !important;
-    }
+    }*/
 
     /* Quantity (Right aligned, bold) */
-    .table tbody td.text-end strong {
+    /*.table tbody td.text-end strong {
         font-size: 0.78rem !important;
         color: #111827 !important;
-    }
+    }*/
 
 /* ---------- BATCH TAG (Compact) ---------- */
-.batch-tag {
+/*.batch-tag {
     display: inline-block;
-    padding: 3px 9px !important; /* ✅ Compact */
-    background-color: #ccfbf1 !important;
+    padding: 3px 9px !important;*/ /* ✅ Compact */
+    /*background-color: #ccfbf1 !important;
     color: #0f766e !important;
     border-radius: 5px !important;
     font-size: 0.68rem !important;
     font-weight: 700 !important;
     font-family: 'Courier New', monospace !important;
     letter-spacing: .02em !important;
-}
+}*/
 
 /* ---------- ROW GAP (Compact) ---------- */
-.row.g-3,
+/*.row.g-3,
 .row.g-4 {
     --bs-gutter-y: 0.7rem !important;
     --bs-gutter-x: 1rem !important;
-}
+}*/
 
 /* ---------- OUTER SPACING (Compact) ---------- */
-.container-fluid {
+/*.container-fluid {
     padding-top: 14px !important;
     padding-bottom: 14px !important;
-}
+}*/
 
 /* ---------- PAGE HEADER SPACING ---------- */
-.d-flex.justify-content-between {
+/*.d-flex.justify-content-between {
     margin-bottom: 12px !important;
-}
+}*/
 
 /* ---------- RESPONSIVE ---------- */
-@media (max-width: 768px) {
+/*@media (max-width: 768px) {
     .container-fluid h2.fw-bold {
         font-size: 1.1rem !important;
     }
@@ -2178,24 +2624,24 @@ select {
     .info-value {
         font-size: 0.72rem !important;
     }
-}
+}*/
 
 /* ============================================================
    STOCK TRANSFERS — Master-Detail Layout
    ============================================================ */
 
 /* ---------- PAGE HEADER ---------- */
-.page-breadcrumb {
+/*.page-breadcrumb {
     font-size: 0.62rem;
     font-weight: 700;
     letter-spacing: .12em;
     text-transform: uppercase;
     color: #9ca3af;
     margin-bottom: 4px;
-}
+}*/
 
 /* ---------- ACTION BAR ---------- */
-.btn.btn-outline-dark {
+/*.btn.btn-outline-dark {
     display: inline-flex;
     align-items: center;
     gap: 6px;
@@ -2213,13 +2659,13 @@ select {
     .btn.btn-outline-dark:hover {
         background-color: #f9fafb;
         border-color: #111827;
-    }
+    }*/
 
 /* ============================================================
    LEFT: TRANSFERS LIST CARD
    ============================================================ */
 
-.transfers-list-card {
+/*.transfers-list-card {
     background: #ffffff;
     border: 1px solid #e5e7eb;
     border-radius: 12px;
@@ -2254,10 +2700,10 @@ select {
     border-radius: 999px;
     font-size: 0.72rem;
     font-weight: 700;
-}
+}*/
 
 /* ---------- TRANSFER ITEM ---------- */
-.transfer-item {
+/*.transfer-item {
     display: block;
     padding: 14px 18px;
     border-bottom: 1px solid #f3f4f6;
@@ -2276,8 +2722,8 @@ select {
     }
 
     .transfer-item.active {
-        background-color: #e8f0ee; /* ✅ Selected highlight */
-        border-left: 3px solid #0f766e;
+        background-color: #e8f0ee;*/ /* ✅ Selected highlight */
+        /*border-left: 3px solid #0f766e;
         padding-left: 15px;
     }
 
@@ -2314,10 +2760,10 @@ select {
 .transfer-item__meta {
     font-size: 0.68rem;
     color: #9ca3af;
-}
+}*/
 
 /* ---------- STATUS PILLS ---------- */
-.status-pill {
+/*.status-pill {
     display: inline-flex;
     align-items: center;
     gap: 5px;
@@ -2333,43 +2779,43 @@ select {
         height: 6px;
         border-radius: 50%;
         display: inline-block;
-    }
+    }*/
 
 /* Requested — Grey */
-.status-requested {
+/*.status-requested {
     background: #f3f4f6;
     color: #6b7280;
 }
 
     .status-requested .dot {
         background: #6b7280;
-    }
+    }*/
 
 /* In Transit — Light Blue */
-.status-in-transit {
+/*.status-in-transit {
     background: #dbeafe;
     color: #1e40af;
 }
 
     .status-in-transit .dot {
         background: #1e40af;
-    }
+    }*/
 
 /* Received — Green */
-.status-received {
+/*.status-received {
     background: #d1fae5;
     color: #065f46;
 }
 
     .status-received .dot {
         background: #10b981;
-    }
+    }*/
 
 /* ============================================================
    RIGHT: TRANSFER DETAIL CARD
    ============================================================ */
 
-.transfer-detail-card {
+/*.transfer-detail-card {
     background: #ffffff;
     border: 1px solid #e5e7eb;
     border-radius: 12px;
@@ -2403,22 +2849,22 @@ select {
     .transfer-detail-route i {
         color: #0f766e;
         font-size: 0.8rem;
-    }
+    }*/
 
 /* ============================================================
    TIMELINE
    ============================================================ */
 
-.transfer-timeline {
+/*.transfer-timeline {
     position: relative;
     display: flex;
     justify-content: space-between;
     padding: 20px 30px 24px;
     border-bottom: 1px solid #f0f0f0;
-}
+}*/
 
 /* Track (horizontal line) */
-.timeline-track {
+/*.timeline-track {
     position: absolute;
     top: 30px;
     left: 60px;
@@ -2466,13 +2912,13 @@ select {
     font-size: 0.68rem;
     color: #9ca3af;
     line-height: 1.35;
-}
+}*/
 
 /* ============================================================
    ITEMS TABLE
    ============================================================ */
 
-.transfer-items-table {
+/*.transfer-items-table {
     padding: 0;
 }
 
@@ -2537,26 +2983,26 @@ select {
     .qty-input:focus {
         border-color: #0f766e;
         box-shadow: 0 0 0 3px rgba(15, 118, 110, .1);
-    }
+    }*/
 
 /* ============================================================
    ACTIONS
    ============================================================ */
 
-.transfer-detail-actions {
+/*.transfer-detail-actions {
     display: flex;
     justify-content: flex-end;
     gap: 8px;
     padding: 14px 20px;
     background-color: #f9fafb;
     border-top: 1px solid #f0f0f0;
-}
+}*/
 
 /* ============================================================
    EMPTY STATE
    ============================================================ */
 
-.empty-detail {
+/*.empty-detail {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -2577,13 +3023,13 @@ select {
     .empty-detail p {
         margin: 0;
         font-size: 0.85rem;
-    }
+    }*/
 
 /* ============================================================
    RESPONSIVE
    ============================================================ */
 
-@media (max-width: 992px) {
+/*@media (max-width: 992px) {
     .transfer-timeline {
         padding: 16px 16px 20px;
     }
@@ -2596,24 +3042,24 @@ select {
     .timeline-meta {
         font-size: 0.6rem;
     }
-}
+}*/
 
 /* ============================================================
    STOCK TRANSFERS — Master-Detail Layout (Real Data)
    ============================================================ */
 
 /* ---------- PAGE HEADER ---------- */
-.page-breadcrumb {
+/*.page-breadcrumb {
     font-size: 0.6rem;
     font-weight: 700;
     letter-spacing: .12em;
     text-transform: uppercase;
     color: #9ca3af;
     margin-bottom: 4px;
-}
+}*/
 
 /* ---------- ACTION BAR ---------- */
-.btn.btn-outline-dark {
+/*.btn.btn-outline-dark {
     display: inline-flex;
     align-items: center;
     gap: 6px;
@@ -2632,13 +3078,13 @@ select {
         background-color: #f9fafb;
         border-color: #0f766e;
         color: #0f766e;
-    }
+    }*/
 
 /* ============================================================
    LEFT: TRANSFERS LIST
    ============================================================ */
 
-.transfers-list-card {
+/*.transfers-list-card {
     background: #ffffff;
     border: 1px solid #e5e7eb;
     border-radius: 12px;
@@ -2678,10 +3124,10 @@ select {
     border-radius: 999px;
     font-size: 0.68rem;
     font-weight: 700;
-}
+}*/
 
 /* ---------- TRANSFER ITEM ---------- */
-.transfer-item {
+/*.transfer-item {
     display: block;
     padding: 12px 16px;
     border-bottom: 1px solid #f3f4f6;
@@ -2753,13 +3199,13 @@ select {
     font-size: 0.68rem;
     color: #9ca3af;
     line-height: 1.3;
-}
+}*/
 
 /* ============================================================
    RIGHT: TRANSFER DETAIL
    ============================================================ */
 
-.transfer-detail-card {
+/*.transfer-detail-card {
     background: #ffffff;
     border: 1px solid #e5e7eb;
     border-radius: 12px;
@@ -2800,10 +3246,10 @@ select {
         display: inline-flex;
         align-items: center;
         gap: 4px;
-    }
+    }*/
 
 /* ---------- DETAILS GRID ---------- */
-.transfer-details-grid {
+/*.transfer-details-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 16px 24px;
@@ -2829,10 +3275,10 @@ select {
     font-size: 0.82rem;
     font-weight: 600;
     color: #111827;
-}
+}*/
 
 /* ---------- REMARKS ---------- */
-.transfer-remarks {
+/*.transfer-remarks {
     padding: 12px 20px;
     border-bottom: 1px solid #f0f0f0;
     background: #f9fafb;
@@ -2848,13 +3294,13 @@ select {
         font-size: 0.78rem;
         color: #4b5563;
         line-height: 1.4;
-    }
+    }*/
 
 /* ============================================================
    ITEMS TABLE
    ============================================================ */
 
-.transfer-items-table {
+/*.transfer-items-table {
     padding: 0;
     overflow-x: auto;
 }
@@ -2915,13 +3361,13 @@ select {
     font-weight: 700;
     color: #111827;
     font-size: 0.82rem;
-}
+}*/
 
 /* ============================================================
    EMPTY STATE
    ============================================================ */
 
-.empty-detail {
+/*.empty-detail {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -2942,13 +3388,13 @@ select {
     .empty-detail p {
         margin: 0;
         font-size: 0.85rem;
-    }
+    }*/
 
 /* ============================================================
    RESPONSIVE
    ============================================================ */
 
-@media (max-width: 992px) {
+/*@media (max-width: 992px) {
     .transfers-list-card {
         max-height: 400px;
     }
@@ -2956,23 +3402,23 @@ select {
     .transfer-details-grid {
         grid-template-columns: 1fr;
     }
-}
+}*/
 
 /* ============================================================
    STOCK ADJUSTMENT — Compact Card Design
    ============================================================ */
 
 /* ---------- PAGE WRAPPER (Compact) ---------- */
-.container.py-4 {
+/*.container.py-4 {
     padding-top: 16px !important;
     padding-bottom: 16px !important;
-    max-width: 720px !important; /* ✅ Aur narrow */
-}
+    max-width: 720px !important;*/ /* ✅ Aur narrow */
+/*}*/
 
 /* ---------- PAGE TITLE ---------- */
-.container h2 {
-    font-size: 1.25rem !important; /* ✅ Aur chhota */
-    font-weight: 700 !important;
+/*.container h2 {
+    font-size: 1.25rem !important;*/ /* ✅ Aur chhota */
+    /*font-weight: 700 !important;
     color: #111827 !important;
     margin-bottom: 3px !important;
     letter-spacing: -0.01em !important;
@@ -2982,34 +3428,34 @@ select {
 .container > div > .text-muted {
     font-size: 0.75rem !important;
     color: #6b7280 !important;
-}
+}*/
 
 /* ============================================================
    CARD WRAPPER — Form Ko Card Banayein
    ============================================================ */
 
 /* Form ko card jaisa banayein */
-.container.py-4 > form {
+/*.container.py-4 > form {
     background-color: #ffffff !important;
     border: 1px solid #e5e7eb !important;
     border-radius: 10px !important;
-    padding: 18px 20px !important; /* ✅ Compact */
-    box-shadow: 0 1px 3px rgba(0, 0, 0, .03) !important;
-}
+    padding: 18px 20px !important;*/ /* ✅ Compact */
+    /*box-shadow: 0 1px 3px rgba(0, 0, 0, .03) !important;
+}*/
 
 /* ---------- FORM LABELS (Compact) ---------- */
-.form-label,
+/*.form-label,
 label.form-label {
-    font-size: 0.68rem !important; /* ✅ Aur chhota */
-    font-weight: 600 !important;
+    font-size: 0.68rem !important;*/ /* ✅ Aur chhota */
+    /*font-weight: 600 !important;
     color: #374151 !important;
     margin-bottom: 4px !important;
     display: block !important;
     letter-spacing: .02em !important;
-}
+}*/
 
 /* ---------- FORM INPUTS (Compact) ---------- */
-.form-control,
+/*.form-control,
 .form-select,
 input[type="text"],
 input[type="number"],
@@ -3017,8 +3463,8 @@ input[type="datetime-local"],
 select,
 textarea {
     width: 100% !important;
-    padding: 7px 11px !important; /* ✅ Aur compact */
-    font-size: 0.76rem !important;
+    padding: 7px 11px !important;*/ /* ✅ Aur compact */
+    /*font-size: 0.76rem !important;
     color: #111827 !important;
     background-color: #ffffff !important;
     border: 1px solid #e5e7eb !important;
@@ -3041,46 +3487,46 @@ textarea {
     input::placeholder {
         font-size: 0.74rem !important;
         color: #9ca3af !important;
-    }
+    }*/
 
 /* Readonly inputs */
-input[readonly] {
+/*input[readonly] {
     background-color: #f9fafb !important;
     color: #6b7280 !important;
     cursor: not-allowed !important;
-}
+}*/
 
 /* ---------- TEXTAREA (Compact) ---------- */
-textarea.form-control {
+/*textarea.form-control {
     min-height: 60px !important;
     resize: vertical !important;
     padding: 7px 11px !important;
-}
+}*/
 
 /* ---------- FORM GROUP SPACING (Compact) ---------- */
-.mb-3 {
-    margin-bottom: 0.7rem !important; /* ✅ Aur chhota gap */
-}
+/*.mb-3 {
+    margin-bottom: 0.7rem !important;*/ /* ✅ Aur chhota gap */
+/*}
 
 .mb-4 {
     margin-bottom: 0.8rem !important;
-}
+}*/
 
 /* ---------- BUTTONS (Compact) ---------- */
-.btn {
+/*.btn {
     display: inline-flex !important;
     align-items: center !important;
     gap: 5px !important;
-    padding: 7px 14px !important; /* ✅ Aur compact */
-    font-size: 0.76rem !important;
+    padding: 7px 14px !important;*/ /* ✅ Aur compact */
+    /*font-size: 0.76rem !important;
     font-weight: 600 !important;
     border-radius: 7px !important;
     text-decoration: none !important;
     transition: all .15s ease !important;
-}
+}*/
 
     /* Primary — Adjust Stock */
-    .btn.btn-primary {
+    /*.btn.btn-primary {
         background-color: #0f766e !important;
         border-color: #0f766e !important;
         color: #ffffff !important;
@@ -3091,10 +3537,10 @@ textarea.form-control {
             background-color: #0d5c63 !important;
             border-color: #0d5c63 !important;
             transform: translateY(-1px) !important;
-        }
+        }*/
 
     /* Secondary — Cancel */
-    .btn.btn-secondary {
+    /*.btn.btn-secondary {
         background-color: #ffffff !important;
         color: #374151 !important;
         border: 1px solid #e5e7eb !important;
@@ -3104,27 +3550,27 @@ textarea.form-control {
             background-color: #f9fafb !important;
             color: #111827 !important;
             border-color: #d1d5db !important;
-        }
+        }*/
 
 /* Buttons container */
-.d-flex.gap-2 {
+/*.d-flex.gap-2 {
     gap: 8px !important;
     margin-top: 12px !important;
     padding-top: 12px !important;
     border-top: 1px solid #f3f4f6 !important;
-}
+}*/
 
 /* ---------- VALIDATION ERRORS ---------- */
-.text-danger,
+/*.text-danger,
 .field-validation-error {
     font-size: 0.68rem !important;
     color: #dc2626 !important;
     display: block !important;
     margin-top: 3px !important;
-}
+}*/
 
 /* ---------- RESPONSIVE ---------- */
-@media (max-width: 768px) {
+/*@media (max-width: 768px) {
     .container h2 {
         font-size: 1.1rem !important;
     }
@@ -3136,51 +3582,51 @@ textarea.form-control {
     textarea.form-control {
         min-height: 55px !important;
     }
-}
+}*/
 /* Global Teal Background */
-body {
-    background-color: #f4fbfa !important; /* Soft professional teal */
-}
+/*body {
+    background-color: #f4fbfa !important;*/ /* Soft professional teal */
+/*}*/
 
 /* Main content area ka background */
-main, .main-content {
+/*main, .main-content {
     background-color: #f4fbfa !important;
-}
+}*/
 /* ================= SIDEBAR BACKGROUND ================= */
-.sidebar,
+/*.sidebar,
 .main-sidebar,
 aside,
 .nav-sidebar,
 #sidebar {
     background-color: #0d5c56 !important;
-}
+}*/
 
     /* ================= NAV LINKS (Saaf aur Clear Text) ================= */
-    .sidebar .nav-link,
+    /*.sidebar .nav-link,
     .main-sidebar .nav-link,
     aside .nav-link,
     .nav-sidebar .nav-link,
     #sidebar .nav-link,
     .sidebar .nav-item a,
     .main-sidebar .nav-item a {
-        color: #ffffff !important; /* Pure white */
-        font-weight: 500 !important; /* Thoda bold */
-        text-shadow: 0 1px 1px rgba(0, 0, 0, 0.15); /* Halka sa shadow, text alag nazar aaye */
-        letter-spacing: 0.2px;
-    }
+        color: #ffffff !important;*/ /* Pure white */
+        /*font-weight: 500 !important;*/ /* Thoda bold */
+        /*text-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);*/ /* Halka sa shadow, text alag nazar aaye */
+        /*letter-spacing: 0.2px;
+    }*/
 
         /* ================= ICONS (Saaf aur Clear) ================= */
-        .sidebar .nav-link i,
+        /*.sidebar .nav-link i,
         .main-sidebar .nav-link i,
         aside .nav-link i,
         .nav-sidebar .nav-link i,
         #sidebar .nav-link i {
             color: #ffffff !important;
             font-size: 1rem !important;
-        }
+        }*/
 
         /* ================= HOVER / ACTIVE STATE ================= */
-        .sidebar .nav-link:hover,
+        /*.sidebar .nav-link:hover,
         .sidebar .nav-link.active,
         .main-sidebar .nav-link:hover,
         .main-sidebar .nav-link.active,
@@ -3188,34 +3634,34 @@ aside,
         aside .nav-link.active {
             background-color: #083d38 !important;
             color: #ffffff !important;
-            font-weight: 600 !important; /* Active par aur bold */
-        }
+            font-weight: 600 !important;*/ /* Active par aur bold */
+        /*}*/
 
     /* ================= SECTION HEADERS (OVERVIEW, DISPENSING, INVENTORY) ================= */
-    .sidebar .nav-header,
+    /*.sidebar .nav-header,
     .nav-sidebar .nav-header,
     .sidebar .sidebar-heading,
     .main-sidebar .sidebar-heading {
-        color: #fbbf24 !important; /* Bright amber/gold */
-        font-weight: 700 !important;
+        color: #fbbf24 !important;*/ /* Bright amber/gold */
+        /*font-weight: 700 !important;
         letter-spacing: 0.08em;
         text-transform: uppercase;
-        opacity: 1 !important; /* Faded na ho */
-    }
+        opacity: 1 !important;*/ /* Faded na ho */
+    /*}*/
 
     /* ================= BRAND / LOGO TEXT ================= */
-    .sidebar .brand-text,
+    /*.sidebar .brand-text,
     .sidebar .logo-text,
     .sidebar h5,
     .sidebar h4 {
         color: #ffffff !important;
         font-weight: 700 !important;
         text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-    }
+    }*/
 
     /* ================= FOOTER (System Online) ================= */
-    .sidebar-footer,
+    /*.sidebar-footer,
     .sidebar .footer-text {
         color: #ffffff !important;
         font-weight: 500 !important;
-    }
+    }*/

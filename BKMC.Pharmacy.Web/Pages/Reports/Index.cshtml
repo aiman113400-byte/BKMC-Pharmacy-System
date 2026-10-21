@@ -1,0 +1,3964 @@
+﻿@page
+@model BKMC.Pharmacy.Web.Pages.Reports.IndexModel
+
+@{
+    ViewData["Title"] = "Reports & Analytics";
+}
+
+<div class="reports-page">
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+        <div>
+            <h2>
+                <i class="bi bi-bar-chart-line"></i>
+                Reports &amp; Analytics
+            </h2>
+            <p class="page-subtitle">
+                Monitor inventory, stock distribution, low-stock medicines and daily sales.
+            </p>
+        </div>
+
+        <div class="report-date">
+            <i class="bi bi-calendar3"></i>
+            @DateTime.Now.ToString("dddd, dd MMM yyyy")
+        </div>
+    </div>
+
+
+    <!-- API ERROR -->
+    @if (!Model.ApiAvailable)
+    {
+        <div class="alert alert-danger api-alert">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <div>
+                <strong>Reports unavailable</strong>
+                <div>@Model.ApiMessage</div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <!-- =========================================================
+             DAILY SALES REPORT
+             ========================================================= -->
+        <div class="report-section daily-sales-section">
+
+            <div class="section-header">
+                <div class="section-title-group">
+                    <div class="section-icon icon-teal">
+                        <i class="bi bi-cash-stack"></i>
+                    </div>
+
+                    <div>
+                        <h4>Daily Sales Report</h4>
+                        <p>
+                            View billing and sales performance for a selected date.
+                        </p>
+                    </div>
+                </div>
+
+                <form method="get" class="daily-sales-date-form">
+                    <label for="salesDate">
+                        <i class="bi bi-calendar3"></i>
+                        Sales Date
+                    </label>
+
+                    <div class="daily-sales-date-control">
+                        <input type="date"
+                               id="salesDate"
+                               name="date"
+                               value="@Model.SelectedDate.ToString("yyyy-MM-dd")"
+                               class="daily-sales-date-input" />
+
+                        <button type="submit"
+                                class="daily-sales-view-btn">
+                            <i class="bi bi-search"></i>
+                            View Report
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+
+            <!-- SELECTED DATE -->
+            <div class="daily-sales-date-display">
+                <div>
+                    <span class="daily-sales-date-label">
+                        Sales for
+                    </span>
+
+                    <strong>
+                        @Model.SelectedDate.ToString("dddd, dd MMMM yyyy")
+                    </strong>
+                </div>
+
+                <span class="daily-sales-date-badge">
+                    <i class="bi bi-calendar-check"></i>
+                    @Model.SelectedDate.ToString("dd MMM yyyy")
+                </span>
+            </div>
+
+
+            <!-- DAILY SALES CARDS -->
+            <div class="daily-sales-summary-grid">
+
+                <!-- TOTAL BILLS -->
+                <div class="sales-summary-card">
+                    <div class="sales-summary-icon sales-icon-blue">
+                        <i class="bi bi-receipt"></i>
+                    </div>
+
+                    <div class="sales-summary-content">
+                        <span class="sales-summary-label">
+                            Total Bills
+                        </span>
+
+                        <h3>
+                            @Model.DailySales.TotalBills
+                        </h3>
+
+                        <small>
+                            Bills generated
+                        </small>
+                    </div>
+                </div>
+
+
+                <!-- GROSS SALES -->
+                <div class="sales-summary-card">
+                    <div class="sales-summary-icon sales-icon-teal">
+                        <i class="bi bi-currency-dollar"></i>
+                    </div>
+
+                    <div class="sales-summary-content">
+                        <span class="sales-summary-label">
+                            Gross Sales
+                        </span>
+
+                        <h3>
+                            Rs. @Model.DailySales.GrossSales.ToString("N2")
+                        </h3>
+
+                        <small>
+                            Total bill amount
+                        </small>
+                    </div>
+                </div>
+
+
+                <!-- PAID AMOUNT -->
+                <div class="sales-summary-card">
+                    <div class="sales-summary-icon sales-icon-green">
+                        <i class="bi bi-check-circle"></i>
+                    </div>
+
+                    <div class="sales-summary-content">
+                        <span class="sales-summary-label">
+                            Paid Amount
+                        </span>
+
+                        <h3>
+                            Rs. @Model.DailySales.PaidAmount.ToString("N2")
+                        </h3>
+
+                        <small>
+                            Amount received
+                        </small>
+                    </div>
+                </div>
+
+
+                <!-- BALANCE -->
+                <div class="sales-summary-card">
+                    <div class="sales-summary-icon sales-icon-amber">
+                        <i class="bi bi-wallet2"></i>
+                    </div>
+
+                    <div class="sales-summary-content">
+                        <span class="sales-summary-label">
+                            Balance
+                        </span>
+
+                        <h3>
+                            Rs. @Model.DailySales.BalanceAmount.ToString("N2")
+                        </h3>
+
+                        <small>
+                            Outstanding amount
+                        </small>
+                    </div>
+                </div>
+
+
+                <!-- MEDICINES SOLD -->
+                <div class="sales-summary-card">
+                    <div class="sales-summary-icon sales-icon-purple">
+                        <i class="bi bi-capsule"></i>
+                    </div>
+
+                    <div class="sales-summary-content">
+                        <span class="sales-summary-label">
+                            Medicines Sold
+                        </span>
+
+                        <h3>
+                            @Model.DailySales.MedicinesSold.ToString("N2")
+                        </h3>
+
+                        <small>
+                            Total units sold
+                        </small>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- DAILY SALES TABLE -->
+            @if (Model.DailySales.Bills.Any())
+            {
+                <div class="daily-sales-table-header">
+                    <div>
+                        <h5>
+                            <i class="bi bi-receipt-cutoff"></i>
+                            Daily Bills
+                        </h5>
+
+                        <p>
+                            All bills generated on
+                            @Model.SelectedDate.ToString("dd MMMM yyyy")
+                        </p>
+                    </div>
+
+                    <span class="daily-bills-count">
+                        @Model.DailySales.TotalBills
+                        @(Model.DailySales.TotalBills == 1 ? "Bill" : "Bills")
+                    </span>
+                </div>
+
+
+                <div class="table-wrapper">
+                    <table class="report-table daily-sales-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Bill Number</th>
+                                <th>Patient</th>
+                                <th>Time</th>
+                                <th>Total Amount</th>
+                                <th>Paid Amount</th>
+                                <th>Balance</th>
+                                <th>Medicines</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @{
+                                int dailyBillCounter = 1;
+                            }
+
+                            @foreach (var bill in Model.DailySales.Bills)
+                            {
+                                <tr>
+                                    <td>
+                                        @dailyBillCounter
+                                    </td>
+
+                                    <td>
+                                        <span class="bill-number-badge">
+                                            <i class="bi bi-receipt"></i>
+                                            @bill.BillNumber
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <div class="medicine-name">
+                                            <strong>
+                                                @bill.PatientName
+                                            </strong>
+
+                                            <span>
+                                                Patient ID: @bill.PatientId
+                                            </span>
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <span class="sales-time">
+                                            @bill.BillDate.ToLocalTime().ToString("hh:mm tt")
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <strong class="sales-amount">
+                                            Rs. @bill.TotalAmount.ToString("N2")
+                                        </strong>
+                                    </td>
+
+                                    <td>
+                                        <strong class="paid-amount">
+                                            Rs. @bill.PaidAmount.ToString("N2")
+                                        </strong>
+                                    </td>
+
+                                    <td>
+                                        @if (bill.BalanceAmount > 0)
+                                        {
+                                            <strong class="balance-amount">
+                                                Rs. @bill.BalanceAmount.ToString("N2")
+                                            </strong>
+                                        }
+                                        else
+                                        {
+                                            <span class="paid-status-badge">
+                                                <i class="bi bi-check-circle"></i>
+                                                Paid
+                                            </span>
+                                        }
+                                    </td>
+
+                                    <td>
+                                        <span class="medicine-count-badge">
+                                            @bill.MedicinesSold.ToString("N2")
+                                        </span>
+                                    </td>
+                                </tr>
+
+                                dailyBillCounter++;
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <!-- NO SALES -->
+                <div class="empty-state daily-sales-empty-state">
+                    <div class="empty-icon empty-icon-teal">
+                        <i class="bi bi-receipt"></i>
+                    </div>
+
+                    <h5>
+                        No Sales Found
+                    </h5>
+
+                    <p>
+                        No bills were generated on
+                        @Model.SelectedDate.ToString("dd MMMM yyyy").
+                    </p>
+                </div>
+            }
+        </div>
+
+
+        <!-- =========================================================
+             MONTHLY SALES REPORT
+             ========================================================= -->
+        <div class="report-section monthly-sales-section">
+
+            <div class="section-header monthly-sales-header">
+
+                <div class="section-title-group">
+
+                    <div class="section-icon icon-teal">
+                        <i class="bi bi-calendar-month"></i>
+                    </div>
+
+                    <div>
+                        <h4>
+                            Monthly Sales Report
+                        </h4>
+
+                        <p>
+                            View sales summary and daily sales breakdown for a selected month.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <form method="get"
+                      class="monthly-sales-date-form">
+
+                    <div class="monthly-sales-field">
+
+                        <label for="salesYear">
+                            Year
+                        </label>
+
+                        <select id="salesYear"
+                                name="year"
+                                class="monthly-sales-select">
+
+                            @for (var year = DateTime.Today.Year - 5;
+                                  year <= DateTime.Today.Year + 1;
+                                  year++)
+                            {
+                                if (year == Model.SelectedYear)
+                                {
+                                    <option value="@year" selected>
+                                        @year
+                                    </option>
+                                }
+                                else
+                                {
+                                    <option value="@year">
+                                        @year
+                                    </option>
+                                }
+                            }
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="monthly-sales-field">
+
+                        <label for="salesMonth">
+                            Month
+                        </label>
+
+                        <select id="salesMonth"
+                                name="month"
+                                class="monthly-sales-select">
+
+                                @for (var month = 1; month <= 12; month++)
+                                   {
+                                        var monthName = new DateTime(2024, month, 1).ToString("MMMM");
+    
+                                         if (month == Model.SelectedMonth)
+                                                {
+                                                     <option value="@month" selected>@monthName</option>
+                                                       }
+                                          else
+                                                  {
+                                                    <option value="@month">@monthName</option>
+                                                         }
+                                                           }
+
+                        </select>
+
+                    </div>
+
+
+                    <button type="submit"
+                            class="monthly-sales-view-btn">
+
+                         <i class="bi bi-search"></i> 
+                        View Report
+
+                    </button>
+
+                </form>
+
+            </div>
+
+
+            <!-- SELECTED MONTH -->
+            <div class="monthly-sales-period">
+
+                <i class="bi bi-calendar3"></i>
+
+                 <span>
+        @(new DateTime(Model.MonthlySales.Year, Model.MonthlySales.Month, 1).ToString("MMMM"))
+        @Model.MonthlySales.Year
+    </span>
+
+                @* <span>
+                    @Model.MonthlySales.MonthName
+                    @Model.MonthlySales.Year
+                </span> *@
+
+            </div>
+
+
+            <!-- MONTHLY SUMMARY CARDS -->
+            <div class="monthly-sales-summary-grid">
+
+                <!-- TOTAL BILLS -->
+                <div class="monthly-sales-card">
+
+                    <div class="monthly-sales-card-icon">
+                        <i class="bi bi-receipt"></i>
+                    </div>
+
+                    <div>
+                        <span>
+                            Total Bills
+                        </span>
+
+                        <strong>
+                            @Model.MonthlySales.TotalBills
+                        </strong>
+                    </div>
+
+                </div>
+
+
+                <!-- GROSS SALES -->
+                <div class="monthly-sales-card">
+
+                    <div class="monthly-sales-card-icon">
+                        <i class="bi bi-cash-stack"></i>
+                    </div>
+
+                    <div>
+                        <span>
+                            Gross Sales
+                        </span>
+
+                        <strong>
+                            Rs. @Model.MonthlySales.GrossSales.ToString("N2")
+                        </strong>
+                    </div>
+
+                </div>
+
+
+                <!-- PAID AMOUNT -->
+                <div class="monthly-sales-card">
+
+                    <div class="monthly-sales-card-icon">
+                        <i class="bi bi-wallet2"></i>
+                    </div>
+
+                    <div>
+                        <span>
+                            Paid Amount
+                        </span>
+
+                        <strong>
+                            Rs. @Model.MonthlySales.PaidAmount.ToString("N2")
+                        </strong>
+                    </div>
+
+                </div>
+
+
+                <!-- BALANCE -->
+                <div class="monthly-sales-card">
+
+                    <div class="monthly-sales-card-icon">
+                        <i class="bi bi-hourglass-split"></i>
+                    </div>
+
+                    <div>
+                        <span>
+                            Balance
+                        </span>
+
+                        <strong>
+                            Rs. @Model.MonthlySales.BalanceAmount.ToString("N2")
+                        </strong>
+                    </div>
+
+                </div>
+
+
+                <!-- MEDICINES SOLD -->
+                <div class="monthly-sales-card">
+
+                    <div class="monthly-sales-card-icon">
+                        <i class="bi bi-capsule"></i>
+                    </div>
+
+                    <div>
+                        <span>
+                            Medicines Sold
+                        </span>
+
+                        <strong>
+                            @Model.MonthlySales.MedicinesSold.ToString("N2")
+                        </strong>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- DAILY BREAKDOWN -->
+            <div class="monthly-sales-table-wrapper">
+
+                <div class="table-title">
+
+                    <h3>
+                        <i class="bi bi-bar-chart"></i>
+                        Daily Sales Breakdown
+                    </h3>
+
+                </div>
+
+
+                @if (Model.MonthlySales.DailySales.Any())
+                {
+                    <div class="table-responsive">
+
+                        <table class="report-table monthly-sales-table">
+
+                            <thead>
+
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Bills</th>
+                                    <th>Gross Sales</th>
+                                    <th>Paid Amount</th>
+                                    <th>Balance</th>
+                                    <th>Medicines Sold</th>
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                                @foreach (var day in Model.MonthlySales.DailySales)
+                                {
+                                    <tr>
+
+                                        <td>
+                                            @day.Date.ToString("dd MMM yyyy")
+                                        </td>
+
+                                        <td>
+                                            @day.TotalBills
+                                        </td>
+
+                                        <td>
+                                            Rs. @day.GrossSales.ToString("N2")
+                                        </td>
+
+                                        <td>
+                                            Rs. @day.PaidAmount.ToString("N2")
+                                        </td>
+
+                                        <td>
+                                            Rs. @day.BalanceAmount.ToString("N2")
+                                        </td>
+
+                                        <td>
+                                            @day.MedicinesSold.ToString("N2")
+                                        </td>
+
+                                    </tr>
+                                }
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+                }
+                else
+                {
+                    <div class="monthly-sales-empty">
+
+                        <i class="bi bi-calendar-x"></i>
+
+                        <h3>
+                            No Sales Found
+                        </h3>
+
+                        <p>
+                            There are no sales records for
+                            @Model.MonthlySales.MonthName
+                            @Model.MonthlySales.Year.
+                        </p>
+
+                    </div>
+                }
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================================================
+             STOCK SUMMARY CARDS
+             ========================================================= -->
+        <div class="summary-grid">
+
+            <div class="summary-card">
+                <div class="summary-icon icon-teal">
+                    <i class="bi bi-box-seam"></i>
+                </div>
+
+                <div class="summary-content">
+                    <span class="summary-label">
+                        Stock Records
+                    </span>
+
+                    <h3>
+                        @Model.StockSummary.TotalStockRecords
+                    </h3>
+
+                    <small>
+                        Active inventory records
+                    </small>
+                </div>
+            </div>
+
+
+            <div class="summary-card">
+                <div class="summary-icon icon-blue">
+                    <i class="bi bi-building"></i>
+                </div>
+
+                <div class="summary-content">
+                    <span class="summary-label">
+                        Warehouse Stock
+                    </span>
+
+                    <h3>
+                        @Model.StockSummary.TotalWarehouseQuantity.ToString("N2")
+                    </h3>
+
+                    <small>
+                        Total warehouse quantity
+                    </small>
+                </div>
+            </div>
+
+
+            <div class="summary-card">
+                <div class="summary-icon icon-purple">
+                    <i class="bi bi-hospital"></i>
+                </div>
+
+                <div class="summary-content">
+                    <span class="summary-label">
+                        Pharmacy Stock
+                    </span>
+
+                    <h3>
+                        @Model.StockSummary.TotalPharmacyQuantity.ToString("N2")
+                    </h3>
+
+                    <small>
+                        Total pharmacy quantity
+                    </small>
+                </div>
+            </div>
+
+
+            <div class="summary-card">
+                <div class="summary-icon icon-amber">
+                    <i class="bi bi-boxes"></i>
+                </div>
+
+                <div class="summary-content">
+                    <span class="summary-label">
+                        Total Stock
+                    </span>
+
+                    <h3>
+                        @Model.StockSummary.TotalQuantity.ToString("N2")
+                    </h3>
+
+                    <small>
+                        Warehouse + Pharmacy
+                    </small>
+                </div>
+            </div>
+
+        </div>
+
+
+        <!-- =========================================================
+             LOW STOCK REPORT
+             ========================================================= -->
+        <div class="report-section">
+
+            <div class="section-header">
+
+                <div class="section-title-group">
+
+                    <div class="section-icon icon-danger">
+                        <i class="bi bi-exclamation-triangle"></i>
+                    </div>
+
+                    <div>
+                        <h4>
+                            Low Stock Report
+                        </h4>
+
+                        <p>
+                            Medicines whose total available quantity is below the reorder level.
+                        </p>
+                    </div>
+
+                </div>
+
+                <span class="low-stock-count">
+                    <i class="bi bi-exclamation-circle me-1"></i>
+
+                    @Model.LowStockItems.Count
+
+                    @(Model.LowStockItems.Count == 1
+                        ? "Medicine"
+                        : "Medicines")
+                </span>
+
+            </div>
+
+
+            @if (Model.LowStockItems.Any())
+            {
+                <div class="table-wrapper">
+
+                    <table class="report-table">
+
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Medicine</th>
+                                <th>Code</th>
+                                <th>Reorder Level</th>
+                                <th>Warehouse</th>
+                                <th>Pharmacy</th>
+                                <th>Total Stock</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            @{
+                                int counter = 1;
+                            }
+
+                            @foreach (var item in Model.LowStockItems)
+                            {
+                                <tr>
+
+                                    <td>
+                                        @counter
+                                    </td>
+
+                                    <td>
+                                        <div class="medicine-name">
+
+                                            <strong>
+                                                @item.MedicineName
+                                            </strong>
+
+                                            <span>
+                                                ID: @item.MedicineId
+                                            </span>
+
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <span class="code-badge">
+                                            @item.MedicineCode
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        @item.ReorderLevel.ToString("N2")
+                                    </td>
+
+                                    <td>
+                                        @item.WarehouseQuantity.ToString("N2")
+                                    </td>
+
+                                    <td>
+                                        @item.PharmacyQuantity.ToString("N2")
+                                    </td>
+
+                                    <td>
+                                        <strong class="qty-highlight">
+                                            @item.TotalQuantity.ToString("N2")
+                                        </strong>
+                                    </td>
+
+                                    <td>
+                                        <span class="status-badge">
+                                            <i class="bi bi-exclamation-circle"></i>
+                                            Low Stock
+                                        </span>
+                                    </td>
+
+                                </tr>
+
+                                counter++;
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+            }
+            else
+            {
+                <div class="empty-state">
+
+                    <div class="empty-icon empty-icon-success">
+                        <i class="bi bi-check-circle"></i>
+                    </div>
+
+                    <h5>
+                        All Stock Levels Are Healthy
+                    </h5>
+
+                    <p>
+                        No active medicine is currently below its reorder level.
+                    </p>
+
+                </div>
+            }
+
+        </div>
+
+
+        <!-- =========================================================
+             STOCK DISTRIBUTION
+             ========================================================= -->
+        <div class="report-section">
+
+            <div class="section-header">
+
+                <div class="section-title-group">
+
+                    <div class="section-icon icon-teal">
+                        <i class="bi bi-pie-chart"></i>
+                    </div>
+
+                    <div>
+                        <h4>
+                            Stock Distribution
+                        </h4>
+
+                        <p>
+                            Overview of inventory quantities by location.
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="distribution-grid">
+
+                <div class="distribution-card">
+
+                    <div class="distribution-top">
+                        <span>
+                            Warehouse
+                        </span>
+
+                        <i class="bi bi-building"></i>
+                    </div>
+
+                    <h3>
+                        @Model.StockSummary.TotalWarehouseQuantity.ToString("N2")
+                    </h3>
+
+                    <div class="progress-container">
+
+                        @{
+                            var warehousePercentage =
+                                Model.StockSummary.TotalQuantity > 0
+                                    ? (Model.StockSummary.TotalWarehouseQuantity /
+                                       Model.StockSummary.TotalQuantity) * 100
+                                    : 0;
+                        }
+
+                        <div class="progress-bar">
+
+                            <div class="progress-fill progress-teal"
+                                 style="width:@warehousePercentage.ToString("0.##")%">
+                            </div>
+
+                        </div>
+
+                        <span>
+                            @warehousePercentage.ToString("0.##")%
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="distribution-card">
+
+                    <div class="distribution-top">
+
+                        <span>
+                            Pharmacy
+                        </span>
+
+                        <i class="bi bi-hospital"></i>
+
+                    </div>
+
+                    <h3>
+                        @Model.StockSummary.TotalPharmacyQuantity.ToString("N2")
+                    </h3>
+
+                    <div class="progress-container">
+
+                        @{
+                            var pharmacyPercentage =
+                                Model.StockSummary.TotalQuantity > 0
+                                    ? (Model.StockSummary.TotalPharmacyQuantity /
+                                       Model.StockSummary.TotalQuantity) * 100
+                                    : 0;
+                        }
+
+                        <div class="progress-bar">
+
+                            <div class="progress-fill progress-blue"
+                                 style="width:@pharmacyPercentage.ToString("0.##")%">
+                            </div>
+
+                        </div>
+
+                        <span>
+                            @pharmacyPercentage.ToString("0.##")%
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================================================
+             DETAILED STOCK SUMMARY
+             ========================================================= -->
+        <div class="report-section">
+
+            <div class="section-header">
+
+                <div class="section-title-group">
+
+                    <div class="section-icon icon-teal">
+                        <i class="bi bi-table"></i>
+                    </div>
+
+                    <div>
+                        <h4>
+                            Detailed Stock Summary
+                        </h4>
+
+                        <p>
+                            Complete inventory breakdown by medicine, batch and location.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="report-actions">
+
+                    <button type="button"
+                            id="printReportBtn"
+                            class="report-action-btn secondary">
+
+                        <i class="bi bi-printer"></i>
+                        Print
+
+                    </button>
+
+
+                    <button type="button"
+                            id="exportStockCsvBtn"
+                            class="report-action-btn primary">
+
+                        <i class="bi bi-file-earmark-spreadsheet"></i>
+                        Export CSV
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div class="stock-filter-panel">
+
+                <div class="filter-group search-group">
+
+                    <label for="stockSearch">
+                        Search
+                    </label>
+
+                    <div class="search-input-wrapper">
+
+                        <i class="bi bi-search"></i>
+
+                        <input type="text"
+                               id="stockSearch"
+                               class="stock-filter-input"
+                               placeholder="Search medicine or batch..."
+                               autocomplete="off" />
+
+                    </div>
+
+                </div>
+
+
+                <div class="filter-group">
+
+                    <label for="locationFilter">
+                        Location
+                    </label>
+
+                    <select id="locationFilter"
+                            class="stock-filter-input">
+
+                        <option value="all">
+                            All Locations
+                        </option>
+
+                        <option value="warehouse">
+                            Warehouse
+                        </option>
+
+                        <option value="pharmacy">
+                            Pharmacy
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="filter-action">
+                    <!-- NAYA CLEAR BUTTON YAHAN ADD KIYA GAYA HAI -->
+                    <button type="button" id="clearStockFilters" class="clear-filter-btn">
+                        <i class="bi bi-x-circle"></i> Clear
+                    </button>
+                </div>
+
+            </div>
+
+
+            <div class="filter-result-bar">
+
+                <span id="filterResultText">
+
+                    Showing
+
+                    <strong id="visibleStockCount">
+                        @Model.StockSummary.StockItems.Count
+                    </strong>
+
+                    of
+
+                    <strong>
+                        @Model.StockSummary.StockItems.Count
+                    </strong>
+
+                    records
+
+                </span>
+
+            </div>
+
+
+            @if (Model.StockSummary.StockItems.Any())
+            {
+                <div class="table-wrapper">
+
+                    <table class="report-table"
+                           id="stockSummaryTable">
+
+                        <thead>
+
+                            <tr>
+                                <th>#</th>
+                                <th>Medicine</th>
+                                <th>Batch</th>
+                                <th>Location</th>
+                                <th>Quantity</th>
+                                <th>Last Updated</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="stockSummaryBody">
+
+                            @{
+                                int stockCounter = 1;
+                            }
+
+                            @foreach (var stock in Model.StockSummary.StockItems)
+                            {
+                                <tr class="stock-row"
+                                    data-medicine="@stock.MedicineName.ToLowerInvariant()"
+                                    data-batch="@stock.BatchNumber.ToLowerInvariant()"
+                                    data-location="@(stock.Location == 1 ? "warehouse" : stock.Location == 2 ? "pharmacy" : "unknown")">
+
+                                    <td class="stock-row-number">
+                                        @stockCounter
+                                    </td>
+
+                                    <td>
+
+                                        <div class="medicine-name">
+
+                                            <strong>
+                                                @stock.MedicineName
+                                            </strong>
+
+                                            <span>
+                                                Medicine ID: @stock.MedicineId
+                                            </span>
+
+                                        </div>
+
+                                    </td>
+
+                                    <td>
+
+                                        <span class="code-badge">
+                                            @stock.BatchNumber
+                                        </span>
+
+                                    </td>
+
+                                    <td>
+
+                                        @if (stock.Location == 1)
+                                        {
+                                            <span class="location-badge warehouse">
+
+                                                <i class="bi bi-building"></i>
+                                                Warehouse
+
+                                            </span>
+                                        }
+                                        else if (stock.Location == 2)
+                                        {
+                                            <span class="location-badge pharmacy">
+
+                                                <i class="bi bi-hospital"></i>
+                                                Pharmacy
+
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="location-badge">
+                                                Unknown
+                                            </span>
+                                        }
+
+                                    </td>
+
+                                    <td>
+
+                                        <strong class="qty-highlight">
+                                            @stock.Quantity.ToString("N2")
+                                        </strong>
+
+                                    </td>
+
+                                    <td>
+
+                                        <span class="updated-date">
+                                            @(stock.UpdatedAt.ToLocalTime().ToString("dd MMM yyyy, hh:mm tt"))
+                                        </span>
+
+                                    </td>
+
+                                </tr>
+
+                                stockCounter++;
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                <div class="filter-empty-state"
+                     id="filterEmptyState"
+                     style="display:none;">
+
+                    <div class="empty-icon empty-icon-teal">
+
+                        <i class="bi bi-search"></i>
+
+                    </div>
+
+                    <h5>
+                        No Matching Stock Records
+                    </h5>
+
+                    <p>
+                        Try changing your search text or location filter.
+                    </p>
+
+                </div>
+            }
+            else
+            {
+                <div class="empty-state">
+
+                    <div class="empty-icon empty-icon-teal">
+
+                        <i class="bi bi-box"></i>
+
+                    </div>
+
+                    <h5>
+                        No Stock Records Found
+                    </h5>
+
+                    <p>
+                        There are currently no inventory records available.
+                    </p>
+
+                </div>
+            }
+
+        </div>
+    }
+
+</div>
+
+
+<style>
+
+    /* =========================================================
+       REPORT PAGE - COMPACT & PROFESSIONAL
+       ========================================================= */
+
+    .reports-page {
+        width: 100%;
+    }
+
+
+    /* =========================================================
+       PAGE HEADER
+       ========================================================= */
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 16px;
+        margin-bottom: 18px;
+        flex-wrap: wrap;
+    }
+
+    .page-header h2 {
+        margin: 0;
+        font-weight: 800;
+        font-size: 1.25rem;
+        color: #0f172a;
+        letter-spacing: -0.02em;
+        display: flex;
+        align-items: center;
+    }
+
+    .page-header h2 i {
+        margin-right: 8px;
+        color: #0f766e;
+        font-size: 1.1rem;
+    }
+
+    .page-subtitle {
+        margin: 4px 0 0;
+        color: #64748b;
+        font-size: 0.78rem;
+    }
+
+    .report-date {
+        padding: 7px 12px;
+        border-radius: 8px;
+        border: 1px solid #e5e7eb;
+        background: #ffffff;
+        white-space: nowrap;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #374151;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    }
+
+    .report-date i {
+        margin-right: 5px;
+        color: #0f766e;
+        font-size: 0.8rem;
+    }
+
+
+    /* =========================================================
+       API ALERT
+       ========================================================= */
+
+    .api-alert {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+        border-radius: 10px;
+        font-size: 0.82rem;
+        padding: 10px 14px;
+    }
+
+
+    /* =========================================================
+       DAILY SALES REPORT
+       ========================================================= */
+
+    .daily-sales-section {
+        overflow: hidden;
+    }
+
+    .daily-sales-date-form {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        min-width: 280px;
+    }
+
+    .daily-sales-date-form label {
+        font-size: 0.65rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: #64748b;
+    }
+
+    .daily-sales-date-form label i {
+        color: #0f766e;
+        margin-right: 3px;
+    }
+
+    .daily-sales-date-control {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .daily-sales-date-input {
+        height: 34px;
+        padding: 6px 9px;
+        border: 1px solid #e5e7eb;
+        border-radius: 7px;
+        background: #ffffff;
+        color: #1e293b;
+        font-size: 0.75rem;
+        outline: none;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .daily-sales-date-input:focus {
+        border-color: #0f766e;
+        box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
+    }
+
+    .daily-sales-view-btn {
+        height: 34px;
+        padding: 0 12px;
+        border: none;
+        border-radius: 7px;
+        background: linear-gradient(135deg, #0f766e 0%, #0d5e58 100%);
+        color: #ffffff;
+        font-size: 0.72rem;
+        font-weight: 600;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        white-space: nowrap;
+        transition: all 0.15s ease;
+    }
+
+    .daily-sales-view-btn:hover {
+        background: linear-gradient(135deg, #0d5e58 0%, #0a4a45 100%);
+        transform: translateY(-1px);
+    }
+
+    .daily-sales-date-display {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        padding: 11px 18px;
+        border-bottom: 1px solid #f1f5f9;
+        background: #fafbfc;
+    }
+
+    .daily-sales-date-label {
+        font-size: 0.72rem;
+        color: #64748b;
+        margin-right: 5px;
+    }
+
+    .daily-sales-date-display strong {
+        font-size: 0.78rem;
+        color: #0f172a;
+    }
+
+    .daily-sales-date-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 5px 9px;
+        border-radius: 20px;
+        background: #e2f5ef;
+        color: #0f766e;
+        font-size: 0.68rem;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .daily-sales-summary-grid {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 10px;
+        padding: 14px 18px;
+    }
+
+    .sales-summary-card {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 13px;
+        border: 1px solid #e9edf3;
+        border-radius: 9px;
+        background: #ffffff;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+        min-width: 0;
+    }
+
+    .sales-summary-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 14px rgba(15, 23, 42, 0.06);
+    }
+
+    .sales-summary-icon {
+        width: 36px;
+        height: 36px;
+        min-width: 36px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+    }
+
+    .sales-icon-blue {
+        background: #e0f2fe;
+        color: #0284c7;
+    }
+
+    .sales-icon-teal {
+        background: #e2f5ef;
+        color: #0f766e;
+    }
+
+    .sales-icon-green {
+        background: #dcfce7;
+        color: #16a34a;
+    }
+
+    .sales-icon-amber {
+        background: #fef3c7;
+        color: #d97706;
+    }
+
+    .sales-icon-purple {
+        background: #ede9fe;
+        color: #7c3aed;
+    }
+
+    .sales-summary-content {
+        min-width: 0;
+    }
+
+    .sales-summary-label {
+        display: block;
+        font-size: 0.62rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: #64748b;
+        margin-bottom: 2px;
+    }
+
+    .sales-summary-content h3 {
+        margin: 0;
+        color: #0f172a;
+        font-size: 1rem;
+        font-weight: 800;
+        line-height: 1.2;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .sales-summary-content small {
+        display: block;
+        margin-top: 2px;
+        color: #94a3b8;
+        font-size: 0.63rem;
+        white-space: nowrap;
+    }
+
+    .daily-sales-table-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 12px 18px;
+        border-top: 1px solid #f1f5f9;
+        border-bottom: 1px solid #f1f5f9;
+        background: #ffffff;
+    }
+
+    .daily-sales-table-header h5 {
+        margin: 0;
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: #0f172a;
+    }
+
+    .daily-sales-table-header h5 i {
+        color: #0f766e;
+        margin-right: 5px;
+    }
+
+    .daily-sales-table-header p {
+        margin: 3px 0 0;
+        color: #64748b;
+        font-size: 0.68rem;
+    }
+
+    .daily-bills-count {
+        padding: 5px 10px;
+        border-radius: 20px;
+        background: #e0f2fe;
+        color: #0369a1;
+        font-size: 0.66rem;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .daily-sales-table {
+        min-width: 1050px;
+    }
+
+    .bill-number-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 4px 8px;
+        border-radius: 5px;
+        background: #e2f5ef;
+        color: #0f766e;
+        font-size: 0.68rem;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .sales-time {
+        font-size: 0.72rem;
+        color: #64748b;
+        white-space: nowrap;
+    }
+
+    .sales-amount {
+        color: #0f766e;
+        font-size: 0.76rem;
+        font-weight: 800;
+        white-space: nowrap;
+    }
+
+    .paid-amount {
+        color: #16a34a;
+        font-size: 0.76rem;
+        font-weight: 800;
+        white-space: nowrap;
+    }
+
+    .balance-amount {
+        color: #d97706;
+        font-size: 0.76rem;
+        font-weight: 800;
+        white-space: nowrap;
+    }
+
+    .paid-status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 8px;
+        border-radius: 20px;
+        background: #dcfce7;
+        color: #15803d;
+        font-size: 0.64rem;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .medicine-count-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 38px;
+        padding: 4px 8px;
+        border-radius: 20px;
+        background: #ede9fe;
+        color: #6d28d9;
+        font-size: 0.67rem;
+        font-weight: 700;
+    }
+
+    .daily-sales-empty-state {
+        border-top: 1px solid #f1f5f9;
+    }
+
+
+    /* =========================================================
+       MONTHLY SALES REPORT
+       ========================================================= */
+
+    .monthly-sales-section {
+        margin-top: 18px;
+    }
+
+    .monthly-sales-header {
+        align-items: flex-end;
+    }
+
+    .monthly-sales-date-form {
+        display: flex;
+        align-items: flex-end;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .monthly-sales-field {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .monthly-sales-field label {
+        font-size: 0.65rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: #64748b;
+    }
+
+    .monthly-sales-select {
+        min-width: 125px;
+        height: 34px;
+        padding: 6px 10px;
+        border-radius: 7px;
+        border: 1px solid #e5e7eb;
+        background: #ffffff;
+        color: #1e293b;
+        font-size: 0.75rem;
+        outline: none;
+        cursor: pointer;
+    }
+
+    .monthly-sales-select:focus {
+        border-color: #0f766e;
+        box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
+    }
+
+    .monthly-sales-view-btn {
+        height: 34px;
+        padding: 0 12px;
+        border: none;
+        border-radius: 7px;
+        background: linear-gradient(135deg, #0f766e 0%, #0d5e58 100%);
+        color: #ffffff;
+        font-size: 0.72rem;
+        font-weight: 600;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        white-space: nowrap;
+        transition: all 0.15s ease;
+    }
+
+    .monthly-sales-view-btn:hover {
+        background: linear-gradient(135deg, #0d5e58 0%, #0a4a45 100%);
+        transform: translateY(-1px);
+    }
+
+    .monthly-sales-period {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        padding: 10px 18px;
+        border-bottom: 1px solid #f1f5f9;
+        background: #fafbfc;
+        color: #0f172a;
+        font-size: 0.82rem;
+        font-weight: 700;
+    }
+
+    .monthly-sales-period i {
+        color: #0f766e;
+    }
+
+    .monthly-sales-summary-grid {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 10px;
+        padding: 14px 18px;
+    }
+
+    .monthly-sales-card {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 13px;
+        border: 1px solid #e9edf3;
+        border-radius: 9px;
+        background: #ffffff;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+        min-width: 0;
+    }
+
+    .monthly-sales-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 14px rgba(15, 23, 42, 0.06);
+    }
+
+    .monthly-sales-card-icon {
+        width: 36px;
+        height: 36px;
+        min-width: 36px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+        background: #e2f5ef;
+        color: #0f766e;
+    }
+
+    .monthly-sales-card span {
+        display: block;
+        font-size: 0.62rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: #64748b;
+        margin-bottom: 2px;
+    }
+
+    .monthly-sales-card strong {
+        display: block;
+        color: #0f172a;
+        font-size: 0.92rem;
+        font-weight: 800;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .monthly-sales-table-wrapper {
+        margin: 0 18px 18px;
+        border: 1px solid #e9edf3;
+        border-radius: 9px;
+        overflow: hidden;
+        background: #ffffff;
+    }
+
+    .monthly-sales-table-wrapper .table-title {
+        padding: 12px 15px;
+        border-bottom: 1px solid #f1f5f9;
+        background: #fafbfc;
+    }
+
+    .monthly-sales-table-wrapper .table-title h3 {
+        margin: 0;
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: #0f172a;
+    }
+
+    .monthly-sales-table-wrapper .table-title h3 i {
+        color: #0f766e;
+        margin-right: 5px;
+    }
+
+    .monthly-sales-table {
+        width: 100%;
+        min-width: 800px;
+    }
+
+    .monthly-sales-table th,
+    .monthly-sales-table td {
+        white-space: nowrap;
+    }
+
+    .monthly-sales-empty {
+        text-align: center;
+        padding: 35px 20px;
+    }
+
+    .monthly-sales-empty i {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: #e2f5ef;
+        color: #0f766e;
+        font-size: 26px;
+        margin-bottom: 12px;
+    }
+
+    .monthly-sales-empty h3 {
+        margin: 0 0 5px;
+        color: #0f172a;
+        font-size: 0.9rem;
+        font-weight: 700;
+    }
+
+    .monthly-sales-empty p {
+        margin: 0;
+        color: #64748b;
+        font-size: 0.78rem;
+    }
+
+
+    /* =========================================================
+       SUMMARY CARDS - COMPACT
+       ========================================================= */
+
+    .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+        margin-bottom: 18px;
+    }
+
+    .summary-card {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 16px;
+        border-radius: 10px;
+        border: 1px solid #e9edf3;
+        background: #ffffff;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .summary-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 3px;
+        height: 100%;
+        background: #0f766e;
+        opacity: 0.9;
+    }
+
+    .summary-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(15, 23, 42, 0.06);
+    }
+
+    .summary-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 9px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 17px;
+        flex-shrink: 0;
+    }
+
+    .summary-icon.icon-teal {
+        background: linear-gradient(135deg, #e2f5ef 0%, #d1fae5 100%);
+        color: #0f766e;
+    }
+
+    .summary-icon.icon-blue {
+        background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%);
+        color: #0284c7;
+    }
+
+    .summary-icon.icon-purple {
+        background: linear-gradient(135deg, #ede9fe 0%, #e0e7ff 100%);
+        color: #7c3aed;
+    }
+
+    .summary-icon.icon-amber {
+        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+        color: #d97706;
+    }
+
+    .summary-content {
+        min-width: 0;
+    }
+
+    .summary-label {
+        display: block;
+        font-size: 0.65rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: #64748b;
+        margin-bottom: 3px;
+    }
+
+    .summary-content h3 {
+        margin: 0;
+        font-size: 1.2rem;
+        font-weight: 800;
+        color: #0f172a;
+        letter-spacing: -0.02em;
+        line-height: 1.1;
+    }
+
+    .summary-content small {
+        display: block;
+        margin-top: 2px;
+        color: #94a3b8;
+        font-size: 0.68rem;
+    }
+
+
+    /* =========================================================
+       REPORT SECTIONS - COMPACT
+       ========================================================= */
+
+    .report-section {
+        background: #ffffff;
+        border: 1px solid #e9edf3;
+        border-radius: 10px;
+        margin-bottom: 18px;
+        overflow: hidden;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+    }
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 14px;
+        padding: 14px 18px;
+        border-bottom: 1px solid #f1f5f9;
+        background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+        flex-wrap: wrap;
+    }
+
+    .section-title-group {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+    }
+
+    .section-icon {
+        width: 34px;
+        height: 34px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+        flex-shrink: 0;
+    }
+
+    .section-icon.icon-teal {
+        background: #e2f5ef;
+        color: #0f766e;
+    }
+
+    .section-icon.icon-danger {
+        background: #fee2e2;
+        color: #dc2626;
+    }
+
+    .section-header h4 {
+        margin: 0;
+        font-weight: 700;
+        font-size: 0.92rem;
+        color: #0f172a;
+        letter-spacing: -0.01em;
+    }
+
+    .section-header p {
+        margin: 3px 0 0;
+        font-size: 0.72rem;
+        color: #64748b;
+    }
+
+
+    /* =========================================================
+       REPORT ACTIONS
+       ========================================================= */
+
+    .report-actions {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-wrap: wrap;
+    }
+
+    .report-action-btn {
+        height: 32px;
+        padding: 0 12px;
+        border-radius: 7px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        font-size: 0.72rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        white-space: nowrap;
+        border: none;
+    }
+
+    .report-action-btn i {
+        font-size: 12px;
+    }
+
+    .report-action-btn.primary {
+        background: linear-gradient(135deg, #0f766e 0%, #0d5e58 100%);
+        color: #ffffff;
+        box-shadow: 0 2px 6px rgba(15, 118, 110, 0.2);
+    }
+
+    .report-action-btn.primary:hover {
+        background: linear-gradient(135deg, #0d5e58 0%, #0a4a45 100%);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 10px rgba(15, 118, 110, 0.3);
+    }
+
+    .report-action-btn.secondary {
+        border: 1px solid #e5e7eb;
+        background: #ffffff;
+        color: #374151;
+    }
+
+    .report-action-btn.secondary:hover {
+        border-color: #0f766e;
+        color: #0f766e;
+        background: #f0fdfa;
+        transform: translateY(-1px);
+    }
+
+    .report-action-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none !important;
+    }
+
+
+    /* =========================================================
+       LOW STOCK COUNT
+       ========================================================= */
+
+    .low-stock-count {
+        padding: 5px 11px;
+        border-radius: 20px;
+        background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+        color: #991b1b;
+        font-size: 0.7rem;
+        font-weight: 700;
+        white-space: nowrap;
+        display: inline-flex;
+        align-items: center;
+    }
+
+
+    /* =========================================================
+       TABLE - COMPACT
+       ========================================================= */
+
+    .table-wrapper {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .report-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 900px;
+    }
+
+    .report-table th {
+        padding: 10px 14px;
+        text-align: left;
+        font-size: 0.65rem;
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+        font-weight: 700;
+        color: #64748b;
+        background: #f8fafc;
+        border-bottom: 1px solid #e9edf3;
+        white-space: nowrap;
+    }
+
+    .report-table td {
+        padding: 11px 14px;
+        border-bottom: 1px solid #f1f5f9;
+        vertical-align: middle;
+        color: #1e293b;
+        font-size: 0.78rem;
+    }
+
+    .report-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .report-table tbody tr {
+        transition: background-color 0.15s ease;
+    }
+
+    .report-table tbody tr:hover {
+        background: #f0fdfa;
+    }
+
+
+    /* =========================================================
+       MEDICINE NAME
+       ========================================================= */
+
+    .medicine-name {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    .medicine-name strong {
+        color: #0f172a;
+        font-weight: 700;
+        font-size: 0.78rem;
+    }
+
+    .medicine-name span {
+        font-size: 0.66rem;
+        color: #94a3b8;
+    }
+
+
+    /* =========================================================
+       CODE BADGE
+       ========================================================= */
+
+    .code-badge {
+        display: inline-block;
+        padding: 3px 8px;
+        border-radius: 5px;
+        background: #e2f5ef;
+        color: #0f766e;
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+    }
+
+
+    /* =========================================================
+       QUANTITY HIGHLIGHT
+       ========================================================= */
+
+    .qty-highlight {
+        color: #0f766e;
+        font-weight: 800;
+        font-size: 0.82rem;
+    }
+
+
+    /* =========================================================
+       STATUS BADGE
+       ========================================================= */
+
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 9px;
+        border-radius: 20px;
+        background: #fee2e2;
+        color: #991b1b;
+        font-size: 0.66rem;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+
+    /* =========================================================
+       EMPTY STATE
+       ========================================================= */
+
+    .empty-state {
+        text-align: center;
+        padding: 35px 20px;
+    }
+
+    .empty-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 26px;
+        margin-bottom: 12px;
+    }
+
+    .empty-icon-success {
+        background: #dcfce7;
+        color: #16a34a;
+    }
+
+    .empty-icon-teal {
+        background: #e2f5ef;
+        color: #0f766e;
+    }
+
+    .empty-state h5 {
+        margin-bottom: 5px;
+        font-weight: 700;
+        color: #0f172a;
+        font-size: 0.9rem;
+    }
+
+    .empty-state p {
+        margin: 0;
+        color: #64748b;
+        font-size: 0.78rem;
+    }
+
+
+    /* =========================================================
+       STOCK DISTRIBUTION - COMPACT
+       ========================================================= */
+
+    .distribution-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+        padding: 16px 18px;
+    }
+
+    .distribution-card {
+        padding: 16px 18px;
+        border: 1px solid #e9edf3;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+        transition: all 0.15s ease;
+    }
+
+    .distribution-card:hover {
+        border-color: #ccece3;
+        box-shadow: 0 3px 10px rgba(15, 118, 110, 0.05);
+    }
+
+    .distribution-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: #64748b;
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .distribution-top i {
+        font-size: 18px;
+        color: #0f766e;
+    }
+
+    .distribution-card h3 {
+        margin: 10px 0 14px;
+        font-size: 1.35rem;
+        font-weight: 800;
+        color: #0f172a;
+        letter-spacing: -0.02em;
+    }
+
+    .progress-container {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .progress-container > span {
+        font-size: 0.72rem;
+        min-width: 42px;
+        text-align: right;
+        color: #0f766e;
+        font-weight: 700;
+    }
+
+    .progress-bar {
+        flex: 1;
+        height: 6px;
+        border-radius: 10px;
+        background: #f1f5f9;
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        height: 100%;
+        border-radius: inherit;
+        transition: width 0.4s ease;
+    }
+
+    .progress-teal {
+        background: linear-gradient(90deg, #0f766e 0%, #14b8a6 100%);
+    }
+
+    .progress-blue {
+        background: linear-gradient(90deg, #0284c7 0%, #38bdf8 100%);
+    }
+
+
+    /* =========================================================
+       STOCK FILTERS - COMPACT
+       ========================================================= */
+
+    .stock-filter-panel {
+        display: grid;
+        grid-template-columns: minmax(220px, 1fr) 180px auto;
+        align-items: end;
+        gap: 12px;
+        padding: 14px 18px;
+        border-bottom: 1px solid #f1f5f9;
+        background: #fafbfc;
+    }
+
+    .filter-group {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .filter-group label {
+        font-size: 0.65rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: #64748b;
+    }
+
+    .search-input-wrapper {
+        position: relative;
+    }
+
+    .search-input-wrapper i {
+        position: absolute;
+        left: 11px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+        pointer-events: none;
+        font-size: 0.85rem;
+    }
+
+    .stock-filter-input {
+        width: 100%;
+        height: 34px;
+        padding: 7px 12px;
+        border-radius: 7px;
+        border: 1px solid #e5e7eb;
+        background: #ffffff;
+        color: #1e293b;
+        font-size: 0.78rem;
+        outline: none;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .search-input-wrapper .stock-filter-input {
+        padding-left: 34px;
+    }
+
+    .stock-filter-input::placeholder {
+        color: #94a3b8;
+    }
+
+    .stock-filter-input:focus {
+        border-color: #0f766e;
+        box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
+    }
+
+    .filter-action {
+        display: flex;
+        align-items: center;
+    }
+
+    .clear-filter-btn {
+        height: 34px;
+        padding: 0 13px;
+        border: 1px solid #e5e7eb;
+        border-radius: 7px;
+        background: #ffffff;
+        color: #374151;
+        font-size: 0.72rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        white-space: nowrap;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .clear-filter-btn:hover {
+        border-color: #0f766e;
+        color: #0f766e;
+        background: #f0fdfa;
+    }
+
+
+    /* =========================================================
+       FILTER RESULT BAR
+       ========================================================= */
+
+    .filter-result-bar {
+        display: flex;
+        align-items: center;
+        padding: 9px 18px;
+        border-bottom: 1px solid #f1f5f9;
+        font-size: 0.72rem;
+        color: #64748b;
+        background: #ffffff;
+    }
+
+    .filter-result-bar strong {
+        color: #0f766e;
+        font-weight: 700;
+    }
+
+
+    /* =========================================================
+       FILTER EMPTY STATE
+       ========================================================= */
+
+    .filter-empty-state {
+        text-align: center;
+        padding: 35px 20px;
+    }
+
+
+    /* =========================================================
+       LOCATION BADGES
+       ========================================================= */
+
+    .location-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 9px;
+        border-radius: 20px;
+        font-size: 0.66rem;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .location-badge.warehouse {
+        background: #e2f5ef;
+        color: #0f766e;
+    }
+
+    .location-badge.pharmacy {
+        background: #e0f2fe;
+        color: #0284c7;
+    }
+
+    .location-badge i {
+        font-size: 11px;
+    }
+
+    .updated-date {
+        font-size: 0.72rem;
+        color: #64748b;
+        white-space: nowrap;
+    }
+
+
+    /* =========================================================
+       RESPONSIVE
+       ========================================================= */
+
+    @@media (max-width: 1200px) {
+
+        .daily-sales-summary-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .monthly-sales-summary-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+    }
+
+    @@media (max-width: 1100px) {
+
+        .summary-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .stock-filter-panel {
+            grid-template-columns: 1fr 180px auto;
+        }
+
+        .daily-sales-summary-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .monthly-sales-summary-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+    }
+
+    @@media (max-width: 800px) {
+
+        .stock-filter-panel {
+            grid-template-columns: 1fr;
+        }
+
+        .filter-action {
+            width: 100%;
+        }
+
+        .clear-filter-btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .report-actions {
+            width: 100%;
+        }
+
+        .report-action-btn {
+            flex: 1;
+        }
+
+        .daily-sales-date-form {
+            width: 100%;
+            min-width: 0;
+        }
+
+        .daily-sales-date-control {
+            width: 100%;
+        }
+
+        .daily-sales-date-input {
+            flex: 1;
+        }
+
+        .daily-sales-summary-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .monthly-sales-header {
+            align-items: flex-start;
+        }
+
+        .monthly-sales-date-form {
+            width: 100%;
+            align-items: stretch;
+        }
+
+        .monthly-sales-field {
+            flex: 1;
+        }
+
+        .monthly-sales-select,
+        .monthly-sales-view-btn {
+            width: 100%;
+        }
+
+    }
+
+    @@media (max-width: 700px) {
+
+        .page-header {
+            flex-direction: column;
+        }
+
+        .summary-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .distribution-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .report-date {
+            width: 100%;
+            text-align: center;
+        }
+
+        .section-header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .report-actions {
+            width: 100%;
+        }
+
+        .report-action-btn {
+            width: 100%;
+            flex: none;
+        }
+
+        .daily-sales-date-display {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .daily-sales-date-control {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .daily-sales-date-input,
+        .daily-sales-view-btn {
+            width: 100%;
+        }
+
+        .daily-sales-table-header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .monthly-sales-summary-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .monthly-sales-date-form {
+            flex-direction: column;
+        }
+
+    }
+
+
+    /* =========================================================
+       PRINT
+       ========================================================= */
+
+    @@media print {
+
+        @@page {
+            size: A4 landscape;
+            margin: 12mm;
+        }
+
+        body {
+            background: #ffffff !important;
+            color: #000000 !important;
+        }
+
+        .reports-page {
+            width: 100% !important;
+            background: #ffffff !important;
+            color: #000000 !important;
+        }
+
+        .page-header {
+            margin-bottom: 12px !important;
+        }
+
+        .page-header h2 {
+            color: #000000 !important;
+        }
+
+        .page-subtitle {
+            color: #555555 !important;
+        }
+
+        .report-date {
+            background: #ffffff !important;
+            color: #000000 !important;
+            border-color: #cccccc !important;
+        }
+
+        .summary-grid,
+        .daily-sales-summary-grid,
+        .monthly-sales-summary-grid {
+            gap: 8px !important;
+        }
+
+        .summary-card,
+        .sales-summary-card,
+        .monthly-sales-card,
+        .report-section,
+        .distribution-card {
+            background: #ffffff !important;
+            color: #000000 !important;
+            border-color: #cccccc !important;
+            box-shadow: none !important;
+        }
+
+        .summary-icon,
+        .sales-summary-icon,
+        .monthly-sales-card-icon {
+            print-color-adjust: exact;
+            -webkit-print-color-adjust: exact;
+        }
+
+        .stock-filter-panel,
+        .filter-result-bar,
+        .report-actions,
+        .clear-filter-btn,
+        .daily-sales-date-form,
+        .monthly-sales-date-form {
+            display: none !important;
+        }
+
+        .report-section {
+            margin-bottom: 12px !important;
+            break-inside: avoid;
+        }
+
+        .section-header {
+            border-color: #cccccc !important;
+            padding: 10px 12px !important;
+        }
+
+        .section-header h4,
+        .section-header p {
+            color: #000000 !important;
+        }
+
+        .monthly-sales-period {
+            color: #000000 !important;
+            background: #ffffff !important;
+            border-color: #cccccc !important;
+        }
+
+        .monthly-sales-table-wrapper {
+            margin: 0 !important;
+            border-color: #cccccc !important;
+        }
+
+        .monthly-sales-table-wrapper .table-title {
+            background: #ffffff !important;
+            border-color: #cccccc !important;
+        }
+
+        .monthly-sales-table-wrapper .table-title h3 {
+            color: #000000 !important;
+        }
+
+        .table-wrapper {
+            overflow: visible !important;
+        }
+
+        .report-table {
+            width: 100% !important;
+            min-width: 0 !important;
+            color: #000000 !important;
+        }
+
+        .report-table th,
+        .report-table td {
+            color: #000000 !important;
+            border-color: #cccccc !important;
+        }
+
+        .report-table tbody tr:hover {
+            background: transparent !important;
+        }
+
+        .location-badge,
+        .code-badge,
+        .status-badge,
+        .bill-number-badge,
+        .paid-status-badge,
+        .medicine-count-badge {
+            print-color-adjust: exact;
+            -webkit-print-color-adjust: exact;
+        }
+
+        .updated-date,
+        .sales-time {
+            color: #444444 !important;
+        }
+
+        .progress-bar {
+            print-color-adjust: exact;
+            -webkit-print-color-adjust: exact;
+        }
+
+    }
+   /* =========================================================
+   REPORTS PAGE - PROFESSIONAL DARK MODE
+   ========================================================= */
+
+html[data-theme="dark"] .reports-page {
+    background: var(--app-bg) !important;
+    color: #F8FAFC !important;
+}
+
+/* =========================================================
+   PAGE HEADER
+   ========================================================= */
+
+html[data-theme="dark"] .reports-page .page-header {
+    color: #F8FAFC !important;
+}
+
+html[data-theme="dark"] .reports-page .page-header h1,
+html[data-theme="dark"] .reports-page .page-header h2,
+html[data-theme="dark"] .reports-page .page-header h3 {
+    color: #FFFFFF !important;
+    font-weight: 700 !important;
+}
+
+html[data-theme="dark"] .reports-page .page-subtitle {
+    color: #CBD5E1 !important;
+}
+
+html[data-theme="dark"] .reports-page .report-date {
+    color: #94A3B8 !important;
+}
+
+/* =========================================================
+   REPORT SECTION
+   ========================================================= */
+
+html[data-theme="dark"] .reports-page .report-section {
+    background: #111827 !important;
+    color: #F8FAFC !important;
+    border: 1px solid #334155 !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.30) !important;
+}
+
+html[data-theme="dark"] .reports-page .section-header {
+    background: linear-gradient(
+        135deg,
+        #172033 0%,
+        #1E293B 100%
+    ) !important;
+
+    color: #FFFFFF !important;
+    border-bottom: 1px solid #334155 !important;
+}
+
+html[data-theme="dark"] .reports-page .section-header h2,
+html[data-theme="dark"] .reports-page .section-header h3,
+html[data-theme="dark"] .reports-page .section-header h4,
+html[data-theme="dark"] .reports-page .section-header strong {
+    color: #FFFFFF !important;
+    font-weight: 700 !important;
+}
+
+html[data-theme="dark"] .reports-page .section-header p,
+html[data-theme="dark"] .reports-page .section-header span {
+    color: #CBD5E1 !important;
+}
+
+html[data-theme="dark"] .reports-page .section-icon {
+    color: #38BDF8 !important;
+}
+
+/* =========================================================
+   GENERAL TEXT
+   ========================================================= */
+
+html[data-theme="dark"] .reports-page p,
+html[data-theme="dark"] .reports-page span,
+html[data-theme="dark"] .reports-page label {
+    color: #CBD5E1 !important;
+}
+
+html[data-theme="dark"] .reports-page small {
+    color: #94A3B8 !important;
+}
+
+html[data-theme="dark"] .reports-page strong {
+    color: #F8FAFC !important;
+}
+
+/* =========================================================
+   DAILY SALES DATE AREA
+   ========================================================= */
+
+html[data-theme="dark"] .reports-page .daily-sales-date-form {
+    background: #172033 !important;
+    border: 1px solid #334155 !important;
+    color: #F8FAFC !important;
+}
+
+html[data-theme="dark"] .reports-page .daily-sales-date-form label {
+    color: #CBD5E1 !important;
+}
+
+html[data-theme="dark"] .reports-page .daily-sales-date-input {
+    background: #0F172A !important;
+    color: #FFFFFF !important;
+    border: 1px solid #475569 !important;
+}
+
+html[data-theme="dark"] .reports-page .daily-sales-date-input:focus {
+    background: #0F172A !important;
+    color: #FFFFFF !important;
+    border-color: #F97316 !important;
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.18) !important;
+}
+
+html[data-theme="dark"] .reports-page .daily-sales-date-display {
+    color: #CBD5E1 !important;
+}
+
+/* =========================================================
+   SUMMARY CARDS
+   ========================================================= */
+
+html[data-theme="dark"] .reports-page .sales-summary-card,
+html[data-theme="dark"] .reports-page .summary-card {
+    background: #1E293B !important;
+    color: #F8FAFC !important;
+    border: 1px solid #334155 !important;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25) !important;
+}
+
+html[data-theme="dark"] .reports-page .sales-summary-card:hover,
+html[data-theme="dark"] .reports-page .summary-card:hover {
+    background: #263449 !important;
+    border-color: #475569 !important;
+    transform: translateY(-1px);
+}
+
+html[data-theme="dark"] .reports-page .sales-summary-label,
+html[data-theme="dark"] .reports-page .summary-label {
+    color: #94A3B8 !important;
+    font-weight: 500 !important;
+}
+
+html[data-theme="dark"] .reports-page .sales-summary-content,
+html[data-theme="dark"] .reports-page .summary-content {
+    color: #FFFFFF !important;
+    font-weight: 700 !important;
+}
+
+html[data-theme="dark"] .reports-page .summary-icon {
+    color: #38BDF8 !important;
+}
+
+/* =========================================================
+   TABLE HEADER
+   ========================================================= */
+
+html[data-theme="dark"] .reports-page .daily-sales-table-header {
+    background: #172033 !important;
+    color: #FFFFFF !important;
+    border-color: #334155 !important;
+}
+
+html[data-theme="dark"] .reports-page .daily-sales-table-header h4,
+html[data-theme="dark"] .reports-page .daily-sales-table-header h5,
+html[data-theme="dark"] .reports-page .daily-sales-table-header strong {
+    color: #FFFFFF !important;
+}
+
+html[data-theme="dark"] .reports-page .daily-bills-count {
+    color: #CBD5E1 !important;
+}
+
+/* =========================================================
+   REPORT TABLE
+   ========================================================= */
+
+html[data-theme="dark"] .reports-page .report-table {
+    background: #111827 !important;
+    color: #E2E8F0 !important;
+    border-color: #334155 !important;
+}
+
+html[data-theme="dark"] .reports-page .report-table thead,
+html[data-theme="dark"] .reports-page .report-table thead tr,
+html[data-theme="dark"] .reports-page .report-table th {
+    background: #1E293B !important;
+    color: #F8FAFC !important;
+    border-color: #475569 !important;
+    font-weight: 600 !important;
+}
+
+html[data-theme="dark"] .reports-page .report-table tbody tr {
+    background: #111827 !important;
+}
+
+html[data-theme="dark"] .reports-page .report-table tbody tr:hover {
+    background: #1E293B !important;
+}
+
+html[data-theme="dark"] .reports-page .report-table td {
+    background: transparent !important;
+    color: #E2E8F0 !important;
+    border-color: #263244 !important;
+    vertical-align: middle !important;
+}
+
+html[data-theme="dark"] .reports-page .report-table tbody tr:hover td {
+    background: #1E293B !important;
+    color: #FFFFFF !important;
+}
+
+/* =========================================================
+   TABLE TEXT
+   ========================================================= */
+
+html[data-theme="dark"] .reports-page .medicine-name {
+    color: #FFFFFF !important;
+    font-weight: 600 !important;
+}
+
+html[data-theme="dark"] .reports-page .medicine-code {
+    color: #94A3B8 !important;
+}
+
+html[data-theme="dark"] .reports-page .sales-time {
+    color: #CBD5E1 !important;
+}
+
+html[data-theme="dark"] .reports-page .sales-amount {
+    color: #FFFFFF !important;
+    font-weight: 600 !important;
+}
+
+html[data-theme="dark"] .reports-page .paid-amount {
+    color: #4ADE80 !important;
+    font-weight: 600 !important;
+}
+
+html[data-theme="dark"] .reports-page .balance-amount {
+    color: #FBBF24 !important;
+    font-weight: 600 !important;
+}
+
+html[data-theme="dark"] .reports-page .medicine-count {
+    color: #CBD5E1 !important;
+}
+
+/* =========================================================
+   BADGES
+   ========================================================= */
+
+html[data-theme="dark"] .reports-page .bill-number-badge,
+html[data-theme="dark"] .reports-page .medicine-count-badge {
+    background: #082F49 !important;
+    color: #7DD3FC !important;
+    border: 1px solid #075985 !important;
+    font-weight: 600 !important;
+}
+
+html[data-theme="dark"] .reports-page .paid-status-badge {
+    background: #14532D !important;
+    color: #86EFAC !important;
+    border: 1px solid #166534 !important;
+    font-weight: 600 !important;
+}
+
+html[data-theme="dark"] .reports-page .location-badge {
+    background: #082F49 !important;
+    color: #7DD3FC !important;
+    border: 1px solid #075985 !important;
+    font-weight: 600 !important;
+}
+
+/* =========================================================
+   MONTHLY SALES
+   ========================================================= */
+
+html[data-theme="dark"] .reports-page .monthly-sales-period {
+    color: #CBD5E1 !important;
+}
+
+html[data-theme="dark"] .reports-page .monthly-sales-card {
+    background: #1E293B !important;
+    color: #F8FAFC !important;
+    border: 1px solid #334155 !important;
+}
+
+html[data-theme="dark"] .reports-page .monthly-sales-card h4,
+html[data-theme="dark"] .reports-page .monthly-sales-card h5 {
+    color: #FFFFFF !important;
+}
+
+html[data-theme="dark"] .reports-page .monthly-sales-table-wrapper {
+    background: #111827 !important;
+    border: 1px solid #334155 !important;
+}
+
+html[data-theme="dark"] .reports-page .monthly-sales-empty {
+    background: #111827 !important;
+    color: #94A3B8 !important;
+}
+
+/* =========================================================
+   SELECT / INPUTS
+   ========================================================= */
+
+html[data-theme="dark"] .reports-page .monthly-sales-select,
+html[data-theme="dark"] .reports-page .stock-filter-panel input,
+html[data-theme="dark"] .reports-page .stock-filter-panel select {
+    background: #0F172A !important;
+    color: #FFFFFF !important;
+    border: 1px solid #475569 !important;
+}
+
+html[data-theme="dark"] .reports-page .monthly-sales-select:focus,
+html[data-theme="dark"] .reports-page .stock-filter-panel input:focus,
+html[data-theme="dark"] .reports-page .stock-filter-panel select:focus {
+    background: #0F172A !important;
+    color: #FFFFFF !important;
+    border-color: #F97316 !important;
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.18) !important;
+}
+
+html[data-theme="dark"] .reports-page .monthly-sales-select option,
+html[data-theme="dark"] .reports-page .stock-filter-panel select option {
+    background: #0F172A !important;
+    color: #FFFFFF !important;
+}
+
+html[data-theme="dark"] .reports-page input::placeholder {
+    color: #64748B !important;
+}
+
+/* =========================================================
+   STOCK DISTRIBUTION
+   ========================================================= */
+
+html[data-theme="dark"] .reports-page .distribution-card {
+    background: #1E293B !important;
+    color: #F8FAFC !important;
+    border: 1px solid #334155 !important;
+}
+
+html[data-theme="dark"] .reports-page .distribution-card h3,
+html[data-theme="dark"] .reports-page .distribution-card h4,
+html[data-theme="dark"] .reports-page .distribution-card h5 {
+    color: #FFFFFF !important;
+}
+
+html[data-theme="dark"] .reports-page .distribution-card p,
+html[data-theme="dark"] .reports-page .distribution-card span {
+    color: #CBD5E1 !important;
+}
+
+html[data-theme="dark"] .reports-page .distribution-card .progress {
+    background: #0F172A !important;
+}
+
+html[data-theme="dark"] .reports-page .distribution-card .progress-bar {
+    background: #38BDF8 !important;
+}
+
+/* =========================================================
+   LOW STOCK
+   ========================================================= */
+
+html[data-theme="dark"] .reports-page .low-stock-item {
+    background: #1E293B !important;
+    color: #F8FAFC !important;
+    border: 1px solid #334155 !important;
+}
+
+html[data-theme="dark"] .reports-page .low-stock-item:hover {
+    background: #263449 !important;
+    border-color: #475569 !important;
+}
+
+html[data-theme="dark"] .reports-page .low-stock-item strong {
+    color: #FFFFFF !important;
+}
+
+html[data-theme="dark"] .reports-page .low-stock-item span {
+    color: #CBD5E1 !important;
+}
+
+/* =========================================================
+   STOCK FILTER PANEL
+   ========================================================= */
+
+html[data-theme="dark"] .reports-page .stock-filter-panel {
+    background: #1E293B !important;
+    color: #F8FAFC !important;
+    border: 1px solid #334155 !important;
+}
+
+html[data-theme="dark"] .reports-page .stock-filter-panel label {
+    color: #CBD5E1 !important;
+    font-weight: 500 !important;
+}
+
+html[data-theme="dark"] .reports-page .filter-result-bar {
+    background: #172033 !important;
+    border: 1px solid #334155 !important;
+    color: #CBD5E1 !important;
+}
+
+html[data-theme="dark"] .reports-page .filter-result-bar strong {
+    color: #FFFFFF !important;
+}
+
+/* =========================================================
+   ORANGE BUTTONS
+   ========================================================= */
+
+html[data-theme="dark"] .reports-page .report-btn,
+html[data-theme="dark"] .reports-page .btn-report,
+html[data-theme="dark"] .reports-page .btn-primary,
+html[data-theme="dark"] .reports-page .btn-teal,
+html[data-theme="dark"] .reports-page .btn-action,
+html[data-theme="dark"] .reports-page .btn-new {
+    background: #F97316 !important;
+    background-image: none !important;
+    color: #FFFFFF !important;
+    border: 1px solid #EA580C !important;
+    font-weight: 600 !important;
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.20) !important;
+}
+
+html[data-theme="dark"] .reports-page .report-btn:hover,
+html[data-theme="dark"] .reports-page .btn-report:hover,
+html[data-theme="dark"] .reports-page .btn-primary:hover,
+html[data-theme="dark"] .reports-page .btn-teal:hover,
+html[data-theme="dark"] .reports-page .btn-action:hover,
+html[data-theme="dark"] .reports-page .btn-new:hover {
+    background: #EA580C !important;
+    color: #FFFFFF !important;
+    border-color: #C2410C !important;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(249, 115, 22, 0.28) !important;
+}
+
+html[data-theme="dark"] .reports-page .report-btn:active,
+html[data-theme="dark"] .reports-page .btn-report:active,
+html[data-theme="dark"] .reports-page .btn-primary:active {
+    background: #C2410C !important;
+    color: #FFFFFF !important;
+}
+
+/* Button icons */
+html[data-theme="dark"] .reports-page .report-btn i,
+html[data-theme="dark"] .reports-page .btn-report i,
+html[data-theme="dark"] .reports-page .btn-primary i,
+html[data-theme="dark"] .reports-page .btn-teal i {
+    color: #FFFFFF !important;
+}
+
+/* =========================================================
+   CLEAR / SECONDARY BUTTON
+   ========================================================= */
+
+html[data-theme="dark"] .reports-page .btn-secondary,
+html[data-theme="dark"] .reports-page .btn-outline-secondary {
+    background: #334155 !important;
+    color: #F8FAFC !important;
+    border: 1px solid #475569 !important;
+}
+
+html[data-theme="dark"] .reports-page .btn-secondary:hover,
+html[data-theme="dark"] .reports-page .btn-outline-secondary:hover {
+    background: #475569 !important;
+    color: #FFFFFF !important;
+}
+
+/* =========================================================
+   EMPTY STATES
+   ========================================================= */
+
+html[data-theme="dark"] .reports-page .empty-state,
+html[data-theme="dark"] .reports-page .empty-message {
+    background: #111827 !important;
+    color: #94A3B8 !important;
+    border-color: #334155 !important;
+}
+
+html[data-theme="dark"] .reports-page .empty-state h4,
+html[data-theme="dark"] .reports-page .empty-state h5 {
+    color: #E2E8F0 !important;
+}
+
+/* =========================================================
+   API ERROR
+   ========================================================= */
+
+html[data-theme="dark"] .reports-page .api-alert {
+    background: #451A03 !important;
+    color: #FED7AA !important;
+    border: 1px solid #9A3412 !important;
+}
+
+html[data-theme="dark"] .reports-page .api-alert strong,
+html[data-theme="dark"] .reports-page .api-alert h4 {
+    color: #FFEDD5 !important;
+}
+
+/* =========================================================
+   LINKS
+   ========================================================= */
+
+html[data-theme="dark"] .reports-page a {
+    color: #38BDF8 !important;
+}
+
+html[data-theme="dark"] .reports-page a:hover {
+    color: #7DD3FC !important;
+}
+
+/* =========================================================
+   SCROLLBAR
+   ========================================================= */
+
+html[data-theme="dark"] .reports-page ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+html[data-theme="dark"] .reports-page ::-webkit-scrollbar-track {
+    background: #0F172A !important;
+}
+
+html[data-theme="dark"] .reports-page ::-webkit-scrollbar-thumb {
+    background: #475569 !important;
+    border-radius: 10px;
+}
+
+html[data-theme="dark"] .reports-page ::-webkit-scrollbar-thumb:hover {
+    background: #64748B !important;
+}
+
+/* =========================================================
+   REPORTS - SOFT ORANGE BUTTONS
+   ========================================================= */
+
+html[data-theme="dark"] .reports-page button,
+html[data-theme="dark"] .reports-page .btn,
+html[data-theme="dark"] .reports-page a.btn {
+    background: #FB923C !important;
+    background-color: #FB923C !important;
+    background-image: none !important;
+    color: #FFFFFF !important;
+    border: 1px solid #F97316 !important;
+    box-shadow: 0 3px 10px rgba(251, 146, 60, 0.18) !important;
+}
+
+/* Hover */
+html[data-theme="dark"] .reports-page button:hover,
+html[data-theme="dark"] .reports-page .btn:hover,
+html[data-theme="dark"] .reports-page a.btn:hover {
+    background: #F97316 !important;
+    background-color: #F97316 !important;
+    color: #FFFFFF !important;
+    border-color: #EA580C !important;
+    box-shadow: 0 4px 12px rgba(251, 146, 60, 0.25) !important;
+}
+
+/* Active */
+html[data-theme="dark"] .reports-page button:active,
+html[data-theme="dark"] .reports-page .btn:active {
+    background: #EA580C !important;
+    background-color: #EA580C !important;
+    color: #FFFFFF !important;
+}
+
+/* Button icons/text */
+html[data-theme="dark"] .reports-page button i,
+html[data-theme="dark"] .reports-page .btn i,
+html[data-theme="dark"] .reports-page a.btn i {
+    color: #FFFFFF !important;
+}
+html[data-theme="dark"] .reports-page [class*="search"] {
+    background-color: transparent !important;
+    box-shadow: none !important;
+}
+
+html[data-theme="dark"] .reports-page [class*="search"] input {
+    background-color: #0F172A !important;
+    color: #FFFFFF !important;
+}
+
+</style>
+
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const searchInput =
+            document.getElementById("stockSearch");
+
+        const locationFilter =
+            document.getElementById("locationFilter");
+
+        const clearButton =
+            document.getElementById("clearStockFilters");
+
+        const table =
+            document.getElementById("stockSummaryTable");
+
+        const tableBody =
+            document.getElementById("stockSummaryBody");
+
+        const filterEmptyState =
+            document.getElementById("filterEmptyState");
+
+        const visibleStockCount =
+            document.getElementById("visibleStockCount");
+
+        const stockRecordCount =
+            document.getElementById("stockRecordCount");
+
+        const printReportBtn =
+            document.getElementById("printReportBtn");
+
+        const exportStockCsvBtn =
+            document.getElementById("exportStockCsvBtn");
+
+
+        // FIX: Clear button ki zaroorat nahi hai. Sirf zaroori elements check karein.
+        if (!searchInput ||
+            !locationFilter ||
+            !table ||
+            !tableBody) {
+
+            console.error("Required DOM elements for stock filtering are missing.");
+            return;
+        }
+
+
+        const stockRows =
+            Array.from(
+                tableBody.querySelectorAll(".stock-row")
+            );
+
+
+        const totalStockCount =
+            stockRows.length;
+
+
+        function updateRowNumbers(visibleRows) {
+
+            visibleRows.forEach(function (row, index) {
+
+                const numberCell =
+                    row.querySelector(".stock-row-number");
+
+                if (numberCell) {
+
+                    numberCell.textContent =
+                        index + 1;
+
+                }
+
+            });
+
+        }
+
+
+        function updateRecordBadge(count) {
+
+            if (!stockRecordCount) {
+                return;
+            }
+
+            stockRecordCount.textContent =
+                count +
+                (count === 1
+                    ? " Record"
+                    : " Records");
+
+        }
+
+
+        function updateExportButton(count) {
+
+            if (!exportStockCsvBtn) {
+                return;
+            }
+
+            exportStockCsvBtn.disabled =
+                count === 0;
+
+        }
+
+
+        function filterStockRows() {
+
+            const searchValue =
+                searchInput.value
+                    .trim()
+                    .toLowerCase();
+
+            const selectedLocation =
+                locationFilter.value;
+
+            const visibleRows = [];
+
+
+            stockRows.forEach(function (row) {
+
+                const medicine =
+                    row.dataset.medicine || "";
+
+                const batch =
+                    row.dataset.batch || "";
+
+                const location =
+                    row.dataset.location || "";
+
+
+                const matchesSearch =
+                    searchValue === "" ||
+                    medicine.includes(searchValue) ||
+                    batch.includes(searchValue);
+
+
+                const matchesLocation =
+                    selectedLocation === "all" ||
+                    location === selectedLocation;
+
+
+                const shouldShow =
+                    matchesSearch &&
+                    matchesLocation;
+
+
+                row.style.display =
+                    shouldShow ? "" : "none";
+
+
+                if (shouldShow) {
+                    visibleRows.push(row);
+                }
+
+            });
+
+
+            updateRowNumbers(visibleRows);
+
+
+            if (visibleStockCount) {
+
+                visibleStockCount.textContent =
+                    visibleRows.length;
+
+            }
+
+
+            updateRecordBadge(
+                visibleRows.length
+            );
+
+
+            updateExportButton(
+                visibleRows.length
+            );
+
+
+            if (filterEmptyState) {
+
+                filterEmptyState.style.display =
+                    visibleRows.length === 0
+                        ? "block"
+                        : "none";
+
+            }
+
+
+            table.style.display =
+                visibleRows.length === 0
+                    ? "none"
+                    : "";
+
+
+            if (totalStockCount === 0) {
+
+                table.style.display =
+                    "none";
+
+            }
+
+        }
+
+
+        function clearFilters() {
+
+            searchInput.value = "";
+
+            locationFilter.value = "all";
+
+            filterStockRows();
+
+            searchInput.focus();
+
+        }
+
+
+        function getVisibleRows() {
+
+            return stockRows.filter(function (row) {
+
+                return row.style.display !== "none";
+
+            });
+
+        }
+
+
+        function escapeCsvValue(value) {
+
+            const stringValue =
+                String(value ?? "");
+
+            return '"' +
+                stringValue.replace(/"/g, '""') +
+                '"';
+
+        }
+
+
+        function exportStockCsv() {
+
+            const visibleRows =
+                getVisibleRows();
+
+
+            if (visibleRows.length === 0) {
+                return;
+            }
+
+
+            const csvRows = [];
+
+
+            csvRows.push(
+                [
+                    "Medicine",
+                    "Batch",
+                    "Location",
+                    "Quantity",
+                    "Last Updated"
+                ]
+                    .map(escapeCsvValue)
+                    .join(",")
+            );
+
+
+            visibleRows.forEach(function (row) {
+
+                const medicineElement =
+                    row.querySelector(
+                        ".medicine-name strong"
+                    );
+
+                const batchElement =
+                    row.querySelector(
+                        ".code-badge"
+                    );
+
+                const locationElement =
+                    row.querySelector(
+                        ".location-badge"
+                    );
+
+                const quantityCell =
+                    row.cells[4];
+
+                const updatedElement =
+                    row.querySelector(
+                        ".updated-date"
+                    );
+
+
+                const medicine =
+                    medicineElement
+                        ? medicineElement.textContent.trim()
+                        : "";
+
+
+                const batch =
+                    batchElement
+                        ? batchElement.textContent.trim()
+                        : "";
+
+
+                const location =
+                    locationElement
+                        ? locationElement.textContent.trim()
+                        : "Unknown";
+
+
+                const quantityText =
+                    quantityCell
+                        ? quantityCell.textContent.trim()
+                        : "0";
+
+
+                const quantity =
+                    quantityText.replace(/,/g, "");
+
+
+                const lastUpdated =
+                    updatedElement
+                        ? updatedElement.textContent.trim()
+                        : "";
+
+
+                csvRows.push(
+                    [
+                        medicine,
+                        batch,
+                        location,
+                        quantity,
+                        lastUpdated
+                    ]
+                        .map(escapeCsvValue)
+                        .join(",")
+                );
+
+            });
+
+
+            const csvContent =
+                "\uFEFF" +
+                csvRows.join("\r\n");
+
+
+            const blob =
+                new Blob(
+                    [csvContent],
+                    {
+                        type: "text/csv;charset=utf-8;"
+                    }
+                );
+
+
+            const url =
+                URL.createObjectURL(blob);
+
+
+            const link =
+                document.createElement("a");
+
+
+            const today =
+                new Date();
+
+
+            const year =
+                today.getFullYear();
+
+
+            const month =
+                String(today.getMonth() + 1)
+                    .padStart(2, "0");
+
+
+            const day =
+                String(today.getDate())
+                    .padStart(2, "0");
+
+
+            link.href = url;
+
+
+            link.download =
+                "BKMC-Stock-Report-" +
+                year +
+                "-" +
+                month +
+                "-" +
+                day +
+                ".csv";
+
+
+            document.body.appendChild(link);
+
+            link.click();
+
+            document.body.removeChild(link);
+
+            URL.revokeObjectURL(url);
+
+        }
+
+
+        function printReport() {
+
+            window.print();
+
+        }
+
+
+        searchInput.addEventListener(
+            "input",
+            filterStockRows
+        );
+
+
+        locationFilter.addEventListener(
+            "change",
+            filterStockRows
+        );
+
+        // FIX: Clear button ka event listener conditional bana diya hai
+        if (clearButton) {
+            clearButton.addEventListener(
+                "click",
+                clearFilters
+            );
+        }
+
+
+        if (exportStockCsvBtn) {
+
+            exportStockCsvBtn.addEventListener(
+                "click",
+                exportStockCsv
+            );
+
+        }
+
+
+        if (printReportBtn) {
+
+            printReportBtn.addEventListener(
+                "click",
+                printReport
+            );
+
+        }
+
+
+        filterStockRows();
+
+    });
+
+</script>
+
+
+
+

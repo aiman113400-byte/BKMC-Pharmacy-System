@@ -1,0 +1,128 @@
+﻿@page "{id:int}"
+@model BKMC.Pharmacy.Web.Pages.Suppliers.EditModel
+
+@{
+    ViewData["Title"] = "Edit Supplier";
+}
+
+<div class="container-fluid py-4">
+    <div class="mb-4">
+        <a asp-page="/Suppliers/Index" class="text-decoration-none">
+            &larr; Back to Suppliers
+        </a>
+
+        ```
+        <h2 class="fw-bold mt-3 mb-1">Edit Supplier</h2>
+        <p class="text-muted">
+            Update supplier and contact information.
+        </p>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger">
+            @Model.ErrorMessage
+        </div>
+    }
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white py-3">
+            <h5 class="mb-0">Supplier Information</h5>
+        </div>
+
+        <div class="card-body p-4">
+            <form method="post">
+                <input type="hidden" asp-for="SupplierId" />
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-3"></div>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="Supplier.SupplierCode"
+                               class="form-label">Supplier Code *</label>
+                        <input asp-for="Supplier.SupplierCode"
+                               class="form-control" />
+                        <span asp-validation-for="Supplier.SupplierCode"
+                              class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="Supplier.Name"
+                               class="form-label">Supplier Name *</label>
+                        <input asp-for="Supplier.Name"
+                               class="form-control" />
+                        <span asp-validation-for="Supplier.Name"
+                              class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="Supplier.ContactPerson"
+                               class="form-label">Contact Person</label>
+                        <input asp-for="Supplier.ContactPerson"
+                               class="form-control" />
+                        <span asp-validation-for="Supplier.ContactPerson"
+                              class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="Supplier.Phone"
+                               class="form-label">Phone</label>
+                        <input asp-for="Supplier.Phone"
+                               class="form-control" />
+                        <span asp-validation-for="Supplier.Phone"
+                              class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="Supplier.Email"
+                               class="form-label">Email</label>
+                        <input asp-for="Supplier.Email"
+                               class="form-control" />
+                        <span asp-validation-for="Supplier.Email"
+                              class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="Supplier.IsActive"
+                               class="form-label">Supplier Status</label>
+                        <select asp-for="Supplier.IsActive"
+                                class="form-select">
+                            <option value="true">Active</option>
+                            <option value="false">Inactive</option>
+                        </select>
+                    </div>
+
+                    <div class="col-12">
+                        <label asp-for="Supplier.Address"
+                               class="form-label">Address</label>
+                        <textarea asp-for="Supplier.Address"
+                                  class="form-control"
+                                  rows="3"></textarea>
+                        <span asp-validation-for="Supplier.Address"
+                              class="text-danger"></span>
+                    </div>
+                </div>
+
+                <hr class="my-4" />
+
+                <div class="d-flex justify-content-end gap-2">
+                    <a asp-page="/Suppliers/Index"
+                       class="btn btn-outline-secondary">
+                        Cancel
+                    </a>
+
+                    <button type="submit" class="btn btn-primary">
+                        Update Supplier
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    ```
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

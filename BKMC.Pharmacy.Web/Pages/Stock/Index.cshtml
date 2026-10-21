@@ -151,7 +151,7 @@
         margin: 0;
     }
     .table-aesthetic thead th {
-        background: var(--slate-50);
+        background: #e2f5ef !important; 
         color: var(--slate-500);
         font-size: 0.65rem;
         text-transform: uppercase;
@@ -201,7 +201,7 @@
 
     /* ================= BADGES ================= */
     .pill-batch {
-        background: var(--teal-100);
+        /* background: var(--teal-100); */
         color: var(--teal-600);
         font-family: 'SF Mono', Menlo, monospace;
         font-size: 0.75rem;
@@ -224,15 +224,15 @@
         font-size: 0.7rem;
     }
     .loc-warehouse {
-        background: var(--teal-100);
+        /* background: var(--teal-100); */
         color: var(--teal-600);
     }
     .loc-pharmacy {
-        background: #d1fae5;
+        /* background: #d1fae5; */
         color: #065f46;
-    }
+    }s
     .loc-other {
-        background: var(--slate-100);
+        /* background: var(--slate-100); */
         color: var(--slate-700);
     }
 
@@ -359,17 +359,7 @@
                         </select>
                     </div>
 
-                    <!-- Buttons -->
-                    <div class="col-md-4 d-flex gap-2">
-                        <button type="button" id="searchBtn" class="btn-search">
-                            <i class="bi bi-search"></i>
-                            Search
-                        </button>
-                        <button type="button" id="clearBtn" class="btn-clear">
-                            <i class="bi bi-arrow-clockwise"></i>
-                            Clear
-                        </button>
-                    </div>
+                  
 
                 </div>
 
@@ -417,7 +407,7 @@
 
                                 <td>
                                     <div class="cell-medicine">@stock.MedicineName</div>
-                                    <div class="cell-medicine-id">Medicine ID: @stock.MedicineId</div>
+                                   
                                 </td>
 
                                 <td>
@@ -425,12 +415,12 @@
                                 </td>
 
                                 <td>
-                                    @{
+                                     @{
                                         var locClass = stock.Location.ToString() == "Warehouse" ? "loc-warehouse"
                                                      : stock.Location.ToString() == "Pharmacy" ? "loc-pharmacy"
                                                      : "loc-other";
                                         var locIcon = stock.Location.ToString() == "Pharmacy" ? "bi-shop" : "bi-building";
-                                    }
+                                    } 
                                     <span class="pill-location @locClass">
                                         <i class="bi @locIcon"></i>
                                         @stock.Location

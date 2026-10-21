@@ -25,12 +25,12 @@
         border-radius: 0.75rem !important;
         box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05) !important;
         overflow: hidden !important;
-        background-color: #ffffff !important;
+        background-color:  #f8fafc; !important;
     }
 
     /* ================= CARD HEADER (Matching Table Header) ================= */
     .card-header-custom {
-        background-color: #f0fdfa !important;       /* Light teal */
+        background-color:  #f8fafc;        /* Light teal */
         background-image: none !important;          /* Gradient khatam */
         border-bottom: 1px solid #e2e8f0 !important;
         padding: 1rem 1.5rem !important;
@@ -135,11 +135,13 @@
             <h2 class="fw-bold mb-1 text-dark">New Medicine Receiving</h2>
             <p class="text-muted mb-0 small">Record medicines received from a supplier.</p>
         </div>
-
-        <a asp-page="/Receiving/Index" class="btn btn-cancel d-inline-flex align-items-center gap-2">
-            <i class="bi bi-arrow-left"></i>
-            Back to Receiving
-        </a>
+    
+     <a asp-page="/Receiving/Index" class="btn d-inline-flex align-items-center gap-2" 
+   style="background-color: #0d5e58 !important; color: #ffffff !important; border: none;">
+     <i class="bi bi-arrow-left"></i>
+     Back to Receiving
+</a>
+       
     </div>
 
     <!-- ================= ERROR ALERT ================= -->
@@ -166,17 +168,20 @@
         }
 
         <!-- ================= CARD 1: INVOICE INFORMATION ================= -->
-        <div class="card-custom mb-4">
-            <div class="card-header-custom">
-                <h5><i class="bi bi-receipt me-2"></i> Invoice Information</h5>
-            </div>
+        <div class="card-custom mb-4"> <!-- @* aur *@ hata dein -->
+    <div class="card-header-custom" style="background-color: #e2f5ef !important;">
+        <h5><i class="bi bi-receipt me-2"></i> Invoice Information</h5>
+    </div>
+        
+     
+      
 
             <div class="card-body p-4">
                 <div class="row g-3">
 
                     <!-- Supplier -->
                     <div class="col-md-4">
-                        <label class="form-label">Supplier <span class="text-danger">*</span></label>
+                        <label class="form-label">Supplier <span class="text-danger"></span></label>
                         <select asp-for="Receiving.SupplierId" class="form-select">
                             <option value="0">Select Supplier</option>
                             @foreach (var supplier in Model.Suppliers)

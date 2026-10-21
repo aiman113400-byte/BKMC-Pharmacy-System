@@ -39,6 +39,7 @@ public class MedicineService : IMedicineService
             GenericName = dto.GenericName.Trim(),
             Strength = dto.Strength.Trim(),
             Form = dto.Form.Trim(),
+            ReorderLevel = dto.ReorderLevel,
             IsActive = true,
             CreatedAt = DateTime.UtcNow
         };
@@ -120,6 +121,7 @@ public class MedicineService : IMedicineService
         medicine.GenericName = dto.GenericName.Trim();
         medicine.Strength = dto.Strength.Trim();
         medicine.Form = dto.Form.Trim();
+        medicine.ReorderLevel = dto.ReorderLevel;
         medicine.UpdatedAt = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();
@@ -194,6 +196,7 @@ public class MedicineService : IMedicineService
             GenericName = medicine.GenericName,
             Strength = medicine.Strength,
             Form = medicine.Form,
+            ReorderLevel = medicine.ReorderLevel,
             IsActive = medicine.IsActive,
             CreatedAt = medicine.CreatedAt,
             UpdatedAt = medicine.UpdatedAt

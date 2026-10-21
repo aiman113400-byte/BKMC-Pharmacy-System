@@ -69,6 +69,9 @@ builder.Services.AddScoped<BillApiService>();
 builder.Services.AddScoped<ReturnApiService>();
 builder.Services.AddScoped<AuthApiService>();
 builder.Services.AddScoped<JwtAuthorizationHandler>();
+builder.Services.AddScoped<SupplierApiService>();
+builder.Services.AddScoped<ReportsApiService>();
+builder.Services.AddScoped<BackupApiService>();
 
 
 

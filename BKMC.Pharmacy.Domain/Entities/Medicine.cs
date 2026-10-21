@@ -18,6 +18,7 @@ namespace BKMC.Pharmacy.Domain.Entities
         public string Strength { get; set; } = string.Empty;
 
         public string Form { get; set; } = string.Empty;
+        public decimal ReorderLevel { get; set; } = 0;                    //add new code here//
 
         public bool IsActive { get; set; } = true;
 

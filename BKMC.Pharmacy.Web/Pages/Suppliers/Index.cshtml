@@ -1,0 +1,219 @@
+﻿@page
+@model BKMC.Pharmacy.Web.Pages.Suppliers.IndexModel
+
+@{
+    ViewData["Title"] = "Suppliers";
+}
+@* 
+<style>
+    /* Bootstrap ke td background ko override karne ke liye */
+    .custom-hover-table tbody tr:hover td {
+        background-color: #e2f5ef !important; /* Returns table wala color */
+        transition: background-color 0.2s ease-in-out;
+    }
+
+    /* Optional: Mouse le jaane par cursor pointer banane ke liye */
+    .custom-hover-table tbody tr:hover {
+        cursor: pointer;
+
+     
+    }
+</style> *@
+
+
+
+<div class="bg-light min-vh-100 py-4">
+    <div class="container">
+
+        <!-- Page Header -->
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+            <div>
+                <h2 class="fw-bold mb-1 text-dark">Supplier Management</h2>
+                <p class="text-muted mb-0 small">Manage pharmacy suppliers and their contact information.</p>
+            </div>
+            <a asp-page="/Suppliers/Create" class="btn btn-primary rounded-pill px-4 shadow-sm fw-semibold">
+                <i class="bi bi-plus-lg me-1"></i> Add Supplier
+            </a>
+        </div>
+
+        <!-- Alerts -->
+        @if (TempData["Message"] is string message)
+        {
+            <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm rounded-3">
+                <i class="bi bi-check-circle-fill me-2"></i> @message
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+        @if (TempData["Error"] is string actionError)
+        {
+            <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm rounded-3">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i> @actionError
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        <!-- Main Card -->
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+
+            <!-- Card Header with Search Bar -->
+            <div class="card-header bg-white py-3 border-bottom-0">
+                <div class="row align-items-center g-3">
+
+                    <!-- Left: Title -->
+                    <div class="col-lg-5 col-md-4">
+                        <h5 class="mb-0 fw-bold text-success">
+                            <i class="bi bi-people-fill me-2"></i>Supplier Directory
+                        </h5>
+                    </div>
+
+                    <!-- Right: Search Bar (Simple Flexbox) -->
+                    <div class="col-lg-7 col-md-8">
+                        <form method="get" class="d-flex justify-content-md-end align-items-center gap-2">
+
+                            <!-- Input Field (Search Icon removed from here) -->
+                            <input asp-for="Search" class="form-control rounded-pill shadow-sm border-0 bg-light"
+                                   placeholder="Search suppliers..." style="max-width: 300px;" />
+
+                            <!-- Clear Button -->
+                            @if (!string.IsNullOrEmpty(Model.Search))
+                            {
+                                <a asp-page="/Suppliers/Index" class="btn btn-light border rounded-pill px-3 shadow-sm" title="Clear Search">
+                                    <i class="bi bi-x-lg"></i>
+                                </a>
+                            }
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0" style="--bs-table-hover-bg: D6F4ED">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="text-uppercase small fw-bold text-secondary py-3 px-4 border-0">Code</th>
+                            <th class="text-uppercase small fw-bold text-secondary py-3 border-0">Supplier Name</th>
+                            <th class="text-uppercase small fw-bold text-secondary py-3 border-0">Contact Person</th>
+                            <th class="text-uppercase small fw-bold text-secondary py-3 border-0">Phone</th>
+                            <th class="text-uppercase small fw-bold text-secondary py-3 border-0">Email</th>
+                            <th class="text-uppercase small fw-bold text-secondary py-3 text-center border-0">Status</th>
+                            <th class="text-uppercase small fw-bold text-secondary py-3 text-end px-4 border-0">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="border-top-0">
+                        @if (Model.Suppliers.Count == 0)
+                        {
+                            <tr>
+                                <td colspan="7" class="text-center py-5 text-muted border-0">
+                                    <i class="bi bi-inbox fs-1 d-block mb-3 text-secondary opacity-25"></i>
+                                    No suppliers found matching your criteria.
+                                </td>
+                            </tr>
+                        }
+                        else
+                        {
+                            @foreach (var supplier in Model.Suppliers)
+                            {
+                                <tr>
+                                    <td class="py-3 px-4 border-0">
+                                        <span class="badge bg-secondary bg-opacity-10 text-dark fw-bold px-2 py-1 rounded">
+                                            @supplier.SupplierCode
+                                        </span>
+                                    </td>
+                                    <td class="py-3 border-0 fw-semibold text-dark">@supplier.Name</td>
+                                    <td class="py-3 border-0 text-muted">@(supplier.ContactPerson ?? "—")</td>
+                                    <td class="py-3 border-0 text-muted">@(supplier.Phone ?? "—")</td>
+                                    <td class="py-3 border-0 text-muted">@(supplier.Email ?? "—")</td>
+                                    <td class="py-3 text-center border-0">
+                                        @if (supplier.IsActive)
+                                        {
+                                            <span class="d-inline-flex align-items-center gap-1 text-success small fw-semibold">
+                                                <i class="bi bi-circle-fill" style="font-size: 8px;"></i> Active
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="d-inline-flex align-items-center gap-1 text-danger small fw-semibold">
+                                                <i class="bi bi-circle-fill" style="font-size: 8px;"></i> Inactive
+                                            </span>
+                                        }
+                                    </td>
+                                    <td class="text-end py-3 px-4 border-0">
+                                        <div class="d-inline-flex gap-1">
+                                            <a asp-page="/Suppliers/Details" asp-route-id="@supplier.Id"
+                                               class="btn btn-sm btn-light text-info rounded-circle" title="View Details">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+
+                                            <a asp-page="/Suppliers/Edit" asp-route-id="@supplier.Id"
+                                               class="btn btn-sm btn-light text-primary rounded-circle" title="Edit">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+
+                                            @if (supplier.IsActive)
+                                            {
+                                                <form method="post" asp-page-handler="Deactivate" asp-route-id="@supplier.Id"
+                                                      onsubmit="return confirm('Deactivate this supplier?');" class="d-inline">
+                                                    <input type="hidden" name="Search" value="@Model.Search" />
+                                                    <button type="submit" class="btn btn-sm btn-light text-danger rounded-circle" title="Deactivate">
+                                                        <i class="bi bi-slash-circle"></i>
+                                                    </button>
+                                                </form>
+                                            }
+                                            else
+                                            {
+                                                <form method="post" asp-page-handler="Activate" asp-route-id="@supplier.Id" class="d-inline">
+                                                    <input type="hidden" name="Search" value="@Model.Search" />
+                                                    <button type="submit" class="btn btn-sm btn-light text-success rounded-circle" title="Activate">
+                                                        <i class="bi bi-check-circle"></i>
+                                                    </button>
+                                                </form>
+                                            }
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript for Real-time Search (Added at the end) -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // ASP.NET Core Tag Helper 'asp-for="Search"' generates an input with id="Search"
+        const searchInput = document.getElementById('Search');
+
+        // Select all the table rows inside the tbody
+        const tableRows = document.querySelectorAll('tbody tr');
+
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                // Get the search query in lowercase and remove extra spaces
+                const query = this.value.toLowerCase().trim();
+
+                tableRows.forEach(row => {
+                    // Skip the "No suppliers found" row (it has a td with colspan="7")
+                    if (row.querySelector('td[colspan="7"]')) return;
+
+                    // Get the text content of the row and convert to lowercase
+                    const rowText = row.textContent.toLowerCase();
+
+                    // If the row contains the search query, show it; otherwise hide it
+                    if (rowText.includes(query)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+        }
+    });
+</script>
+
+

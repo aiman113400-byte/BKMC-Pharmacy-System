@@ -297,10 +297,12 @@
             </h2>
             <p class="page-subtitle">View all batches and available stock for this medicine.</p>
         </div>
-        <a asp-page="/Batches/Index" class="btn-back">
-            <i class="bi bi-arrow-left"></i>
-            Back to Batches
-        </a>
+        <a asp-page="/Batches/Index" class="btn-back d-inline-flex align-items-center gap-2" 
+       style="background-color: #0f766e !important; color: #ffffff !important; border: none; text-decoration: none; padding: 8px 16px; border-radius: 5px;">
+      <i class="bi bi-arrow-left"></i>
+      Back to Batches
+     </a>
+       
     </div>
 
     <!-- ================= ERROR ================= -->
@@ -313,7 +315,7 @@
     }
 
     <!-- ================= MEDICINE INFO BAR ================= -->
-    <div class="card-custom mb-3">
+    @* <div class="card-custom mb-3">
         <div class="info-bar">
             <div class="info-item">
                 <div class="info-icon">
@@ -334,7 +336,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> *@
 
     <!-- ================= FEFO AVAILABLE BATCHES ================= -->
     <div class="card-custom mb-3">
@@ -430,7 +432,8 @@
         {
             <div class="table-responsive">
                 <table class="table-aesthetic">
-                    <thead>
+     
+                     <thead>
                         <tr>
                             <th style="width: 60px;">#</th>
                             <th>Batch Number</th>
@@ -438,7 +441,7 @@
                             <th class="text-end">Quantity</th>
                             <th style="width: 180px;">Status</th>
                         </tr>
-                    </thead>
+                    </thead> 
                     <tbody>
                         @foreach (var batch in Model.Batches)
                         {

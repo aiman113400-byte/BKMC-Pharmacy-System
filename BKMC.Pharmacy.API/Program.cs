@@ -82,20 +82,11 @@ builder.Services.AddScoped<AdminSeeder>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IAuditLogService, AuditLogService>();
 builder.Services.AddScoped<IAuditLogService, AuditLogService>();
+builder.Services.AddScoped<IReportService, ReportService>();
+builder.Services.AddScoped<IBackupService, BackupService>();
+builder.Services.AddHostedService<BackupBackgroundService>();
+builder.Services.AddScoped<ICloudBackupService, AzureBlobBackupService>();
 builder.Services.AddHttpContextAccessor();
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 var app = builder.Build();

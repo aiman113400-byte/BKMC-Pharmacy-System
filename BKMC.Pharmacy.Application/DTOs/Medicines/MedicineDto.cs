@@ -19,6 +19,7 @@ namespace BKMC.Pharmacy.Application.DTOs.Medicines
         public string Strength { get; set; } = string.Empty;
 
         public string Form { get; set; } = string.Empty;
+        public decimal ReorderLevel { get; set; }
 
         public bool IsActive { get; set; }
 

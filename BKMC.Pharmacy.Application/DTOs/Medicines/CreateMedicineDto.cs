@@ -26,4 +26,7 @@ public class CreateMedicineDto
     [Required]
     [MaxLength(100)]
     public string Form { get; set; } = string.Empty;
+
+    [Range(0, double.MaxValue, ErrorMessage = "Reorder level cannot be negative.")]
+    public decimal ReorderLevel { get; set; } = 0;
 }

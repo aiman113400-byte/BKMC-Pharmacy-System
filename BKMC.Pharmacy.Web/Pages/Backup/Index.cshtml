@@ -1,0 +1,147 @@
+﻿@page
+@model BKMC.Pharmacy.Web.Pages.Backup.IndexModel
+
+@{
+    ViewData["Title"] = "Database Backup";
+}
+
+<div class="container-fluid py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-1">Database Backup</h2>
+            <p class="text-muted mb-0">
+                Manage BKMC Pharmacy database backups.
+            </p>
+        </div>
+
+        <form method="post"
+              asp-page-handler="CreateBackup"
+              onsubmit="return confirm('Are you sure you want to create a database backup?');">
+
+            <button type="submit"
+                    class="btn btn-primary">
+                <i class="bi bi-database-down me-2"></i>
+                Create Backup
+            </button>
+
+        </form>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(Model.SuccessMessage))
+    {
+        <div class="alert alert-success">
+            @Model.SuccessMessage
+        </div>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger">
+            @Model.ErrorMessage
+        </div>
+    }
+
+    <div class="card shadow-sm">
+
+        <div class="card-header">
+            <h5 class="mb-0">
+                Backup History
+            </h5>
+        </div>
+
+        <div class="card-body p-0">
+
+            @if (Model.BackupHistory.Any())
+            {
+                <div class="table-responsive">
+
+                    <table class="table table-hover align-middle mb-0">
+
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>File Name</th>
+                                <th>Created At</th>
+                                <th>Created By</th>
+                                <th>Status</th>
+                                <th>Error</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            @foreach (var backup in Model.BackupHistory)
+                            {
+                                <tr>
+
+                                    <td>
+                                        @backup.Id
+                                    </td>
+
+                                    <td>
+                                        <strong>
+                                            @backup.FileName
+                                        </strong>
+                                    </td>
+
+                                    <td>
+                                        @backup.CreatedAt.ToLocalTime()
+                                            
+                                    </td>
+
+                                    <td>
+                                        @backup.CreatedBy
+                                    </td>
+
+                                    <td>
+                                        @if (backup.Status == "Success")
+                                        {
+                                            <span class="badge bg-success">
+                                                Success
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger">
+                                                Failed
+                                            </span>
+                                        }
+                                    </td>
+
+                                    <td>
+                                        @if (!string.IsNullOrWhiteSpace(backup.ErrorMessage))
+                                        {
+                                            <span>
+                                                @backup.ErrorMessage
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">
+                                                —
+                                            </span>
+                                        }
+                                    </td>
+
+                                </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+            }
+            else
+            {
+                <div class="p-4 text-center text-muted">
+                    No backup history found.
+                </div>
+            }
+
+        </div>
+
+    </div>
+
+</div>

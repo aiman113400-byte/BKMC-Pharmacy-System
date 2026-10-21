@@ -1,69 +1,83 @@
-﻿/* ============================================================
-   DARK MODE TOGGLE LOGIC
-   File: wwwroot/js/theme.js
-   ============================================================ */
+﻿
+(() => {
+    "use strict";
 
-(function () {
-    'use strict';
+    const THEME_KEY = "bkmc-theme";
+    const root = document.documentElement;
 
-    const STORAGE_KEY = 'theme';
-    const LIGHT = 'light';
-    const DARK = 'dark';
+    function getSavedTheme() {
+        try {
+            const savedTheme = localStorage.getItem(THEME_KEY);
 
-    // ================= GET CURRENT THEME =================
-    function getCurrentTheme() {
-        return document.documentElement.getAttribute('data-theme') || LIGHT;
+            if (savedTheme === "light" || savedTheme === "dark") {
+                return savedTheme;
+            }
+        } catch (error) {
+            console.warn("Could not read saved theme preference.", error);
+        }
+
+        // First visit: Light Mode
+        return "light";
     }
 
-    // ================= APPLY THEME =================
-    function applyTheme(theme) {
-        document.documentElement.setAttribute('data-theme', theme);
-        updateToggleIcon(theme);
-    }
+    function applyTheme(theme, savePreference = true) {
+        const selectedTheme = theme === "dark" ? "dark" : "light";
 
-    // ================= UPDATE ICON (Moon/Sun) =================
-    function updateToggleIcon(theme) {
-        const icon = document.getElementById('themeIcon');
-        if (!icon) return;
+        root.setAttribute("data-theme", selectedTheme);
 
-        if (theme === DARK) {
-            icon.classList.remove('bi-moon');
-            icon.classList.add('bi-sun');
-        } else {
-            icon.classList.remove('bi-sun');
-            icon.classList.add('bi-moon');
+        const toggleButton = document.getElementById("themeToggle");
+        const toggleIcon = document.getElementById("themeToggleIcon");
+
+        if (toggleIcon) {
+            // Icon shows the theme the user can switch TO.
+            toggleIcon.className = selectedTheme === "light"
+                ? "bi bi-moon-stars"
+                : "bi bi-sun";
+        }
+
+        if (toggleButton) {
+            const nextTheme = selectedTheme === "light" ? "dark" : "light";
+            const label = nextTheme === "dark"
+                ? "Switch to dark mode"
+                : "Switch to light mode";
+
+            toggleButton.setAttribute("aria-label", label);
+            toggleButton.setAttribute("title", label);
+        }
+
+        if (savePreference) {
+            try {
+                localStorage.setItem(THEME_KEY, selectedTheme);
+            } catch (error) {
+                console.warn("Could not save theme preference.", error);
+            }
         }
     }
 
-    // ================= TOGGLE THEME =================
-    function toggleTheme() {
-        const current = getCurrentTheme();
-        const next = current === DARK ? LIGHT : DARK;
+    function initializeTheme() {
+        applyTheme(getSavedTheme(), false);
 
-        applyTheme(next);
-        localStorage.setItem(STORAGE_KEY, next);
+        const toggleButton = document.getElementById("themeToggle");
+
+        if (!toggleButton || toggleButton.dataset.themeInitialized === "true") {
+            return;
+        }
+
+        toggleButton.dataset.themeInitialized = "true";
+
+        toggleButton.addEventListener("click", function (event) {
+            event.preventDefault();
+
+            const currentTheme = root.getAttribute("data-theme");
+            const nextTheme = currentTheme === "light" ? "dark" : "light";
+
+            applyTheme(nextTheme);
+        });
     }
 
-    // ================= INITIALIZE =================
-    document.addEventListener('DOMContentLoaded', function () {
-
-        // Anti-flash script ne pehle hi set kar diya hoga, bas icon update karo
-        const current = getCurrentTheme();
-        updateToggleIcon(current);
-
-        // Toggle button click
-        const toggleBtn = document.getElementById('themeToggle');
-        if (toggleBtn) {
-            toggleBtn.addEventListener('click', toggleTheme);
-        }
-    });
-
-    // Keyboard shortcut: Ctrl + Shift + D
-    document.addEventListener('keydown', function (e) {
-        if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'd') {
-            e.preventDefault();
-            toggleTheme();
-        }
-    });
-
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initializeTheme);
+    } else {
+        initializeTheme();
+    }
 })();

@@ -1,0 +1,156 @@
+﻿@page "{id:int}"
+@model BKMC.Pharmacy.Web.Pages.Suppliers.DetailsModel
+
+@{
+    ViewData["Title"] = "Supplier Details";
+}
+
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+        <div>
+            <a asp-page="/Suppliers/Index" class="text-decoration-none">
+                &larr; Back to Suppliers
+            </a>
+
+            ```
+            <h2 class="fw-bold mt-3 mb-1">Supplier Details</h2>
+            <p class="text-muted mb-0">
+                View complete supplier information.
+            </p>
+        </div>
+
+        @if (Model.Supplier.Id > 0)
+        {
+            <a asp-page="/Suppliers/Edit"
+               asp-route-id="@Model.Supplier.Id"
+               class="btn btn-primary">
+                <i class="bi bi-pencil-square me-1"></i>
+                Edit Supplier
+            </a>
+        }
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger">
+            @Model.ErrorMessage
+        </div>
+    }
+    else if (Model.Supplier.Id > 0)
+    {
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white p-4">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="rounded-circle bg-primary-subtle text-primary p-3">
+                        <i class="bi bi-building fs-3"></i>
+                    </div>
+
+                    <div>
+                        <h4 class="fw-bold mb-1">@Model.Supplier.Name</h4>
+                        <span class="text-muted">
+                            @Model.Supplier.SupplierCode
+                        </span>
+                    </div>
+
+                    <div class="ms-auto">
+                        @if (Model.Supplier.IsActive)
+                        {
+                            <span class="badge bg-success">Active</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">Inactive</span>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body p-4">
+                <h5 class="fw-semibold mb-3">Contact Information</h5>
+
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="text-muted small mb-1">Supplier Code</div>
+                        <div class="fw-semibold">
+                            @Model.Supplier.SupplierCode
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="text-muted small mb-1">Supplier Name</div>
+                        <div class="fw-semibold">
+                            @Model.Supplier.Name
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="text-muted small mb-1">Contact Person</div>
+                        <div>
+                            @(string.IsNullOrWhiteSpace(Model.Supplier.ContactPerson)
+                                ? "Not provided"
+                                : Model.Supplier.ContactPerson)
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="text-muted small mb-1">Phone</div>
+                        <div>
+                            @(string.IsNullOrWhiteSpace(Model.Supplier.Phone)
+                                ? "Not provided"
+                                : Model.Supplier.Phone)
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="text-muted small mb-1">Email</div>
+                        <div>
+                            @(string.IsNullOrWhiteSpace(Model.Supplier.Email)
+                                ? "Not provided"
+                                : Model.Supplier.Email)
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="text-muted small mb-1">Address</div>
+                        <div>
+                            @(string.IsNullOrWhiteSpace(Model.Supplier.Address)
+                                ? "Not provided"
+                                : Model.Supplier.Address)
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-4" />
+
+                <h5 class="fw-semibold mb-3">Record Information</h5>
+
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="text-muted small mb-1">Created At (UTC)</div>
+                        <div>
+                            @Model.Supplier.CreatedAt.ToString("dd MMM yyyy, hh:mm tt")
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="text-muted small mb-1">Last Updated (UTC)</div>
+                        <div>
+                            @(Model.Supplier.UpdatedAt.HasValue
+                                ? Model.Supplier.UpdatedAt.Value.ToString("dd MMM yyyy, hh:mm tt")
+                                : "Never updated")
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-footer bg-white p-3 text-end">
+                <a asp-page="/Suppliers/Index"
+                   class="btn btn-outline-secondary">
+                    Back to List
+                </a>
+            </div>
+        </div>
+    }
+  
+
+</div>

@@ -9,6 +9,213 @@
     /* Professional Theme Colors */
     .bg-teal { background-color: #0f766e !important; }
     .text-teal { color: #0f766e !important; }
+    .btn-teal { background-color: #0f766e; color: white; border: none; transition: all 0.2s ease; }
+    .btn-teal:hover { background-color: #0d5c56; color: white; box-shadow: 0 4px 6px -1px rgba(15, 118, 110, 0.3); }
+    
+    /* Card Styling */
+    .card-custom {
+        border: 1px solid #e2e8f0;
+        border-radius: 0.75rem;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+        background-color: #ffffff;
+    }
+    
+    /* Table Layout */
+    .table-custom {
+        table-layout: fixed;
+        width: 100%;
+        margin-bottom: 0;
+        border-collapse: collapse;
+    }
+
+    /* Table Header Styling */
+    .table-custom th {
+        background-color: #f8fafc; 
+        color: #64748b;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-weight: 700;
+        border-bottom: 1px solid #e2e8f0 !important;
+        padding: 1rem 1.25rem;
+        white-space: nowrap;
+        vertical-align: middle;
+    }
+    
+    /* 👇 FIX 1: Line ab poori Row par lagegi, cell par nahi 👇 */
+    .table-custom tbody tr {
+        border-bottom: 1px solid #f1f5f9 !important;
+        transition: background-color 0.2s;
+    }
+    .table-custom tbody tr:hover {
+        background-color: #f8fafc;
+    }
+    
+    /* Table Data Styling */
+    .table-custom td {
+        padding: 1.1rem 1.25rem;
+        vertical-align: middle;
+        color: #334155;
+        font-size: 0.875rem;
+        white-space: nowrap;
+        background: transparent !important;
+        border: none !important; /* Kisi bhi cell par line nahi */
+    }
+
+    /* 👇 FIX 2: Reason text ko div mein wrap kiya taake table alignment na bigde 👇 */
+    .reason-text {
+        white-space: normal;
+        color: #64748b;
+        font-size: 0.85rem;
+        line-height: 1.4;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2; /* Max 2 lines */
+        -webkit-box-orient: vertical;
+    }
+
+    /* Items Badge */
+    .badge-items {
+        background-color: #ccfbf1;
+        color: #0f766e;
+        font-weight: 700;
+        padding: 0.4rem 0.65rem;
+        border-radius: 50%;
+        font-size: 0.8rem;
+        display: inline-block;
+    }
+
+    /* 📱 RESPONSIVE LAYOUT (Mobile ke liye) */
+    @@media (max-width: 768px) {
+        .table-custom thead { display: none; }
+        .table-custom tbody tr {
+            display: block;
+            margin-bottom: 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            padding: 0.5rem 0;
+        }
+        .table-custom td {
+            display: flex;
+            flex-direction: column;
+            padding: 0.6rem 1.25rem;
+            border-bottom: 1px dashed #f1f5f9 !important; /* Mobile par dashed lines */
+            text-align: left !important;
+            white-space: normal;
+        }
+        .table-custom td:last-child { border-bottom: none !important; }
+        .table-custom td::before {
+            content: attr(data-label);
+            font-weight: 700;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: #64748b;
+            margin-bottom: 0.2rem;
+        }
+        .reason-text { -webkit-line-clamp: unset; } /* Mobile par poora text dikhaye */
+    }
+</style>
+
+<div class="container-fluid py-4">
+
+    <!-- Page Header -->
+    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mb-4">
+        <div>
+            <h2 class="mb-1 fw-bold text-dark">Returns</h2>
+            <p class="text-muted mb-0 small">Patient medicine return records</p>
+        </div>
+
+        <a asp-page="./Create" class="btn btn-teal d-inline-flex align-items-center gap-2 px-4 py-2" style="border-radius: 0.5rem; font-weight: 500;">
+            <i class="bi bi-plus-lg"></i>
+            New Return
+        </a>
+    </div>
+
+    <!-- Table Card -->
+    <div class="card-custom">
+        <div class="card-body p-0">
+            
+            @if (Model.Returns.Count == 0)
+            {
+                <div class="text-center py-5">
+                    <h5 class="text-muted">No return records found</h5>
+                    <p class="text-muted small mb-0">No medicine return records are available.</p>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-custom mb-0 w-100">
+                        <thead>
+                            <tr>
+                                <th class="text-start" style="width: 15%;">MR Number</th>
+                                <th class="text-start" style="width: 20%;">Patient</th>
+                                <th class="text-start" style="width: 18%;">Return Date</th>
+                                <th class="text-center" style="width: 12%;">Dispensing ID</th>
+                                <th class="text-center" style="width: 10%;">Items</th>
+                                <th class="text-start" style="width: 25%;">Reason</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var returnRecord in Model.Returns)
+                            {
+                                <tr>
+                                    <td data-label="MR Number" class="fw-bold text-dark text-start">
+                                        @returnRecord.MRNumber
+                                    </td>
+                                    
+                                    <td data-label="Patient" class="text-start">
+                                        @returnRecord.PatientName
+                                    </td>
+                                    
+                                    <td data-label="Return Date" class="text-start text-teal fw-medium">
+                                        @returnRecord.ReturnDate.ToString("dd-MMM-yyyy hh:mm tt")
+                                    </td>
+                                    
+                                    <td data-label="Dispensing ID" class="text-center text-muted">
+                                        @(returnRecord.DispensingId?.ToString() ?? "-")
+                                    </td>
+                                    
+                                    <td data-label="Items" class="text-center">
+                                        <span class="badge-items">@returnRecord.Items.Count</span>
+                                    </td>
+                                    
+                                    <!-- 👇 YAHAN DIV ADD KIYA HAI 👇 -->
+                                    <td data-label="Reason" class="text-start">
+                                        <div class="reason-text">
+                                            @(returnRecord.Reason ?? "-")
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+
+        </div>
+    </div>
+
+</div>
+
+
+
+
+
+@* @page
+@model BKMC.Pharmacy.Web.Pages.Returns.IndexModel
+
+@{
+    ViewData["Title"] = "Returns";
+}
+
+<style>
+    /* Professional Theme Colors */
+    .bg-teal { background-color: #0f766e !important; }
+    .text-teal { color: #0f766e !important; }
     .btn-teal { background-color: #0f766e; color: white; border: none; }
     .btn-teal:hover { background-color: #0d5c56; color: white; }
     
@@ -101,7 +308,7 @@
                                     <td>
                                         @returnRecord.ReturnDate
                                         @* .ToString("dd MMM yyyy") *@
-                                    </td>
+@*                                     </td>
                                     <td>@(returnRecord.DispensingId?.ToString() ?? "-")</td>
                                     <td>
                                         <span class="badge bg-light text-dark border">@returnRecord.Items.Count</span>
@@ -117,113 +324,7 @@
         </div>
     </div>
 
-</div>
+</div> *@
 
 
-
-
-@* @page
-@model BKMC.Pharmacy.Web.Pages.Returns.IndexModel
-
-@{
-    ViewData["Title"] = "Returns";
-}
-
-<div class="container-fluid">
-
-    <div class="d-flex justify-content-between align-items-center mb-4">
-
-        <div>
-            <h2 class="mb-1">Returns</h2>
-            <p class="text-muted mb-0">
-                Patient medicine return records
-            </p>
-        </div>
-
-        <a asp-page="./Create"
-           class="btn btn-primary">
-            <i class="bi bi-plus-lg"></i>
-            New Return
-        </a>
-
-    </div>
-
-    <div class="card shadow-sm">
-
-        <div class="card-body">
-
-            @if (Model.Returns.Count == 0)
-            {
-                <div class="text-center py-5">
-
-                    <h5>No return records found</h5>
-
-                    <p class="text-muted mb-0">
-                        No medicine return records are available.
-                    </p>
-
-                </div>
-            }
-            else
-            {
-                <div class="table-responsive">
-
-                    <table class="table table-hover align-middle">
-
-                        <thead>
-                            <tr>
-                                <th>MR Number</th>
-                                <th>Patient</th>
-                                <th>Return Date</th>
-                                <th>Dispensing ID</th>
-                                <th>Items</th>
-                                <th>Reason</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-
-                            @foreach (var returnRecord in Model.Returns)
-                            {
-                                <tr>
-
-                                    <td>
-                                        @returnRecord.MRNumber
-                                    </td>
-
-                                    <td>
-                                        @returnRecord.PatientName
-                                    </td>
-
-                                    <td>
-                                        @returnRecord.ReturnDate
-                                            @* .ToString("dd MMM yyyy") *@
-@*                                     </td>
-
-                                    <td>
-                                        @(returnRecord.DispensingId?.ToString() ?? "-")
-                                    </td>
-
-                                    <td>
-                                        @returnRecord.Items.Count
-                                    </td>
-
-                                    <td>
-                                        @(returnRecord.Reason ?? "-")
-                                    </td>
-
-                                </tr>
-                            }
-
-                        </tbody>
-
-                    </table>
-
-                </div>
-            }
-
-        </div>
-
-    </div>
-
-</div>  *@
+ 

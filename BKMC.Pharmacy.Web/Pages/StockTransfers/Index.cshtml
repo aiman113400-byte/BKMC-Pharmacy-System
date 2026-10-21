@@ -7,6 +7,133 @@
     ViewData["Title"] = "Stock Transfers";
 }
 
+<style>
+    
+    /* Stock Transfer Table */
+    .transfer-table {
+        border-collapse: separate;
+        border-spacing: 0;
+        width: 100%;
+    }
+
+    .transfer-table thead th {
+        background-color: var(--bs-tertiary-bg, #f1f5f9);
+        color: var(--bs-emphasis-color, #334155);
+        font-weight: 600;
+        padding: 16px 14px;
+        white-space: nowrap;
+        transition: background-color 0.25s ease, color 0.25s ease;
+    }
+
+    .transfer-table tbody tr {
+        transition: background-color 0.25s ease,
+                    box-shadow 0.25s ease;
+    }
+
+    .transfer-table tbody td {
+        padding: 15px 14px;
+        color: var(--bs-body-color);
+        transition: color 0.25s ease;
+    }
+
+    /* Row Hover Effect */
+    /* .transfer-table tbody tr:hover > td {
+        background-color:  #0f766e !important;
+        color: var(--bs-emphasis-color, #1e293b);
+    } */
+    /* Row Hover Effect */
+.transfer-table tbody tr:hover > td {
+    background-color:#DDF4E7; /* Light Teal (Previous pages jaisa) */
+    color: #0f766e !important;            /* Dark Teal text (taake saaf nazar aaye) */
+    transition: all 0.2s ease-in-out;
+}
+
+    .transfer-table tbody tr:hover {
+        box-shadow: inset 4px 0 0 #0d6efd;
+    }
+
+    /* Reference Number */
+    .reference-text {
+        display: inline-block;
+        max-width: 180px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        vertical-align: middle;
+        transition: color 0.2s ease;
+    }
+
+    .transfer-table tbody tr:hover .reference-text {
+        color: #0d6efd;
+    }
+
+    /* Location and Item Badges */
+    .badge-location,
+    .badge-items {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 7px 10px;
+        border-radius: 6px;
+        font-weight: 500;
+        transition: background-color 0.2s ease,
+                    transform 0.2s ease;
+    }
+
+    .transfer-table tbody tr:hover .badge-location,
+    .transfer-table tbody tr:hover .badge-items {
+        transform: translateY(-1px);
+    }
+
+    /* Date Text */
+    .date-text {
+        font-weight: 500;
+        color: var(--bs-emphasis-color);
+    }
+
+    /* View Details Button */
+    .btn-action {
+        width: 34px;
+        height: 34px;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        border: 1px solid var(--bs-border-color);
+        border-radius: 8px;
+        background-color: var(--bs-tertiary-bg);
+        color: var(--bs-body-color);
+        transition: all 0.25s ease;
+    }
+
+   
+.btn-action:hover,
+.btn-action:focus-visible {
+    background-color: #0f766e !important;
+    border-color: #5EEAD4 !important;
+    color: #134E4A !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(20, 184, 166, 0.20);
+}
+
+    /* Smooth table card appearance */
+    .transfer-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    /* Respect reduced motion preference */
+    @@media (prefers-reduced-motion: reduce) {
+        .transfer-table *,
+        .btn-action,
+        .badge-location,
+        .badge-items {
+            transition: none !important;
+            transform: none !important;
+        }
+    }
+</style>
+
+
+
 <div class="container-fluid py-4">
 
     <!-- Page Header -->
@@ -62,7 +189,7 @@
             <!-- Card Body -->
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0 transfer-table">
+                    <table class="table table-hover align-middle mb-0 transfer-table ">
 
                         <thead class="table-light">
                             <tr>
@@ -96,19 +223,19 @@
                                     <td>
                                         @if (transfer.FromLocation == StockLocation.Warehouse)
                                         {
-                                            <span class="badge badge-location">
+                                            <span class="badge badge-location text-dark">
                                                 <i class="bi bi-building"></i> Warehouse
                                             </span>
                                         }
                                         else if (transfer.FromLocation == StockLocation.Pharmacy)
                                         {
-                                            <span class="badge badge-location">
+                                            <span class="badge badge-location text-dark">
                                                 <i class="bi bi-shop"></i> Pharmacy
                                             </span>
                                         }
                                         else
                                         {
-                                            <span class="badge badge-location">
+                                            <span class="badge badge-location text-dark">
                                                 @transfer.FromLocation
                                             </span>
                                         }
@@ -118,19 +245,20 @@
                                     <td>
                                         @if (transfer.ToLocation == StockLocation.Warehouse)
                                         {
-                                            <span class="badge badge-location">
+                                            <span class="badge badge-location text-dark ">
+                                           
                                                 <i class="bi bi-building"></i> Warehouse
                                             </span>
                                         }
                                         else if (transfer.ToLocation == StockLocation.Pharmacy)
                                         {
-                                            <span class="badge badge-location">
+                                            <span class="badge badge-location text-dark">
                                                 <i class="bi bi-shop"></i> Pharmacy
                                             </span>
                                         }
                                         else
                                         {
-                                            <span class="badge badge-location">
+                                            <span class="badge badge-location text-dark">
                                                 @transfer.ToLocation
                                             </span>
                                         }
@@ -148,7 +276,7 @@
 
                                     <!-- Items -->
                                     <td>
-                                        <span class="badge badge-items">
+                                        <span class="badge badge-items text-dark">
                                             @transfer.Items.Count item(s)
                                         </span>
                                     </td>
@@ -191,4 +319,4 @@
 
 
 
-
+  

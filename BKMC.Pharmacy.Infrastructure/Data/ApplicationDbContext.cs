@@ -43,6 +43,8 @@ public class ApplicationDbContext : DbContext
     public DbSet<AuditLog> AuditLogs { get; set; }                                       //add new table//
     public DbSet<AdminUser> AdminUsers { get; set; }
 
+    public DbSet<BackupHistory> BackupHistories { get; set; }
+
 
 
 
@@ -52,6 +54,10 @@ public class ApplicationDbContext : DbContext
 
         modelBuilder.Entity<Medicine>()
             .HasKey(m => m.Id);
+
+        modelBuilder.Entity<Medicine>()           //this is new code//
+    .Property(m => m.ReorderLevel)
+    .HasPrecision(18, 2);
 
         modelBuilder.Entity<Supplier>()
             .HasKey(s => s.Id);

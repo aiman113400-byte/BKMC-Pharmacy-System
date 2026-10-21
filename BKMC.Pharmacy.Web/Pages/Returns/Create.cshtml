@@ -1,4 +1,592 @@
-﻿
+﻿@page
+@model BKMC.Pharmacy.Web.Pages.Returns.CreateModel
+
+@{
+    ViewData["Title"] = "Create Return";
+}
+<style>
+    /* ============================================================
+       YEH POORA STYLE BLOCK GRADIENT KO KHATAM KARTA HAI
+       ============================================================ */
+    
+    /* Theme Buttons */
+    .btn-teal { 
+        background-color: #0f766e !important; 
+        color: white !important; 
+        border: none !important; 
+    }
+    .btn-teal:hover { 
+        background-color: #0d5c56 !important; 
+        color: white !important; 
+    }
+    
+    /* Card Container */
+    .card-custom {
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 0.75rem !important;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05) !important;
+        overflow: hidden !important;
+        background-color: #ffffff !important;
+    }
+    
+    /* ============================================================
+       👇 HEADER KA COLOR AB BILKUL SCREENSHOT JAISA (WHITE) HAI 👇
+       ============================================================ */
+    .card-header {
+        background-color: #ffffff !important; /* Gradient/Teal hata kar White kar diya */
+        background-image: none !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+        padding: 1.25rem 1.5rem !important;
+    }
+    
+    /* Header ke andar wale h5 ka color (Teal rakha hai taake professional lage) */
+    .card-header h5 {
+        color: #0f766e !important;
+        margin-bottom: 0 !important;
+        font-weight: 700 !important;
+        font-size: 1.1rem !important;
+    }
+    
+    /* Form Labels aur Inputs */
+    .form-label {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #475569;
+    }
+    .form-control, .form-select {
+        border-radius: 0.5rem;
+        border-color: #cbd5e1;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+    }
+    .form-control:focus, .form-select:focus {
+        border-color: #0f766e;
+        box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.15);
+    }
+</style>
+
+<div class="container-fluid">
+
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h2 class="mb-1">Create Return</h2>
+            <p class="text-muted mb-0">
+                Return dispensed medicine to pharmacy stock
+            </p>
+        </div>
+
+        <a asp-page="./Index" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i>
+            Back to Returns
+        </a>
+
+    </div>
+
+    <!-- Return Form -->
+    @* <form method="post"> *@
+
+    <form method="post" id="returnForm">
+        <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+        <!-- Return Information -->
+        <div class="card shadow-sm mb-4">
+
+            <div class="card-header">
+                <h5 class="mb-0">Return Information</h5>
+            </div>
+
+            <div class="card-body">
+                <div class="row">
+                    <!-- Patient -->
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Return.PatientId" class="form-label">Patient</label>
+                        <select asp-for="Return.PatientId" id="patientSelect" class="form-select">
+                            <option value="0">-- Select Patient --</option>
+                            @foreach (var patient in Model.Patients)
+                            {
+                                <option value="@patient.Id">
+                                    @patient.MRNumber - @patient.Name
+                                </option>
+                            }
+                        </select>
+                        <span asp-validation-for="Return.PatientId" class="text-danger"></span>
+                    </div>
+
+                    <!-- Return Date -->
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Return.ReturnDate" class="form-label">Return Date</label>
+                        <input asp-for="Return.ReturnDate" type="datetime-local" class="form-control" />
+                        <span asp-validation-for="Return.ReturnDate" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- Dispensing -->
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Return.DispensingId" class="form-label">Dispensing</label>
+                        <select asp-for="Return.DispensingId" id="dispensingSelect" class="form-select">
+                            <option value="">-- Select Dispensing --</option>
+                            @foreach (var dispensing in Model.Dispensings)
+                            {
+                                <option value="@dispensing.Id" data-patient-id="@dispensing.PatientId">
+                                    Dispensing #@dispensing.Id - @dispensing.DispensingDate.ToString("dd-MMM-yyyy")
+                                </option>
+                            }
+                        </select>
+                        <span asp-validation-for="Return.DispensingId" class="text-danger"></span>
+                    </div>
+
+                    <!-- Reason -->
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Return.Reason" class="form-label">Reason</label>
+                        <input asp-for="Return.Reason" class="form-control" placeholder="Enter return reason (optional)" />
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Return Items -->
+        <div class="card shadow-sm mb-4">
+
+            <div class="card-header">
+                <h5 class="mb-0">Return Items</h5>
+            </div>
+
+            <div class="card-body">
+                <div id="noDispensingMessage" class="text-muted text-center py-4">
+                    Please select a patient and dispensing record first.
+                </div>
+
+                <div id="dispensingItemsContainer" style="display:none;">
+                    <div class="table-responsive">
+                        <table class="table table-bordered align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Medicine</th>
+                                    <th>Batch</th>
+                                    <th>Dispensed Quantity</th>
+                                    <th>Return Quantity</th>
+                                    <th style="width:80px;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dispensingItemsBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Actions -->
+        <div class="d-flex justify-content-end gap-2">
+            <a asp-page="./Index" class="btn btn-secondary">Cancel</a>
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check-lg"></i> Create Return
+            </button>
+        </div>
+
+    </form>
+
+</div>
+
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+
+       // =========================================================
+// Elements
+// =========================================================
+
+const patientSelect =
+    document.getElementById("patientSelect");
+
+const dispensingSelect =
+    document.getElementById("dispensingSelect");
+
+const itemsBody =
+    document.getElementById("dispensingItemsBody");
+
+const itemsContainer =
+    document.getElementById("dispensingItemsContainer");
+
+const noDispensingMessage =
+    document.getElementById("noDispensingMessage");
+
+const returnForm =
+    document.getElementById("returnForm");
+
+
+// =========================================================
+// Store original dispensing options
+// =========================================================
+
+const allDispensingOptions =
+    Array.from(
+        dispensingSelect.options
+    ).filter(function (option) {
+
+        return option.value !== "";
+
+    });
+
+
+// =========================================================
+// Patient Change
+// =========================================================
+
+patientSelect.addEventListener(
+    "change",
+    function ()
+    {
+        const patientId = this.value;
+
+
+        // Reset dispensing
+        dispensingSelect.innerHTML = `
+            <option value="">
+                -- Select Dispensing --
+            </option>
+        `;
+
+
+        // Reset items
+        itemsBody.innerHTML = "";
+
+        itemsContainer.style.display = "none";
+
+        noDispensingMessage.style.display = "block";
+
+
+        if (!patientId || patientId === "0")
+        {
+            return;
+        }
+
+
+        // Add patient's dispensings
+        allDispensingOptions.forEach(
+            function (option)
+            {
+                if (
+                    String(option.dataset.patientId) ===
+                    String(patientId)
+                )
+                {
+                    dispensingSelect.appendChild(
+                        option.cloneNode(true)
+                    );
+                }
+            }
+        );
+
+
+        if (dispensingSelect.options.length === 1)
+        {
+            const noOption =
+                document.createElement("option");
+
+            noOption.value = "";
+
+            noOption.textContent =
+                "-- No Dispensing Found --";
+
+            dispensingSelect.appendChild(noOption);
+        }
+
+    }
+);
+
+
+// =========================================================
+// Dispensing Change
+// =========================================================
+
+dispensingSelect.addEventListener(
+    "change",
+    function ()
+    {
+        const dispensingId =
+            this.value;
+
+
+        if (!dispensingId)
+        {
+            clearItems();
+            return;
+        }
+
+
+        loadDispensingItems(dispensingId);
+    }
+);
+
+
+// =========================================================
+// Load Return Items
+// =========================================================
+
+async function loadDispensingItems(dispensingId)
+{
+    clearItems();
+
+
+    try
+    {
+        const response =
+            await fetch(
+                `?handler=DispensingItems&id=${encodeURIComponent(dispensingId)}`,
+                {
+                    method: "GET",
+                    headers:
+                    {
+                        "Accept": "application/json"
+                    }
+                }
+            );
+
+
+        if (!response.ok)
+        {
+            throw new Error(
+                `Unable to load dispensing items. Status: ${response.status}`
+            );
+        }
+
+
+        const data =
+            await response.json();
+
+
+        if (
+            !data ||
+            !data.items ||
+            data.items.length === 0
+        )
+        {
+            noDispensingMessage.textContent =
+                "No returnable items found for this dispensing.";
+
+            noDispensingMessage.style.display = "block";
+
+            itemsContainer.style.display = "none";
+
+            return;
+        }
+
+
+        // Items found
+        noDispensingMessage.style.display = "none";
+
+        itemsContainer.style.display = "block";
+
+
+        data.items.forEach(
+            function (item, index)
+            {
+                const row =
+                    document.createElement("tr");
+
+
+                row.innerHTML = `
+                    <td>
+                        ${escapeHtml(item.medicineName)}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(item.batchNumber)}
+                    </td>
+
+                    <td>
+                        ${item.quantity}
+                    </td>
+
+                    <td>
+                        <input type="number"
+                               name="Return.Items[${index}].Quantity"
+                               class="form-control return-quantity"
+                               min="0.01"
+                               max="${item.quantity}"
+                               step="0.01"
+                               value="0" />
+
+                        <input type="hidden"
+                               name="Return.Items[${index}].DispensingItemId"
+                               value="${item.id}" />
+                    </td>
+
+                    <td>
+                        <button type="button"
+                                class="btn btn-sm btn-outline-danger remove-return-item">
+
+                            <i class="bi bi-trash"></i>
+
+                        </button>
+                    </td>
+                `;
+
+
+                itemsBody.appendChild(row);
+            }
+        );
+
+    }
+    catch (error)
+    {
+        console.error(
+            "Error loading dispensing items:",
+            error
+        );
+
+
+        noDispensingMessage.textContent =
+            "Unable to load return items.";
+
+        noDispensingMessage.style.display = "block";
+
+        itemsContainer.style.display = "none";
+    }
+}
+
+
+// =========================================================
+// Clear Items
+// =========================================================
+
+function clearItems()
+{
+    itemsBody.innerHTML = "";
+
+    itemsContainer.style.display = "none";
+
+    noDispensingMessage.textContent =
+        "Please select a patient and dispensing record first.";
+
+    noDispensingMessage.style.display = "block";
+}
+
+
+// =========================================================
+// Remove Return Item
+// =========================================================
+
+itemsBody.addEventListener(
+    "click",
+    function (event)
+    {
+        const button =
+            event.target.closest(
+                ".remove-return-item"
+            );
+
+
+        if (!button)
+        {
+            return;
+        }
+
+
+        button.closest("tr").remove();
+    }
+);
+
+
+// =========================================================
+// Form Submit
+// =========================================================
+
+returnForm.addEventListener(
+    "submit",
+    function (event)
+    {
+        const rows =
+            itemsBody.querySelectorAll("tr");
+
+        let hasValidItem = false;
+
+
+        rows.forEach(
+            function (row)
+            {
+                const quantityInput =
+                    row.querySelector(".return-quantity");
+
+                const quantity =
+                    parseFloat(quantityInput.value);
+
+
+                if (quantity > 0)
+                {
+                    hasValidItem = true;
+                }
+                else
+                {
+                    quantityInput.disabled = true;
+
+
+                    const idInput =
+                        row.querySelector(
+                            'input[name*="DispensingItemId"]'
+                        );
+
+
+                    if (idInput)
+                    {
+                        idInput.disabled = true;
+                    }
+                }
+            }
+        );
+
+
+        if (!hasValidItem)
+        {
+            event.preventDefault();
+
+            alert(
+                "Please enter a return quantity for at least one item."
+            );
+        }
+    }
+);
+
+
+// =========================================================
+// HTML Encoding
+// =========================================================
+
+function escapeHtml(value)
+{
+    if (value === null || value === undefined)
+    {
+        return "";
+    }
+
+
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+    </script>
+}
+
+
+
+
+
+
+
+@* @* 
 @page
 @model BKMC.Pharmacy.Web.Pages.Returns.CreateModel
 
@@ -97,7 +685,7 @@
     <!-- Return Form -->
     @* <form method="post"> *@
 
-        <form method="post" id="returnForm">
+@*         <form method="post" id="returnForm">
         <div asp-validation-summary="All"
              class="text-danger mb-3">
         </div>
@@ -712,546 +1300,6 @@ function escapeHtml(value)
 
 
 
+ *@
 
 
-
-
-@* @page
-@model BKMC.Pharmacy.Web.Pages.Returns.CreateModel
-
-@{
-    ViewData["Title"] = "Create Return";
-}
-
-<div class="container-fluid">
-
-    <!-- Page Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-
-        <div>
-            <h2 class="mb-1">Create Return</h2>
-
-            <p class="text-muted mb-0">
-                Return dispensed medicine to pharmacy stock
-            </p>
-        </div>
-
-        <a asp-page="./Index"
-           class="btn btn-outline-secondary">
-
-            <i class="bi bi-arrow-left"></i>
-            Back to Returns
-
-        </a>
-
-    </div>
-
-
-    <!-- Return Form -->
-    <form method="post">
-
-        <div asp-validation-summary="All"
-             class="text-danger mb-3">
-        </div>
-
-
-        <!-- Return Information -->
-        <div class="card shadow-sm mb-4">
-
-            <div class="card-header">
-
-                <h5 class="mb-0">
-                    Return Information
-                </h5>
-
-            </div>
-
-
-            <div class="card-body">
-
-                <div class="row">
-
-                    <!-- Patient -->
-                    <div class="col-md-6 mb-3">
-
-                        <label asp-for="Return.PatientId"
-                               class="form-label">
-
-                            Patient
-
-                        </label>
-
-                        <select asp-for="Return.PatientId"
-                                id="patientSelect"
-                                class="form-select">
-
-                            <option value="0">
-                                -- Select Patient --
-                            </option>
-
-                            @foreach (var patient in Model.Patients)
-                            {
-                                <option value="@patient.Id">
-                                    @patient.MRNumber - @patient.Name
-                                </option>
-                            }
-
-                        </select>
-
-                        <span asp-validation-for="Return.PatientId"
-                              class="text-danger">
-                        </span>
-
-                    </div>
-
-
-                    <!-- Return Date -->
-                    <div class="col-md-6 mb-3">
-
-                        <label asp-for="Return.ReturnDate"
-                               class="form-label">
-
-                            Return Date
-
-                        </label>
-
-                        <input asp-for="Return.ReturnDate"
-                               type="datetime-local"
-                               class="form-control" />
-
-                        <span asp-validation-for="Return.ReturnDate"
-                              class="text-danger">
-                        </span>
-
-                    </div>
-
-                </div>
-
-
-                <div class="row">
-
-                    <!-- Dispensing -->
-                    <div class="col-md-6 mb-3">
-
-                        <label asp-for="Return.DispensingId"
-                               class="form-label">
-
-                            Dispensing
-
-                        </label>
-
-                        <select asp-for="Return.DispensingId"
-                                id="dispensingSelect"
-                                class="form-select">
-
-                            <option value="">
-                                -- Select Dispensing --
-                            </option>
-
-                            @foreach (var dispensing in Model.Dispensings)
-                            {
-                                <option value="@dispensing.Id"
-                                        data-patient-id="@dispensing.PatientId">
-
-                                    Dispensing #@dispensing.Id -
-                                    @dispensing.DispensingDate.ToString("dd-MMM-yyyy")
-
-                                </option>
-                            }
-
-                        </select>
-
-                        <span asp-validation-for="Return.DispensingId"
-                              class="text-danger">
-                        </span>
-
-                    </div>
-
-
-                    <!-- Reason -->
-                    <div class="col-md-6 mb-3">
-
-                        <label asp-for="Return.Reason"
-                               class="form-label">
-
-                            Reason
-
-                        </label>
-
-                        <input asp-for="Return.Reason"
-                               class="form-control"
-                               placeholder="Enter return reason (optional)" />
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- Dispensing Items -->
-        <div class="card shadow-sm mb-4">
-
-            <div class="card-header">
-
-                <h5 class="mb-0">
-                    Return Items
-                </h5>
-
-            </div>
-
-
-            <div class="card-body">
-
-                <div id="noDispensingMessage"
-                     class="text-muted text-center py-4">
-
-                    Please select a patient and dispensing record first.
-
-                </div>
-
-
-                <div id="dispensingItemsContainer"
-                     style="display:none;">
-
-                    <div class="table-responsive">
-
-                        <table class="table table-bordered align-middle">
-
-                            <thead>
-
-                                <tr>
-
-                                    <th>
-                                        Medicine
-                                    </th>
-
-                                    <th>
-                                        Batch
-                                    </th>
-
-                                    <th>
-                                        Dispensed Quantity
-                                    </th>
-
-                                    <th>
-                                        Return Quantity
-                                    </th>
-
-                                    <th style="width:80px;">
-                                        Action
-                                    </th>
-
-                                </tr>
-
-                            </thead>
-
-
-                            <tbody id="dispensingItemsBody">
-                            </tbody>
-
-                        </table>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- Actions -->
-        <div class="d-flex justify-content-end gap-2">
-
-            <a asp-page="./Index"
-               class="btn btn-secondary">
-
-                Cancel
-
-            </a>
-
-            <button type="submit"
-                    class="btn btn-primary">
-
-                <i class="bi bi-check-lg"></i>
-
-                Create Return
-
-            </button>
-
-        </div>
-
-    </form>
-
-</div>
-
-
-@section Scripts
-{
-    <partial name="_ValidationScriptsPartial" />
-
-    <script>
-
-        // =========================================================
-        // Data received from server
-        // =========================================================
-
-        const dispensings =
-            @Html.Raw(
-                System.Text.Json.JsonSerializer.Serialize(
-                    Model.Dispensings
-                )
-            );
-
-
-        // =========================================================
-        // Elements
-        // =========================================================
-
-        const patientSelect =
-            document.getElementById("patientSelect");
-
-        const dispensingSelect =
-            document.getElementById("dispensingSelect");
-
-        const itemsBody =
-            document.getElementById("dispensingItemsBody");
-
-        const itemsContainer =
-            document.getElementById("dispensingItemsContainer");
-
-        const noDispensingMessage =
-            document.getElementById("noDispensingMessage");
-
-
-        // =========================================================
-        // Save original dispensing options
-        // =========================================================
-
-        const allDispensingOptions =
-            Array.from(
-                dispensingSelect.options
-            ).slice(1);
-
-
-        // =========================================================
-        // Reset dispensing and items
-        // =========================================================
-
-        function resetDispensing()
-        {
-            dispensingSelect.innerHTML = `
-                <option value="">
-                    -- Select Dispensing --
-                </option>
-            `;
-
-            itemsBody.innerHTML = "";
-
-            itemsContainer.style.display = "none";
-
-            noDispensingMessage.style.display = "block";
-        }
-
-
-        // =========================================================
-        // Patient change
-        // =========================================================
-
-        patientSelect.addEventListener(
-            "change",
-            function ()
-            {
-                resetDispensing();
-
-                const patientId =
-                    this.value;
-
-
-                if (!patientId ||
-                    patientId === "0")
-                {
-                    return;
-                }
-
-
-                allDispensingOptions.forEach(
-                    function (option)
-                    {
-                        if (
-                            option.dataset.patientId ===
-                            patientId
-                        )
-                        {
-                            dispensingSelect.appendChild(
-                                option.cloneNode(true)
-                            );
-                        }
-                    }
-                );
-
-
-                // Check if dispensing exists
-                if (dispensingSelect.options.length === 1)
-                {
-                    const option =
-                        document.createElement("option");
-
-                    option.value = "";
-
-                    option.textContent =
-                        "-- No Dispensing Found --";
-
-                    dispensingSelect.appendChild(option);
-                }
-            }
-        );
-
-
-        // =========================================================
-        // Dispensing change
-        // =========================================================
-
-        dispensingSelect.addEventListener(
-            "change",
-            function ()
-            {
-                loadDispensingItems();
-            }
-        );
-
-
-        // =========================================================
-        // Load dispensing items
-        // =========================================================
-
-        function loadDispensingItems()
-        {
-            itemsBody.innerHTML = "";
-
-
-            const dispensingId =
-                parseInt(
-                    dispensingSelect.value
-                );
-
-
-            if (!dispensingId)
-            {
-                itemsContainer.style.display = "none";
-
-                noDispensingMessage.style.display = "block";
-
-                return;
-            }
-
-
-            const dispensing =
-                dispensings.find(
-                    function (x)
-                    {
-                        return Number(x.id) ===
-                               Number(dispensingId);
-                    }
-                );
-
-
-            if (
-                !dispensing ||
-                !dispensing.items ||
-                dispensing.items.length === 0
-            )
-            {
-                itemsContainer.style.display = "none";
-
-                noDispensingMessage.style.display = "block";
-
-                return;
-            }
-
-
-            noDispensingMessage.style.display = "none";
-
-            itemsContainer.style.display = "block";
-
-
-            dispensing.items.forEach(
-                function (item, index)
-                {
-                    const row =
-                        document.createElement("tr");
-
-
-                    row.innerHTML = `
-                        <td>
-                            ${item.medicineName}
-                        </td>
-
-                        <td>
-                            ${item.batchNumber}
-                        </td>
-
-                        <td>
-                            ${item.quantity}
-                        </td>
-
-                        <td>
-                            <input type="number"
-                                   name="Return.Items[${index}].Quantity"
-                                   class="form-control return-quantity"
-                                   min="0.01"
-                                   max="${item.quantity}"
-                                   step="0.01"
-                                   value="0" />
-
-                            <input type="hidden"
-                                   name="Return.Items[${index}].DispensingItemId"
-                                   value="${item.id}" />
-                        </td>
-
-                        <td>
-                            <button type="button"
-                                    class="btn btn-sm btn-outline-danger remove-return-item">
-
-                                <i class="bi bi-trash"></i>
-
-                            </button>
-                        </td>
-                    `;
-
-
-                    itemsBody.appendChild(row);
-                }
-            );
-        }
-
-
-        // =========================================================
-        // Remove return item
-        // =========================================================
-
-        itemsBody.addEventListener(
-            "click",
-            function (event)
-            {
-                const button =
-                    event.target.closest(
-                        ".remove-return-item"
-                    );
-
-
-                if (!button)
-                {
-                    return;
-                }
-
-
-                button.closest("tr").remove();
-            }
-        );
-
-    </script>
-} *@

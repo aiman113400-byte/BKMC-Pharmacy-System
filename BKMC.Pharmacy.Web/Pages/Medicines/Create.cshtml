@@ -8,7 +8,7 @@
 /* Medicine Information Card Header - Matching Table Header */
 .card-header,
 .card-header-custom {
-    background-color: #f0fdfa !important;    /* Light teal (table header jaisa) */
+    background-color:  #f8fafc; !important;    /* Light teal (table header jaisa) */
     background-image: none !important;       /* Gradient khatam */
     color: #0f766e !important;               /* Teal text */
     border-bottom: 1px solid #e2e8f0 !important;
@@ -45,13 +45,12 @@
             </p>
         </div>
 
-        <a asp-page="/Medicines/Index"
-           class="btn btn-outline-secondary">
-
-            <i class="bi bi-arrow-left me-1"></i>
-            Back to Medicines
-
-        </a>
+      
+        <a asp-page="/Medicines/Index" 
+   class="btn text-white fw-semibold" 
+   style="background-color: #0f766e; border-color: #0f766e;">
+    <i class="bi bi-arrow-left me-1"></i> Back to Medicines
+</a>
 
     </div>
 
@@ -72,7 +71,7 @@
     <!-- Form Card -->
     <div class="card shadow-sm border-0">
 
-        <div class="card-header bg-white py-3">
+        <div class="card-header">
 
             <h5 class="mb-0 fw-semibold">
                 Medicine Information

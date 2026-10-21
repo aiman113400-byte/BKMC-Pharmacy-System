@@ -6,6 +6,262 @@
     ViewData["Title"] = "Stock Details";
 }
 
+<style>
+    /* ================= PROFESSIONAL VERTICAL MODAL STYLES (WIDER & SHORTER) ================= */
+    .stock-modal-wrapper {
+        max-width: 520px; /* Width thodi increase kar di */
+        margin: 0 auto;
+    }
+
+    .stock-modal-card {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        background-color: #ffffff;
+    }
+
+    /* Header Styles */
+    .stock-modal-header {
+        background-color: #e2f5ef !important; /* Light Teal */
+        padding: 0.75rem 1.25rem; /* Padding kam ki (Height small karne ke liye) */
+        border-bottom: none;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .stock-modal-header h5 {
+        color: #0f766e; /* Dark Teal */
+        font-weight: 700;
+        font-size: 0.9rem; /* Font thoda chhota kiya */
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    /* Body Styles */
+    .stock-modal-body {
+        padding: 1rem 1.25rem; /* Padding kam ki (Height small karne ke liye) */
+    }
+
+    .detail-field {
+        margin-bottom: 0.5rem; /* Spacing kam ki */
+        padding-bottom: 0.3rem; /* Spacing kam ki */
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .detail-field:last-child {
+        margin-bottom: 0;
+        padding-bottom: 0;
+        border-bottom: none;
+    }
+
+    .detail-label {
+        text-transform: uppercase;
+        color: #6b7280;
+        font-size: 0.65rem; /* Label chhota kiya */
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.1rem;
+        display: block;
+    }
+
+    .detail-value {
+        font-weight: 600;
+        color: #1e293b;
+        font-size: 0.85rem; /* Value chhota kiya */
+        margin: 0;
+    }
+
+    .detail-value.muted {
+        color: #64748b;
+        font-weight: 500;
+        font-size: 0.75rem;
+    }
+
+    /* Badge & Highlight Styles */
+    .badge-teal {
+        background-color: #e2f5ef !important;
+        color: #0f766e !important;
+        font-weight: 700;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 0.7rem;
+        display: inline-block;
+    }
+
+    .qty-badge {
+        background-color: #e2f5ef;
+        color: #0f766e;
+        font-weight: 700;
+        padding: 3px 10px;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        display: inline-block;
+    }
+
+    /* Footer Styles */
+    .stock-modal-footer {
+        padding: 0.75rem 1.25rem; /* Padding kam ki (Height small karne ke liye) */
+        background-color: #ffffff;
+        border-top: 1px solid #f1f5f9;
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .btn-close-teal {
+        background-color: #0f766e;
+        color: white;
+        border-radius: 6px;
+        padding: 4px 16px; /* Button ka size chhota kiya */
+        font-size: 0.8rem;
+        font-weight: 600;
+        border: none;
+        transition: all 0.2s;
+    }
+
+    .btn-close-teal:hover {
+        background-color: #0d5e58;
+        color: white;
+    }
+</style>
+
+<div class="container-fluid py-4">
+
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1 fs-4">
+                <i class="bi bi-box-seam me-2"></i> Stock Details
+            </h2>
+            <p class="text-muted mb-0 small">View detailed information about this stock record.</p>
+        </div>
+        @* <a asp-page="/Stock/Index" class="btn btn-outline-secondary rounded-pill px-3 btn-sm">
+
+            <i class="bi bi-arrow-left me-1"></i> Back to Stock
+        </a> *@
+    </div>
+
+    <!-- Error -->
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger border-0 shadow-sm py-2">
+            <i class="bi bi-exclamation-triangle me-2"></i> @Model.ErrorMessage
+        </div>
+    }
+
+    @if (Model.Stock != null)
+    {
+        <!-- Professional Vertical Card -->
+        <div class="stock-modal-wrapper">
+            <div class="card stock-modal-card">
+                
+                <!-- Header -->
+   
+                 <div class="stock-modal-header">
+                    <h5>
+                         <i class="bi bi-info-circle"></i> 
+                        Stock Details
+                    </h5>
+                    
+                </div> 
+
+                <!-- Body (Vertical Layout) -->
+                <div class="stock-modal-body">
+                    
+                    <!-- Stock ID -->
+                    <div class="detail-field">
+                        <span class="detail-label">Stock ID</span>
+                        <p class="detail-value">@Model.Stock.Id</p>
+                    </div>
+
+                    <!-- Medicine -->
+                    <div class="detail-field">
+                        <span class="detail-label">Medicine Name</span>
+                        <p class="detail-value">@Model.Stock.MedicineName</p>
+                    </div>
+
+                    <!-- Medicine ID -->
+                    <div class="detail-field">
+                        <span class="detail-label">Medicine ID</span>
+                        <p class="detail-value">@Model.Stock.MedicineId</p>
+                    </div>
+
+                    <!-- Batch Number -->
+                    <div class="detail-field">
+                        <span class="detail-label">Batch Number</span>
+                        <p class="detail-value">@Model.Stock.BatchNumber</p>
+                    </div>
+
+                    <!-- Batch ID -->
+                    <div class="detail-field">
+                        <span class="detail-label">Batch ID</span>
+                        <p class="detail-value">@Model.Stock.BatchId</p>
+                    </div>
+
+                    <!-- Location -->
+                    <div class="detail-field">
+                        <span class="detail-label">Location</span>
+                        <p class="detail-value">
+                            @if (Model.Stock.Location == StockLocation.Warehouse)
+                            {
+                                <span class="badge-teal"><i class="bi bi-building me-1"></i> Warehouse</span>
+                            }
+                            else
+                            {
+                                <span class="badge-teal"><i class="bi bi-shop me-1"></i> Pharmacy</span>
+                            }
+                        </p>
+                    </div>
+
+                    <!-- Available Quantity -->
+                    <div class="detail-field">
+                        <span class="detail-label">Available Quantity</span>
+                        <p class="detail-value">
+                            <span class="qty-badge">@Model.Stock.Quantity.ToString("0.00")</span>
+                        </p>
+                    </div>
+
+                    <!-- Last Updated -->
+                    <div class="detail-field">
+                        <span class="detail-label">Last Updated</span>
+                        <p class="detail-value muted">@Model.Stock.UpdatedAt.ToLocalTime().ToString("dd MMM yyyy, h:mm tt")</p>
+                    </div>
+
+                </div>
+
+                <!-- Footer -->
+                <div class="stock-modal-footer">
+                    <button type="button" class="btn-close-teal" onclick="window.history.back()">
+                        Close
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    }
+    else if (string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-warning border-0 shadow-sm text-center py-2">
+            <i class="bi bi-exclamation-triangle me-2"></i> Stock record not found.
+        </div>
+    }
+
+</div>
+
+
+@* @page
+@model BKMC.Pharmacy.Web.Pages.Stock.DetailsModel
+@using BKMC.Pharmacy.Web.Models.Stock
+
+@{
+    ViewData["Title"] = "Stock Details";
+}
+
 <div class="container-fluid py-3">
 
     <!-- Page Header -->
@@ -130,4 +386,4 @@
         </div>
     }
 
-</div>
+</div> *@

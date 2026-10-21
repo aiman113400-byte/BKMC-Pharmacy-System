@@ -1,10 +1,13 @@
-﻿@page
+﻿
+@page
 @model IndexModel
+
+@using System.Text.Json
 
 @{
     ViewData["Title"] = "Dashboard";
 
-    // (Card, Variant, Subtitle) — YEH BILKUL WAHI HAI JO AAPKI FILE MEIN THA
+    // (Card, Variant, Subtitle) — EXISTING KPI CARDS
     var cards = new[]
     {
         (Model.Dashboard.TotalMedicines,   "primary", "Total medicines in catalog"),
@@ -18,80 +21,579 @@
         // (Model.Dashboard.TodayBilling,     "primary", "Bills generated today"),
         // (Model.Dashboard.PendingReturns,   "danger",  "Returns awaiting action"),
     };
+
+    // ===================== DASHBOARD REPORT DATA =====================
+
+    var warehouseQuantity =
+        Model.StockSummary.TotalWarehouseQuantity;
+
+    var pharmacyQuantity =
+        Model.StockSummary.TotalPharmacyQuantity;
+
+    var totalStockQuantity =
+        Model.StockSummary.TotalQuantity;
+
+    var warehousePercentage =
+        totalStockQuantity > 0
+            ? Math.Round(
+                (warehouseQuantity / totalStockQuantity) * 100,
+                1)
+            : 0;
+
+    var pharmacyPercentage =
+        totalStockQuantity > 0
+            ? Math.Round(
+                (pharmacyQuantity / totalStockQuantity) * 100,
+                1)
+            : 0;
+
+
+    // Monthly chart labels
+    var monthlyLabels =
+        Model.MonthlySales.DailySales
+            .OrderBy(x => x.Date)
+            .Select(x => x.Date.ToString("dd MMM"))
+            .ToList();
+
+    var monthlyGrossSales =
+        Model.MonthlySales.DailySales
+            .OrderBy(x => x.Date)
+            .Select(x => x.GrossSales)
+            .ToList();
+
+
+    // Low stock — show only first 5 items on dashboard
+    var dashboardLowStock =
+        Model.LowStockItems
+            .Take(5)
+            .ToList();
 }
 
+
 <!-- ===================== PAGE HEADER ===================== -->
+
 <div class="page-header">
     <div>
         <h1 class="page-header__title">Dashboard</h1>
-        <p class="page-header__subtitle">Overview of pharmacy inventory &amp; daily activity</p>
+
+        <p class="page-header__subtitle">
+            Overview of pharmacy inventory &amp; daily activity
+        </p>
     </div>
+
     <div class="page-header__meta">
         <i class="bi bi-calendar3 me-2"></i>
         @DateTime.Now.ToString("dddd, dd MMM yyyy")
     </div>
 </div>
 
+
 <!-- ===================== API UNAVAILABLE ===================== -->
+
 @if (!Model.Dashboard.ApiAvailable)
 {
     <div class="card border-0 shadow-sm rounded-4 mb-4">
         <div class="card-body d-flex align-items-center gap-3">
+
             <div class="alert-icon alert-icon--warning">
                 <i class="bi bi-exclamation-triangle-fill"></i>
             </div>
+
             <div>
-                <h6 class="mb-1 fw-semibold">API unavailable</h6>
-                <p class="mb-0 text-muted small">@Model.Dashboard.ApiMessage</p>
+                <h6 class="mb-1 fw-semibold">
+                    API unavailable
+                </h6>
+
+                <p class="mb-0 text-muted small">
+                    @Model.Dashboard.ApiMessage
+                </p>
             </div>
+
         </div>
     </div>
 }
 else
 {
-    <!-- ===================== KPI GRID ===================== -->
+    <!-- ===================== EXISTING KPI GRID ===================== -->
+
     <section class="kpi-grid">
+
         @foreach (var (card, variant, subtitle) in cards)
         {
             <article class="kpi-card kpi-card--@variant">
+
                 <div class="kpi-card__top">
-                    <span class="kpi-card__label">@card.Label</span>
+
+                    <span class="kpi-card__label">
+                        @card.Label
+                    </span>
+
                     <span class="kpi-card__icon">
                         <i class="bi @card.Icon"></i>
                     </span>
+
                 </div>
-                <div class="kpi-card__value">@card.Value</div>
-                <div class="kpi-card__subtitle">@subtitle</div>
+
+                <div class="kpi-card__value">
+                    @card.Value
+                </div>
+
+                <div class="kpi-card__subtitle">
+                    @subtitle
+                </div>
+
             </article>
         }
+
     </section>
 
-    <!-- ===================== INVENTORY OVERVIEW GRAPH (NEW) ===================== -->
-    <div class="chart-card mt-4">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <div>
-                <h5 class="chart-title mb-1">Inventory Overview</h5>
-                <p class="chart-subtitle mb-0">Stock levels over the last 6 months</p>
+
+    <!-- ============================================================ -->
+    <!-- INVENTORY OVERVIEW + STOCK DISTRIBUTION                      -->
+    <!-- ============================================================ -->
+
+    <div class="dashboard-top-grid">
+
+        <!-- ===================== INVENTORY OVERVIEW ===================== -->
+
+        <div class="chart-card">
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+
+                <div>
+                    <h5 class="chart-title mb-1">
+                        Inventory Overview
+                    </h5>
+
+                    <p class="chart-subtitle mb-0">
+                        Stock levels over the last 6 months
+                    </p>
+                </div>
+
+                <span class="badge bg-light text-dark border px-3 py-2"
+                      style="border-radius: 0.5rem; font-weight: 500;">
+
+                    <i class="bi bi-graph-up-arrow me-1"></i>
+
+                </span>
+
             </div>
-            @* <span class="badge bg-light text-dark border px-3 py-2" style="border-radius: 0.5rem; font-weight: 500;">
-                <i class="bi bi-graph-up-arrow me-1"></i> Trending
-            </span> *@
+
+            <div class="inventory-chart-wrapper">
+                <canvas id="inventoryChart"></canvas>
+            </div>
+
         </div>
-        <div style="height: 320px; width: 100%;">
-            <canvas id="inventoryChart"></canvas>
+
+
+        <!-- ===================== STOCK DISTRIBUTION ===================== -->
+
+        <div class="analytics-card">
+
+            <div class="analytics-card-header">
+
+                <div>
+
+                    <h3>
+                        <i class="bi bi-pie-chart"></i>
+                        Stock Distribution
+                    </h3>
+
+                    <p>
+                        Current stock by location
+                    </p>
+
+                </div>
+
+                <span class="analytics-header-icon stock-icon">
+                    <i class="bi bi-box-seam"></i>
+                </span>
+
+            </div>
+
+
+            <div class="stock-distribution-content">
+
+                <div class="stock-doughnut">
+                    <canvas id="stockDistributionChart"></canvas>
+                </div>
+
+
+                <div class="stock-location-list">
+
+                    <div class="stock-location-item">
+
+                        <span class="stock-location-name">
+
+                            <span class="location-dot warehouse-dot"></span>
+
+                            Warehouse
+
+                        </span>
+
+                        <strong>
+                            @warehouseQuantity.ToString("N0")
+                        </strong>
+
+                        <small>
+                            @warehousePercentage%
+                        </small>
+
+                    </div>
+
+
+                    <div class="stock-location-item">
+
+                        <span class="stock-location-name">
+
+                            <span class="location-dot pharmacy-dot"></span>
+
+                            Pharmacy
+
+                        </span>
+
+                        <strong>
+                            @pharmacyQuantity.ToString("N0")
+                        </strong>
+
+                        <small>
+                            @pharmacyPercentage%
+                        </small>
+
+                    </div>
+
+
+                    <div class="stock-total">
+
+                        <span>
+                            Total Stock
+                        </span>
+
+                        <strong>
+                            @totalStockQuantity.ToString("N0")
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
         </div>
+
     </div>
+
+
+    <!-- ===================== REPORT WARNING ===================== -->
+
+    @if (!Model.ReportsAvailable)
+    {
+        <div class="dashboard-report-warning">
+
+            <i class="bi bi-info-circle"></i>
+
+            <span>
+                @Model.ReportsMessage
+            </span>
+
+        </div>
+    }
+
+
+    <!-- ============================================================ -->
+    <!-- DAILY SALES + MONTHLY SALES                                 -->
+    <!-- ============================================================ -->
+
+    <section class="analytics-grid">
+
+
+        <!-- ===================== DAILY SALES ===================== -->
+
+        <div class="analytics-card">
+
+            <div class="analytics-card-header">
+
+                <div>
+
+                    <h3>
+                        <i class="bi bi-receipt"></i>
+                        Daily Sales
+                    </h3>
+
+                    <p>
+                        Today's pharmacy sales
+                    </p>
+
+                </div>
+
+                <span class="analytics-header-icon daily-icon">
+                    <i class="bi bi-cash-stack"></i>
+                </span>
+
+            </div>
+
+
+            <div class="sales-highlight">
+
+                <div>
+
+                    <span class="sales-label">
+                        Gross Sales
+                    </span>
+
+                    <strong>
+                        Rs. @Model.DailySales.GrossSales.ToString("N2")
+                    </strong>
+
+                </div>
+
+
+                <div class="sales-mini">
+
+                    <div>
+                        <span>Bills</span>
+
+                        <strong>
+                            @Model.DailySales.TotalBills
+                        </strong>
+                    </div>
+
+                    <div>
+                        <span>Paid</span>
+
+                        <strong>
+                            Rs. @Model.DailySales.PaidAmount.ToString("N0")
+                        </strong>
+                    </div>
+
+                    <div>
+                        <span>Balance</span>
+
+                        <strong>
+                            Rs. @Model.DailySales.BalanceAmount.ToString("N0")
+                        </strong>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="small-chart-wrapper">
+                <canvas id="dailySalesChart"></canvas>
+            </div>
+
+        </div>
+
+
+        <!-- ===================== MONTHLY SALES ===================== -->
+
+        <div class="analytics-card monthly-card">
+
+            <div class="analytics-card-header">
+
+                <div>
+
+                    <h3>
+                        <i class="bi bi-bar-chart-line"></i>
+                        Monthly Sales
+                    </h3>
+
+                    <p>
+                        @Model.MonthlySales.MonthName
+                        @Model.MonthlySales.Year
+                    </p>
+
+                </div>
+
+                <span class="analytics-header-icon monthly-icon">
+                    <i class="bi bi-calendar-month"></i>
+                </span>
+
+            </div>
+
+
+            <div class="monthly-sales-summary">
+
+                <div>
+
+                    <span>
+                        Gross Sales
+                    </span>
+
+                    <strong>
+                        Rs. @Model.MonthlySales.GrossSales.ToString("N0")
+                    </strong>
+
+                </div>
+
+                <div>
+
+                    <span>
+                        Bills
+                    </span>
+
+                    <strong>
+                        @Model.MonthlySales.TotalBills
+                    </strong>
+
+                </div>
+
+                <div>
+
+                    <span>
+                        Medicines
+                    </span>
+
+                    <strong>
+                        @Model.MonthlySales.MedicinesSold.ToString("N0")
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="monthly-chart-wrapper">
+                <canvas id="monthlySalesChart"></canvas>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ============================================================ -->
+    <!-- LOW STOCK                                                    -->
+    <!-- ============================================================ -->
+
+    <section class="analytics-grid">
+
+
+        <div class="analytics-card low-stock-card">
+
+            <div class="analytics-card-header">
+
+                <div>
+
+                    <h3>
+                        <i class="bi bi-exclamation-triangle"></i>
+                        Low Stock
+                    </h3>
+
+                    <p>
+                        Medicines requiring attention
+                    </p>
+
+                </div>
+
+                <span class="analytics-header-icon low-stock-icon">
+                    <i class="bi bi-exclamation-circle"></i>
+                </span>
+
+            </div>
+
+
+            @if (dashboardLowStock.Any())
+            {
+                <div class="low-stock-list">
+
+                    @foreach (var item in dashboardLowStock)
+                    {
+                        <div class="low-stock-item">
+
+                            <div class="low-stock-medicine">
+
+                                <span class="low-stock-warning">
+                                    <i class="bi bi-exclamation"></i>
+                                </span>
+
+                                <div>
+
+                                    <strong>
+                                        @item.MedicineName
+                                    </strong>
+
+                                    <small>
+                                        @item.MedicineCode
+                                    </small>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="low-stock-quantity">
+
+                                <strong>
+                                    @item.TotalQuantity.ToString("N0")
+                                </strong>
+
+                                <small>
+                                    / @item.ReorderLevel.ToString("N0")
+                                </small>
+
+                            </div>
+
+                        </div>
+                    }
+
+                </div>
+
+
+                <div class="low-stock-footer">
+
+                    <span>
+                        @Model.LowStockItems.Count medicine(s) need attention
+                    </span>
+
+                    <a href="/Reports">
+                        View Report
+                        <i class="bi bi-arrow-right"></i>
+                    </a>
+
+                </div>
+            }
+            else
+            {
+                <div class="no-low-stock">
+
+                    <div class="no-low-stock-icon">
+                        <i class="bi bi-check-circle"></i>
+                    </div>
+
+                    <strong>
+                        Stock levels are healthy
+                    </strong>
+
+                    <span>
+                        No medicines are currently below reorder level.
+                    </span>
+
+                </div>
+            }
+
+        </div>
+
+    </section>
 }
 
+
 <style>
+
     /* ============================================================ */
-    /*  GLOBAL TEAL BACKGROUND                                       */
+    /* GLOBAL TEAL BACKGROUND                                      */
     /* ============================================================ */
+
     body {
         background-color: #f4fbfa !important;
     }
 
-    /* ---------- PAGE HEADER ---------- */
+
+    /* ============================================================ */
+    /* PAGE HEADER                                                  */
+    /* ============================================================ */
+
     .page-header {
         display: flex;
         justify-content: space-between;
@@ -125,18 +627,22 @@ else
         box-shadow: 0 1px 3px rgba(15, 23, 42, .04);
     }
 
+
     /* ============================================================ */
-    /*  KPI GRID — 5 CARDS EK LINE MEIN                              */
+    /* KPI GRID                                                     */
     /* ============================================================ */
+
     .kpi-grid {
         display: grid !important;
         grid-template-columns: repeat(5, 1fr) !important;
         gap: 10px !important;
     }
 
+
     /* ============================================================ */
-    /*  KPI CARD — SMALL SIZE                                        */
+    /* KPI CARD                                                     */
     /* ============================================================ */
+
     .kpi-card {
         position: relative;
         background: #ffffff;
@@ -213,22 +719,64 @@ else
         line-height: 1.2;
     }
 
-    /* ---------- COLOR VARIANTS ---------- */
-    .kpi-card--primary { --kpi-color: #0f766e; --kpi-color-soft: rgba(15, 118, 110, .1); }
-    .kpi-card--success { --kpi-color: #10b981; --kpi-color-soft: rgba(16, 185, 129, .12); }
-    .kpi-card--warning { --kpi-color: #f59e0b; --kpi-color-soft: rgba(245, 158, 11, .14); }
-    .kpi-card--danger  { --kpi-color: #ef4444; --kpi-color-soft: rgba(239, 68, 68, .12); }
-    .kpi-card--info    { --kpi-color: #0ea5e9; --kpi-color-soft: rgba(14, 165, 233, .12); }
 
     /* ============================================================ */
-    /*  CHART CARD (NEW)                                             */
+    /* COLOR VARIANTS                                               */
     /* ============================================================ */
+
+    .kpi-card--primary {
+        --kpi-color: #0f766e;
+        --kpi-color-soft: rgba(15, 118, 110, .1);
+    }
+
+    .kpi-card--success {
+        --kpi-color: #10b981;
+        --kpi-color-soft: rgba(16, 185, 129, .12);
+    }
+
+    .kpi-card--warning {
+        --kpi-color: #f59e0b;
+        --kpi-color-soft: rgba(245, 158, 11, .14);
+    }
+
+    .kpi-card--danger {
+        --kpi-color: #ef4444;
+        --kpi-color-soft: rgba(239, 68, 68, .12);
+    }
+
+    .kpi-card--info {
+        --kpi-color: #0ea5e9;
+        --kpi-color-soft: rgba(14, 165, 233, .12);
+    }
+
+
+    /* ============================================================ */
+    /* COMPACT TOP DASHBOARD LAYOUT                                 */
+    /* ============================================================ */
+
+    .dashboard-top-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.55fr) minmax(280px, 0.85fr);
+        gap: 12px;
+        margin-top: 14px;
+    }
+
+
+    /* ============================================================ */
+    /* INVENTORY OVERVIEW                                            */
+    /* ============================================================ */
+
+    .dashboard-top-grid .chart-card {
+        margin-top: 0 !important;
+        padding: 13px 15px;
+    }
+
     .chart-card {
         background: #ffffff;
         border: 1px solid #e9edf3;
         border-radius: 12px;
-        padding: 1.5rem;
         box-shadow: 0 1px 3px rgba(15, 23, 42, .04);
+        min-width: 0;
     }
 
     .chart-title {
@@ -242,425 +790,1478 @@ else
         color: #94a3b8;
     }
 
-    /* ============================================================ */
-    /*  RESPONSIVE                                                    */
-    /* ============================================================ */
-    @@media (max-width: 1400px) {
-        .kpi-grid { grid-template-columns: repeat(5, 1fr) !important; }
+    .inventory-chart-wrapper {
+        height: 220px !important;
+        width: 100%;
     }
+
+
+    /* ============================================================ */
+    /* REPORT WARNING                                               */
+    /* ============================================================ */
+
+    .dashboard-report-warning {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 12px;
+        padding: 9px 12px;
+        border: 1px solid #fde68a;
+        background: #fffbeb;
+        color: #92400e;
+        border-radius: 9px;
+        font-size: 0.72rem;
+    }
+
+
+    /* ============================================================ */
+    /* ANALYTICS GRID                                               */
+    /* ============================================================ */
+
+    .analytics-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.35fr) minmax(280px, 1fr);
+        gap: 12px;
+        margin-top: 12px;
+    }
+
+
+    /* ============================================================ */
+    /* ANALYTICS CARD                                               */
+    /* ============================================================ */
+
+    .analytics-card {
+        background: #ffffff;
+        border: 1px solid #e9edf3;
+        border-radius: 10px;
+        padding: 13px;
+        box-shadow: 0 1px 3px rgba(15, 23, 42, .04);
+        min-width: 0;
+    }
+
+
+    /* ============================================================ */
+    /* ANALYTICS HEADER                                             */
+    /* ============================================================ */
+
+    .analytics-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    .analytics-card-header h3 {
+        margin: 0 0 3px;
+        color: #0f172a;
+        font-size: 0.82rem;
+        font-weight: 700;
+    }
+
+    .analytics-card-header h3 i {
+        color: #0f766e;
+        margin-right: 5px;
+    }
+
+    .analytics-card-header p {
+        margin: 0;
+        color: #94a3b8;
+        font-size: 0.62rem;
+    }
+
+    .analytics-header-icon {
+        width: 29px;
+        height: 29px;
+        border-radius: 7px;
+        display: grid;
+        place-items: center;
+        flex-shrink: 0;
+        font-size: 0.72rem;
+    }
+
+    .daily-icon {
+        background: #e2f5ef;
+        color: #0f766e;
+    }
+
+    .stock-icon {
+        background: #e0f2fe;
+        color: #0284c7;
+    }
+
+    .monthly-icon {
+        background: #ede9fe;
+        color: #7c3aed;
+    }
+
+    .low-stock-icon {
+        background: #fef3c7;
+        color: #d97706;
+    }
+
+
+    /* ============================================================ */
+    /* STOCK DISTRIBUTION COMPACT                                   */
+    /* ============================================================ */
+
+    .dashboard-top-grid .analytics-card {
+        padding: 13px;
+        margin: 0;
+    }
+
+    .stock-distribution-content {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-height: 165px;
+    }
+
+    .dashboard-top-grid .stock-distribution-content {
+        min-height: 165px;
+        gap: 12px;
+    }
+
+    .stock-doughnut {
+        width: 135px;
+        height: 135px;
+        flex-shrink: 0;
+    }
+
+    .dashboard-top-grid .stock-doughnut {
+        width: 135px;
+        height: 135px;
+    }
+
+    .stock-location-list {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .stock-location-item {
+        display: grid;
+        grid-template-columns: 1fr auto auto;
+        align-items: center;
+        gap: 8px;
+        padding: 7px 0;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .stock-location-name {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        color: #475569;
+        font-size: 0.65rem;
+        font-weight: 600;
+    }
+
+    .location-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        display: inline-block;
+    }
+
+    .warehouse-dot {
+        background: #0f766e;
+    }
+
+    .pharmacy-dot {
+        background: #0ea5e9;
+    }
+
+    .stock-location-item > strong {
+        color: #0f172a;
+        font-size: 0.7rem;
+    }
+
+    .stock-location-item > small {
+        color: #94a3b8;
+        font-size: 0.58rem;
+        min-width: 35px;
+        text-align: right;
+    }
+
+    .stock-total {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 8px;
+    }
+
+    .stock-total span {
+        color: #64748b;
+        font-size: 0.62rem;
+        font-weight: 600;
+    }
+
+    .stock-total strong {
+        color: #0f172a;
+        font-size: 0.82rem;
+    }
+
+
+    /* ============================================================ */
+    /* DAILY SALES                                                  */
+    /* ============================================================ */
+
+    .sales-highlight {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        padding: 9px;
+        border-radius: 8px;
+        background: #f8fafc;
+        border: 1px solid #eef2f6;
+    }
+
+    .sales-label {
+        display: block;
+        color: #64748b;
+        font-size: 0.58rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .04em;
+        margin-bottom: 3px;
+    }
+
+    .sales-highlight > div:first-child strong {
+        display: block;
+        color: #0f766e;
+        font-size: 1.05rem;
+        font-weight: 800;
+    }
+
+    .sales-mini {
+        display: flex;
+        gap: 9px;
+    }
+
+    .sales-mini div {
+        min-width: 55px;
+    }
+
+    .sales-mini span {
+        display: block;
+        color: #94a3b8;
+        font-size: 0.55rem;
+        margin-bottom: 2px;
+    }
+
+    .sales-mini strong {
+        color: #334155;
+        font-size: 0.68rem;
+        font-weight: 700;
+    }
+
+    .small-chart-wrapper {
+        height: 115px;
+        margin-top: 7px;
+    }
+
+
+    /* ============================================================ */
+    /* MONTHLY SALES                                                */
+    /* ============================================================ */
+
+    .monthly-sales-summary {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 6px;
+        margin-bottom: 6px;
+    }
+
+    .monthly-sales-summary > div {
+        padding: 7px 8px;
+        border-radius: 7px;
+        background: #f8fafc;
+        border: 1px solid #eef2f6;
+    }
+
+    .monthly-sales-summary span {
+        display: block;
+        color: #94a3b8;
+        font-size: 0.55rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        margin-bottom: 3px;
+    }
+
+    .monthly-sales-summary strong {
+        display: block;
+        color: #0f172a;
+        font-size: 0.7rem;
+        font-weight: 800;
+    }
+
+    .monthly-chart-wrapper {
+        height: 125px;
+    }
+
+
+    /* ============================================================ */
+    /* LOW STOCK                                                    */
+    /* ============================================================ */
+
+    .low-stock-list {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .low-stock-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 7px 0;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .low-stock-medicine {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        min-width: 0;
+    }
+
+    .low-stock-warning {
+        width: 24px;
+        height: 24px;
+        border-radius: 6px;
+        display: grid;
+        place-items: center;
+        flex-shrink: 0;
+        background: #fff7ed;
+        color: #ea580c;
+        font-size: 0.65rem;
+    }
+
+    .low-stock-medicine div {
+        min-width: 0;
+    }
+
+    .low-stock-medicine strong {
+        display: block;
+        color: #334155;
+        font-size: 0.67rem;
+        font-weight: 700;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 180px;
+    }
+
+    .low-stock-medicine small {
+        display: block;
+        color: #94a3b8;
+        font-size: 0.54rem;
+        margin-top: 1px;
+    }
+
+    .low-stock-quantity {
+        white-space: nowrap;
+        text-align: right;
+    }
+
+    .low-stock-quantity strong {
+        color: #dc2626;
+        font-size: 0.7rem;
+        font-weight: 800;
+    }
+
+    .low-stock-quantity small {
+        color: #94a3b8;
+        font-size: 0.55rem;
+    }
+
+    .low-stock-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        padding-top: 8px;
+    }
+
+    .low-stock-footer span {
+        color: #94a3b8;
+        font-size: 0.58rem;
+    }
+
+    .low-stock-footer a {
+        color: #0f766e;
+        text-decoration: none;
+        font-size: 0.58rem;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .low-stock-footer a:hover {
+        color: #0d5e58;
+    }
+
+
+    /* ============================================================ */
+    /* NO LOW STOCK                                                 */
+    /* ============================================================ */
+
+    .no-low-stock {
+        min-height: 150px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .no-low-stock-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        background: #e2f5ef;
+        color: #0f766e;
+        font-size: 1.1rem;
+        margin-bottom: 8px;
+    }
+
+    .no-low-stock strong {
+        color: #334155;
+        font-size: 0.72rem;
+        margin-bottom: 3px;
+    }
+
+    .no-low-stock span {
+        color: #94a3b8;
+        font-size: 0.6rem;
+    }
+
+
+    /* ============================================================ */
+    /* RESPONSIVE                                                   */
+    /* ============================================================ */
+
+    @@media (max-width: 1400px) {
+
+        .kpi-grid {
+            grid-template-columns: repeat(5, 1fr) !important;
+        }
+
+    }
+
 
     @@media (max-width: 1100px) {
-        .kpi-grid { grid-template-columns: repeat(3, 1fr) !important; }
+
+        .kpi-grid {
+            grid-template-columns: repeat(3, 1fr) !important;
+        }
+
+        .dashboard-top-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .analytics-grid {
+            grid-template-columns: 1fr;
+        }
+
     }
+
 
     @@media (max-width: 768px) {
-        .kpi-grid { grid-template-columns: repeat(2, 1fr) !important; }
+
+        .kpi-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+        }
+
+        .dashboard-top-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .inventory-chart-wrapper {
+            height: 190px !important;
+        }
+
+        .dashboard-top-grid .inventory-chart-wrapper {
+            height: 190px !important;
+        }
+
+        .dashboard-top-grid .stock-distribution-content {
+            min-height: 150px;
+        }
+
+        .sales-highlight {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .sales-mini {
+            width: 100%;
+            justify-content: space-between;
+        }
+
+        .stock-distribution-content {
+            flex-direction: column;
+        }
+
+        .stock-doughnut {
+            width: 150px;
+            height: 150px;
+        }
+
     }
+
 
     @@media (max-width: 480px) {
-        .kpi-grid { grid-template-columns: 1fr !important; }
+
+        .kpi-grid {
+            grid-template-columns: 1fr !important;
+        }
+
+        .monthly-sales-summary {
+            grid-template-columns: 1fr;
+        }
+
+        .sales-mini {
+            gap: 8px;
+        }
+
+        .sales-mini div {
+            min-width: 0;
+        }
+
     }
+    /* ============================================================ */
+/* DASHBOARD DARK MODE - ANALYTICS SECTIONS                    */
+/* ============================================================ */
+
+html[data-theme="dark"] .analytics-card {
+    background: #1E293B !important;
+    color: #FFFFFF !important;
+    border-color: #334155 !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* Analytics headings */
+html[data-theme="dark"] .analytics-card-header h3 {
+    color: #FFFFFF !important;
+}
+
+html[data-theme="dark"] .analytics-card-header h3 i {
+    color: #38BDF8 !important;
+}
+
+html[data-theme="dark"] .analytics-card-header p {
+    color: #CBD5E1 !important;
+}
+
+/* ============================================================ */
+/* STOCK DISTRIBUTION                                           */
+/* ============================================================ */
+
+html[data-theme="dark"] .stock-distribution-content {
+    color: #FFFFFF !important;
+}
+
+html[data-theme="dark"] .stock-location-item {
+    background: transparent !important;
+    border-bottom-color: #334155 !important;
+}
+
+html[data-theme="dark"] .stock-location-name {
+    color: #E2E8F0 !important;
+}
+
+html[data-theme="dark"] .stock-location-item > strong {
+    color: #FFFFFF !important;
+}
+
+html[data-theme="dark"] .stock-location-item > small {
+    color: #94A3B8 !important;
+}
+
+html[data-theme="dark"] .stock-total {
+    color: #FFFFFF !important;
+    border-color: #334155 !important;
+}
+
+html[data-theme="dark"] .stock-total span {
+    color: #CBD5E1 !important;
+}
+
+html[data-theme="dark"] .stock-total strong {
+    color: #FFFFFF !important;
+}
+
+/* Stock distribution header icon */
+html[data-theme="dark"] .stock-icon {
+    background: #082F49 !important;
+    color: #38BDF8 !important;
+    border: 1px solid #164E63 !important;
+}
+
+/* ============================================================ */
+/* DAILY SALES                                                  */
+/* ============================================================ */
+
+html[data-theme="dark"] .sales-highlight {
+    background: #0F172A !important;
+    border-color: #334155 !important;
+    color: #FFFFFF !important;
+}
+
+html[data-theme="dark"] .sales-label {
+    color: #CBD5E1 !important;
+}
+
+html[data-theme="dark"] .sales-highlight > div:first-child strong {
+    color: #38BDF8 !important;
+}
+
+html[data-theme="dark"] .sales-mini span {
+    color: #94A3B8 !important;
+}
+
+html[data-theme="dark"] .sales-mini strong {
+    color: #FFFFFF !important;
+}
+
+html[data-theme="dark"] .daily-icon {
+    background: #064E3B !important;
+    color: #34D399 !important;
+    border: 1px solid #065F46 !important;
+}
+
+/* ============================================================ */
+/* MONTHLY SALES                                                */
+/* ============================================================ */
+
+html[data-theme="dark"] .monthly-sales-summary > div {
+    background: #0F172A !important;
+    border-color: #334155 !important;
+}
+
+html[data-theme="dark"] .monthly-sales-summary span {
+    color: #CBD5E1 !important;
+}
+
+html[data-theme="dark"] .monthly-sales-summary strong {
+    color: #FFFFFF !important;
+}
+
+html[data-theme="dark"] .monthly-icon {
+    background: #312E81 !important;
+    color: #A78BFA !important;
+    border: 1px solid #4338CA !important;
+}
+
+/* ============================================================ */
+/* LOW STOCK                                                    */
+/* ============================================================ */
+
+html[data-theme="dark"] .low-stock-list {
+    color: #FFFFFF !important;
+}
+
+html[data-theme="dark"] .low-stock-item {
+    background: transparent !important;
+    border-bottom-color: #334155 !important;
+}
+
+html[data-theme="dark"] .low-stock-medicine strong {
+    color: #FFFFFF !important;
+}
+
+html[data-theme="dark"] .low-stock-medicine small {
+    color: #94A3B8 !important;
+}
+
+html[data-theme="dark"] .low-stock-warning {
+    background: #451A03 !important;
+    color: #FB923C !important;
+    border: 1px solid #7C2D12 !important;
+}
+
+html[data-theme="dark"] .low-stock-quantity strong {
+    color: #F87171 !important;
+}
+
+html[data-theme="dark"] .low-stock-quantity small {
+    color: #94A3B8 !important;
+}
+
+html[data-theme="dark"] .low-stock-footer {
+    border-color: #334155 !important;
+}
+
+html[data-theme="dark"] .low-stock-footer span {
+    color: #94A3B8 !important;
+}
+
+html[data-theme="dark"] .low-stock-footer a {
+    color: #38BDF8 !important;
+}
+
+html[data-theme="dark"] .low-stock-footer a:hover {
+    color: #7DD3FC !important;
+}
+
+/* No low-stock state */
+html[data-theme="dark"] .no-low-stock {
+    color: #FFFFFF !important;
+}
+
+html[data-theme="dark"] .no-low-stock-icon {
+    background: #064E3B !important;
+    color: #34D399 !important;
+    border: 1px solid #065F46 !important;
+}
+
+html[data-theme="dark"] .no-low-stock strong {
+    color: #FFFFFF !important;
+}
+
+html[data-theme="dark"] .no-low-stock span {
+    color: #94A3B8 !important;
+}
+
+/* ============================================================ */
+/* ANALYTICS CARD SHADOW / BORDERS                              */
+/* ============================================================ */
+
+html[data-theme="dark"] .dashboard-top-grid .analytics-card {
+    background: #1E293B !important;
+    border-color: #334155 !important;
+}
+
+html[data-theme="dark"] .analytics-grid .analytics-card {
+    background: #1E293B !important;
+    border-color: #334155 !important;
+}
+
+/* Keep Inventory Overview separate */
+html[data-theme="dark"] .chart-card {
+    border-color: #334155 !important;
+}
+   
+
 </style>
 
+
 @section Scripts {
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <script>
+
         document.addEventListener("DOMContentLoaded", function () {
-            const canvas = document.getElementById('inventoryChart');
-            if (!canvas) return;
 
-            const ctx = canvas.getContext('2d');
+            /* ===================================================== */
+            /* EXISTING INVENTORY OVERVIEW CHART                     */
+            /* ===================================================== */
 
-            // Professional Teal + Amber palette (matching your theme)
-            const tealColor = '#0f766e';
-            const tealSoft = 'rgba(15, 118, 110, 0.12)';
-            const amberColor = '#f59e0b';
-            const amberSoft = 'rgba(245, 158, 11, 0.10)';
-            const redColor = '#ef4444';
-            const redSoft = 'rgba(239, 68, 68, 0.08)';
+            const canvas =
+                document.getElementById('inventoryChart');
 
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
-                    datasets: [
-                        {
-                            label: 'Total Stock',
-                            data: [120, 145, 138, 165, 172, 182],
-                            borderColor: tealColor,
-                            backgroundColor: tealSoft,
-                            borderWidth: 2.5,
-                            tension: 0.4,
-                            fill: true,
-                            pointBackgroundColor: '#ffffff',
-                            pointBorderColor: tealColor,
-                            pointBorderWidth: 2,
-                            pointRadius: 4,
-                            pointHoverRadius: 6
-                        },
-                        {
-                            label: 'Low Stock',
-                            data: [12, 9, 11, 7, 4, 2],
-                            borderColor: amberColor,
-                            backgroundColor: amberSoft,
-                            borderWidth: 2.5,
-                            tension: 0.4,
-                            fill: true,
-                            pointBackgroundColor: '#ffffff',
-                            pointBorderColor: amberColor,
-                            pointBorderWidth: 2,
-                            pointRadius: 4,
-                            pointHoverRadius: 6
-                        },
-                        {
-                            label: 'Out of Stock',
-                            data: [5, 4, 6, 3, 2, 1],
-                            borderColor: redColor,
-                            backgroundColor: redSoft,
-                            borderWidth: 2.5,
-                            tension: 0.4,
-                            fill: true,
-                            pointBackgroundColor: '#ffffff',
-                            pointBorderColor: redColor,
-                            pointBorderWidth: 2,
-                            pointRadius: 4,
-                            pointHoverRadius: 6
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    interaction: {
-                        intersect: false,
-                        mode: 'index'
-                    },
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                            align: 'end',
-                            labels: {
-                                usePointStyle: true,
-                                pointStyle: 'circle',
-                                boxWidth: 8,
-                                boxHeight: 8,
-                                padding: 16,
-                                font: {
-                                    family: 'system-ui, -apple-system, sans-serif',
-                                    size: 12,
-                                    weight: '500'
-                                },
-                                color: '#475569'
-                            }
-                        },
-                        tooltip: {
-                            backgroundColor: '#1e293b',
-                            padding: 12,
-                            cornerRadius: 8,
-                            titleFont: { size: 13, weight: '600' },
-                            bodyFont: { size: 12 },
-                            displayColors: true,
-                            boxPadding: 6
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: {
-                                color: '#f1f5f9',
-                                drawBorder: false
+            if (canvas) {
+
+                const ctx =
+                    canvas.getContext('2d');
+
+                const tealColor =
+                    '#0f766e';
+
+                const tealSoft =
+                    'rgba(15, 118, 110, 0.12)';
+
+                const amberColor =
+                    '#f59e0b';
+
+                const amberSoft =
+                    'rgba(245, 158, 11, 0.10)';
+
+                const redColor =
+                    '#ef4444';
+
+                const redSoft =
+                    'rgba(239, 68, 68, 0.08)';
+
+
+                new Chart(ctx, {
+
+                    type: 'line',
+
+                    data: {
+
+                        labels: [
+                            'May',
+                            'Jun',
+                            'Jul',
+                            'Aug',
+                            'Sep',
+                            'Oct'
+                        ],
+
+                        datasets: [
+
+                            {
+                                label: 'Total Stock',
+
+                                data: [
+                                    120,
+                                    145,
+                                    138,
+                                    165,
+                                    172,
+                                    182
+                                ],
+
+                                borderColor: tealColor,
+
+                                backgroundColor: tealSoft,
+
+                                borderWidth: 2.5,
+
+                                tension: 0.4,
+
+                                fill: true,
+
+                                pointBackgroundColor: '#ffffff',
+
+                                pointBorderColor: tealColor,
+
+                                pointBorderWidth: 2,
+
+                                pointRadius: 4,
+
+                                pointHoverRadius: 6
                             },
-                            ticks: {
-                                color: '#94a3b8',
-                                font: { size: 11 },
-                                padding: 8
+
+                            {
+                                label: 'Low Stock',
+
+                                data: [
+                                    12,
+                                    9,
+                                    11,
+                                    7,
+                                    4,
+                                    2
+                                ],
+
+                                borderColor: amberColor,
+
+                                backgroundColor: amberSoft,
+
+                                borderWidth: 2.5,
+
+                                tension: 0.4,
+
+                                fill: true,
+
+                                pointBackgroundColor: '#ffffff',
+
+                                pointBorderColor: amberColor,
+
+                                pointBorderWidth: 2,
+
+                                pointRadius: 4,
+
+                                pointHoverRadius: 6
+                            },
+
+                            {
+                                label: 'Out of Stock',
+
+                                data: [
+                                    5,
+                                    4,
+                                    6,
+                                    3,
+                                    2,
+                                    1
+                                ],
+
+                                borderColor: redColor,
+
+                                backgroundColor: redSoft,
+
+                                borderWidth: 2.5,
+
+                                tension: 0.4,
+
+                                fill: true,
+
+                                pointBackgroundColor: '#ffffff',
+
+                                pointBorderColor: redColor,
+
+                                pointBorderWidth: 2,
+
+                                pointRadius: 4,
+
+                                pointHoverRadius: 6
                             }
+
+                        ]
+
+                    },
+
+                    options: {
+
+                        responsive: true,
+
+                        maintainAspectRatio: false,
+
+                        interaction: {
+
+                            intersect: false,
+
+                            mode: 'index'
                         },
-                        x: {
-                            grid: { display: false },
-                            ticks: {
-                                color: '#94a3b8',
-                                font: { size: 11 },
-                                padding: 8
+
+                        plugins: {
+
+                            legend: {
+
+                                position: 'top',
+
+                                align: 'end',
+
+                                labels: {
+
+                                    usePointStyle: true,
+
+                                    pointStyle: 'circle',
+
+                                    boxWidth: 8,
+
+                                    boxHeight: 8,
+
+                                    padding: 16,
+
+                                    font: {
+
+                                        family:
+                                            'system-ui, -apple-system, sans-serif',
+
+                                        size: 12,
+
+                                        weight: '500'
+                                    },
+
+                                    color: '#475569'
+                                }
+
+                            },
+
+                            tooltip: {
+
+                                backgroundColor:
+                                    '#1e293b',
+
+                                padding: 12,
+
+                                cornerRadius: 8,
+
+                                titleFont: {
+
+                                    size: 13,
+
+                                    weight: '600'
+                                },
+
+                                bodyFont: {
+
+                                    size: 12
+                                },
+
+                                displayColors: true,
+
+                                boxPadding: 6
                             }
+
+                        },
+
+                        scales: {
+
+                            y: {
+
+                                beginAtZero: true,
+
+                                grid: {
+
+                                    color: '#f1f5f9',
+
+                                    drawBorder: false
+                                },
+
+                                ticks: {
+
+                                    color: '#94a3b8',
+
+                                    font: {
+
+                                        size: 11
+                                    },
+
+                                    padding: 8
+                                }
+
+                            },
+
+                            x: {
+
+                                grid: {
+
+                                    display: false
+                                },
+
+                                ticks: {
+
+                                    color: '#94a3b8',
+
+                                    font: {
+
+                                        size: 11
+                                    },
+
+                                    padding: 8
+                                }
+
+                            }
+
                         }
+
                     }
-                }
-            });
+
+                });
+
+            }
+
+
+            /* ===================================================== */
+            /* DAILY SALES CHART                                    */
+            /* ===================================================== */
+
+            const dailySalesCanvas =
+                document.getElementById('dailySalesChart');
+
+            if (dailySalesCanvas) {
+
+                const dailyCtx =
+                    dailySalesCanvas.getContext('2d');
+
+
+                new Chart(dailyCtx, {
+
+                    type: 'bar',
+
+                    data: {
+
+                        labels: [
+                            'Gross Sales',
+                            'Paid Amount',
+                            'Balance'
+                        ],
+
+                        datasets: [
+
+                            {
+                                label: 'Amount',
+
+                                data: [
+                                    @Model.DailySales.GrossSales,
+                                    @Model.DailySales.PaidAmount,
+                                    @Model.DailySales.BalanceAmount
+                                ],
+
+                                backgroundColor: [
+                                    'rgba(15, 118, 110, 0.75)',
+                                    'rgba(16, 185, 129, 0.75)',
+                                    'rgba(245, 158, 11, 0.75)'
+                                ],
+
+                                borderColor: [
+                                    '#0f766e',
+                                    '#10b981',
+                                    '#f59e0b'
+                                ],
+
+                                borderWidth: 1,
+
+                                borderRadius: 6
+                            }
+
+                        ]
+
+                    },
+
+                    options: {
+
+                        responsive: true,
+
+                        maintainAspectRatio: false,
+
+                        plugins: {
+
+                            legend: {
+                                display: false
+                            },
+
+                            tooltip: {
+
+                                callbacks: {
+
+                                    label: function (context) {
+
+                                        return ' Rs. ' +
+                                            Number(context.raw)
+                                                .toLocaleString();
+
+                                    }
+
+                                }
+
+                            }
+
+                        },
+
+                        scales: {
+
+                            y: {
+
+                                beginAtZero: true,
+
+                                grid: {
+
+                                    color: '#f1f5f9'
+                                },
+
+                                ticks: {
+
+                                    color: '#94a3b8',
+
+                                    font: {
+                                        size: 10
+                                    },
+
+                                    callback: function (value) {
+
+                                        return 'Rs. ' +
+                                            Number(value)
+                                                .toLocaleString();
+
+                                    }
+
+                                }
+
+                            },
+
+                            x: {
+
+                                grid: {
+                                    display: false
+                                },
+
+                                ticks: {
+
+                                    color: '#64748b',
+
+                                    font: {
+
+                                        size: 10,
+
+                                        weight: '600'
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                });
+
+            }
+
+
+            /* ===================================================== */
+            /* STOCK DISTRIBUTION CHART                              */
+            /* ===================================================== */
+
+            const stockCanvas =
+                document.getElementById(
+                    'stockDistributionChart');
+
+            if (stockCanvas) {
+
+                const stockCtx =
+                    stockCanvas.getContext('2d');
+
+
+                new Chart(stockCtx, {
+
+                    type: 'doughnut',
+
+                    data: {
+
+                        labels: [
+                            'Warehouse',
+                            'Pharmacy'
+                        ],
+
+                        datasets: [
+
+                            {
+
+                                data: [
+                                    @warehouseQuantity,
+                                    @pharmacyQuantity
+                                ],
+
+                                backgroundColor: [
+                                    '#0f766e',
+                                    '#0ea5e9'
+                                ],
+
+                                borderColor: '#ffffff',
+
+                                borderWidth: 3,
+
+                                hoverOffset: 5
+                            }
+
+                        ]
+
+                    },
+
+                    options: {
+
+                        responsive: true,
+
+                        maintainAspectRatio: false,
+
+                        cutout: '68%',
+
+                        plugins: {
+
+                            legend: {
+                                display: false
+                            },
+
+                            tooltip: {
+
+                                callbacks: {
+
+                                    label: function (context) {
+
+                                        const value =
+                                            Number(context.raw);
+
+                                        const total =
+                                            @totalStockQuantity;
+
+                                        const percentage =
+                                            total > 0
+                                                ? ((value / total) * 100)
+                                                    .toFixed(1)
+                                                : 0;
+
+                                        return ' ' +
+                                            context.label +
+                                            ': ' +
+                                            value.toLocaleString() +
+                                            ' (' +
+                                            percentage +
+                                            '%)';
+
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                });
+
+            }
+
+
+            /* ===================================================== */
+            /* MONTHLY SALES CHART                                  */
+            /* ===================================================== */
+
+            const monthlyCanvas =
+                document.getElementById(
+                    'monthlySalesChart');
+
+            if (monthlyCanvas) {
+
+                const monthlyCtx =
+                    monthlyCanvas.getContext('2d');
+
+
+                const monthlyLabels =
+                    @Html.Raw(
+                        JsonSerializer.Serialize(monthlyLabels)
+                    );
+
+
+                const monthlySales =
+                    @Html.Raw(
+                        JsonSerializer.Serialize(monthlyGrossSales)
+                    );
+
+
+                new Chart(monthlyCtx, {
+
+                    type: 'line',
+
+                    data: {
+
+                        labels: monthlyLabels,
+
+                        datasets: [
+
+                            {
+
+                                label: 'Gross Sales',
+
+                                data: monthlySales,
+
+                                borderColor: '#7c3aed',
+
+                                backgroundColor:
+                                    'rgba(124, 58, 237, 0.10)',
+
+                                borderWidth: 2.5,
+
+                                tension: 0.35,
+
+                                fill: true,
+
+                                pointBackgroundColor: '#ffffff',
+
+                                pointBorderColor: '#7c3aed',
+
+                                pointBorderWidth: 2,
+
+                                pointRadius: 3,
+
+                                pointHoverRadius: 5
+                            }
+
+                        ]
+
+                    },
+
+                    options: {
+
+                        responsive: true,
+
+                        maintainAspectRatio: false,
+
+                        interaction: {
+
+                            intersect: false,
+
+                            mode: 'index'
+                        },
+
+                        plugins: {
+
+                            legend: {
+                                display: false
+                            },
+
+                            tooltip: {
+
+                                callbacks: {
+
+                                    label: function (context) {
+
+                                        return ' Gross Sales: Rs. ' +
+                                            Number(context.raw)
+                                                .toLocaleString();
+
+                                    }
+
+                                }
+
+                            }
+
+                        },
+
+                        scales: {
+
+                            y: {
+
+                                beginAtZero: true,
+
+                                grid: {
+
+                                    color: '#f1f5f9'
+                                },
+
+                                ticks: {
+
+                                    color: '#94a3b8',
+
+                                    font: {
+                                        size: 10
+                                    },
+
+                                    callback: function (value) {
+
+                                        return 'Rs. ' +
+                                            Number(value)
+                                                .toLocaleString();
+
+                                    }
+
+                                }
+
+                            },
+
+                            x: {
+
+                                grid: {
+
+                                    display: false
+                                },
+
+                                ticks: {
+
+                                    color: '#94a3b8',
+
+                                    font: {
+                                        size: 10
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                });
+
+            }
+
         });
+
     </script>
 }
 
 
 
 
-@* 
-
-
-
-
-
-@page
-@model IndexModel
-
-@{
-    ViewData["Title"] = "Dashboard";
-    <style>
-    /* Dashboard specific styles */
-    .dashboard-title {
-        font-size: 1.5rem; /* Chota aur professional size */
-        font-weight: 700;
-        color: #1e293b;
-        margin-bottom: 0.25rem;
-    }
-    .dashboard-subtitle {
-        font-size: 0.875rem;
-        color: #64748b;
-    }
-    .metric-card {
-        border: 1px solid #e2e8f0;
-        border-radius: 0.75rem;
-        background: #ffffff;
-        transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .metric-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
-    }
-    .chart-card {
-        border: 1px solid #e2e8f0;
-        border-radius: 0.75rem;
-        background: #ffffff;
-        padding: 1.5rem;
-    }
-</style>
-
-    // (Card, Variant, Subtitle)
-    var cards = new[]
-    {
-        (Model.Dashboard.TotalMedicines,   "primary", "Total medicines in catalog"),
-        // (Model.Dashboard.ActiveMedicines,  "success", "Active for dispensing"),
-        (Model.Dashboard.TotalStock,       "info",    "Total physical units on hand"),
-        (Model.Dashboard.LowStock,         "warning", "Items at or below reorder level"),
-        (Model.Dashboard.OutOfStock,       "danger",  "Items with zero stock"),
-        (Model.Dashboard.ExpiringSoon,     "warning", "Expiring within 90 days"),
-        // (Model.Dashboard.TodayReceiving,   "success", "Received today"),
-        // (Model.Dashboard.TodayDispensing,  "info",    "Dispensed today"),
-        // (Model.Dashboard.TodayBilling,     "primary", "Bills generated today"),
-        // (Model.Dashboard.PendingReturns,   "danger",  "Returns awaiting action"),
-    };
-}
-
-<!-- ===================== PAGE HEADER ===================== -->
-<div class="page-header">
-    <div>
-        <h1 class="page-header__title">Dashboard</h1>
-        <p class="page-header__subtitle">Overview of pharmacy inventory &amp; daily activity</p>
-    </div>
-    <div class="page-header__meta">
-        <i class="bi bi-calendar3 me-2"></i>
-        @DateTime.Now.ToString("dddd, dd MMM yyyy")
-    </div>
-</div>
-
-<!-- ===================== API UNAVAILABLE ===================== -->
-@if (!Model.Dashboard.ApiAvailable)
-{
-    <div class="card border-0 shadow-sm rounded-4 mb-4">
-        <div class="card-body d-flex align-items-center gap-3">
-            <div class="alert-icon alert-icon--warning">
-                <i class="bi bi-exclamation-triangle-fill"></i>
-            </div>
-            <div>
-                <h6 class="mb-1 fw-semibold">API unavailable</h6>
-                <p class="mb-0 text-muted small">@Model.Dashboard.ApiMessage</p>
-            </div>
-        </div>
-    </div>
-}
-else
-{
-    <!-- ===================== KPI GRID ===================== -->
-    <section class="kpi-grid">
-        @foreach (var (card, variant, subtitle) in cards)
-        {
-            <article class="kpi-card kpi-card--@variant">
-                <div class="kpi-card__top">
-                    <span class="kpi-card__label">@card.Label</span>
-                    <span class="kpi-card__icon">
-                        <i class="bi @card.Icon"></i>
-                    </span>
-                </div>
-
-                <div class="kpi-card__value">@card.Value</div>
-
-                <div class="kpi-card__subtitle">@subtitle</div>
-            </article>
-        }
-    </section>
-}
-
-<style>
-    /* ---------- PAGE HEADER ---------- */
-    .page-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-end;
-        gap: 16px;
-        margin-bottom: 18px;
-        flex-wrap: wrap;
-    }
-
-    .page-header__title {
-        font-size: 1.4rem;           /* ✅ Chhota title */
-        font-weight: 700;
-        color: #111827;
-        margin: 0 0 3px;
-    }
-
-    .page-header__subtitle {
-        margin: 0;
-        color: #6b7280;
-        font-size: 0.8rem;
-    }
-
-    .page-header__meta {
-        background: #fff;
-        border: 1px solid #e6e9ef;
-        padding: 6px 12px;
-        border-radius: 999px;
-        font-size: 0.78rem;
-        font-weight: 500;
-        color: #374151;
-        box-shadow: 0 1px 3px rgba(15, 23, 42, .04);
-    }
-
-
-    /* ============================================================ */
-    /*  KPI GRID — 5 CARDS EK LINE MEIN                              */
-    /* ============================================================ */
-    .kpi-grid {
-        display: grid !important;
-        grid-template-columns: repeat(5, 1fr) !important;  /* ✅ 5 cards per row */
-        gap: 10px !important;                               /* ✅ Compact gap */
-    }
-
-    /* ============================================================ */
-    /*  KPI CARD — SMALL SIZE                                        */
-    /* ============================================================ */
-    .kpi-card {
-        position: relative;
-        background: #ffffff;
-        border: 1px solid #e9edf3;
-        border-radius: 10px;
-        padding: 10px 10px 10px 14px;                       /* ✅ Compact padding */
-        box-shadow: 0 1px 3px rgba(15, 23, 42, .04);
-        transition: transform .15s ease, box-shadow .15s ease;
-        overflow: hidden;
-        min-height: 90px;                                   /* ✅ Chhota height */
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-    }
-
-        .kpi-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 18px rgba(15, 23, 42, .08);
-        }
-
-        /* Left accent bar */
-        .kpi-card::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            width: 4px;
-            background: var(--kpi-color, #0f766e);
-        }
-
-    /* Card Top Row */
-    .kpi-card__top {
-        display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
-        gap: 6px;
-        margin-bottom: 6px;
-    }
-
-    .kpi-card__label {
-        font-size: 0.58rem !important;                      /* ✅ Bahut chhota label */
-        font-weight: 700;
-        letter-spacing: .06em;
-        text-transform: uppercase;
-        color: #64748b;
-        line-height: 1.25;
-        padding-top: 3px;
-    }
-
-    /* Icon Box */
-    .kpi-card__icon {
-        width: 24px !important;                             /* ✅ Chhota icon */
-        height: 24px !important;
-        flex-shrink: 0;
-        border-radius: 6px;
-        display: grid;
-        place-items: center;
-        font-size: 0.72rem !important;
-        background: var(--kpi-color-soft, rgba(15, 118, 110, .1));
-        color: var(--kpi-color, #0f766e);
-    }
-
-    /* Value (Number) */
-    .kpi-card__value {
-        font-size: 1.15rem !important;                      /* ✅ Chhota number */
-        font-weight: 800;
-        color: #0f172a;
-        line-height: 1.1;
-        letter-spacing: -.02em;
-        margin-bottom: 2px;
-    }
-
-    /* Subtitle */
-    .kpi-card__subtitle {
-        font-size: 0.62rem !important;                      /* ✅ Chhota subtitle */
-        color: #94a3b8;
-        font-weight: 500;
-        line-height: 1.2;
-    }
-
-    /* ---------- COLOR VARIANTS ---------- */
-    .kpi-card--primary { --kpi-color: #0f766e; --kpi-color-soft: rgba(15, 118, 110, .1); }
-    .kpi-card--success { --kpi-color: #10b981; --kpi-color-soft: rgba(16, 185, 129, .12); }
-    .kpi-card--warning { --kpi-color: #f59e0b; --kpi-color-soft: rgba(245, 158, 11, .14); }
-    .kpi-card--danger  { --kpi-color: #ef4444; --kpi-color-soft: rgba(239, 68, 68, .12); }
-    .kpi-card--info    { --kpi-color: #0ea5e9; --kpi-color-soft: rgba(14, 165, 233, .12); }
-
-    /* ============================================================ */
-    /*  RESPONSIVE                                                    */
-    /* ============================================================ */
-    @@media (max-width: 1400px) {
-        .kpi-grid { grid-template-columns: repeat(5, 1fr) !important; }
-    }
-
-    @@media (max-width: 1100px) {
-        .kpi-grid { grid-template-columns: repeat(3, 1fr) !important; }
-    }
-
-    @@media (max-width: 768px) {
-        .kpi-grid { grid-template-columns: repeat(2, 1fr) !important; }
-    }
-
-    @@media (max-width: 480px) {
-        .kpi-grid { grid-template-columns: 1fr !important; }
-
-     
-
-    </style>
-
-    }
-
-   
-
-
- *@
